@@ -3265,7 +3265,11 @@ func normalizeNumericID(v interface{}) string {
 // This is driven by the ConflictsWith annotations on FieldSpec declarations
 // (e.g., the "q" field conflicts with "query" and "formula").
 func ValidateWidgetConflicts(data map[string]interface{}) []string {
-	widgetList, ok := data["widget"].([]interface{})
+	return validateWidgetListConflicts(data, "widget")
+}
+
+func validateWidgetListConflicts(data map[string]interface{}, key string) []string {
+	widgetList, ok := data[key].([]interface{})
 	if !ok {
 		return nil
 	}
@@ -3285,6 +3289,7 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 				continue
 			}
 
+			path := fmt.Sprintf("%s[%d].%s", key, wi, spec.HCLKey)
 			for _, group := range spec.ExactlyOneOf {
 				setFields := make([]string, 0, len(group))
 				for _, fieldName := range group {
@@ -3301,51 +3306,51 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 						quotedFields[i] = fmt.Sprintf("%q", fieldName)
 					}
 					errs = append(errs, fmt.Sprintf(
-						"widget[%d].%s: exactly one of %s must be configured",
-						wi, spec.HCLKey, strings.Join(quotedFields, " or "),
+						"%s: exactly one of %s must be configured", path, strings.Join(quotedFields, " or "),
 					))
 				}
 			}
 
-			// Check ConflictsWith constraints on request fields
-			var requestFields []FieldSpec
 			for _, f := range spec.Fields {
 				if f.HCLKey == "request" {
-					requestFields = f.Children
+					errs = append(errs, validateRequestBlockConflicts(defMap, f, path)...)
 					break
 				}
 			}
-			if requestFields != nil {
-				reqList := getBlockListFromMap(defMap, "request")
-				for ri, reqMap := range reqList {
-					for _, f := range requestFields {
-						if len(f.ConflictsWith) == 0 {
-							continue
-						}
-						if !fieldIsSetInMap(reqMap, f) {
-							continue
-						}
-						for _, conflicting := range f.ConflictsWith {
-							for _, cf := range requestFields {
-								if cf.HCLKey == conflicting && fieldIsSetInMap(reqMap, cf) {
-									errs = append(errs, fmt.Sprintf(
-										"widget[%d].%s.request[%d]: %q conflicts with %q — use one query style per request, not both",
-										wi, spec.HCLKey, ri, f.HCLKey, cf.HCLKey,
-									))
-								}
-							}
+
+			var nested []string
+			switch spec.HCLKey {
+			case "group_definition":
+				nested = validateWidgetListConflicts(defMap, "widget")
+			case "split_graph_definition":
+				nested = validateWidgetListConflicts(defMap, "source_widget_definition")
+			}
+			for _, e := range nested {
+				errs = append(errs, path+"."+e)
+			}
+		}
+	}
+	return errs
+}
+
+// Check siblings in each configured block independently: a nested dataset.query
+// is not a request-level query, and a Formula overlay is a separate request.
+func validateRequestBlockConflicts(parent map[string]interface{}, block FieldSpec, parentPath string) []string {
+	var errs []string
+	for i, item := range getBlockListFromMap(parent, block.HCLKey) {
+		path := fmt.Sprintf("%s.%s[%d]", parentPath, block.HCLKey, i)
+		for _, f := range block.Children {
+			if len(f.ConflictsWith) > 0 && fieldIsSetInMap(item, f) {
+				for _, conflicting := range f.ConflictsWith {
+					for _, sibling := range block.Children {
+						if sibling.HCLKey == conflicting && fieldIsSetInMap(item, sibling) {
+							errs = append(errs, fmt.Sprintf("%s: %q conflicts with %q — use one query style per request, not both", path, f.HCLKey, conflicting))
 						}
 					}
 				}
 			}
-
-			// Recurse into group/split_graph nested widgets
-			if spec.HCLKey == "group_definition" || spec.HCLKey == "split_graph_definition" {
-				if nestedErrs := ValidateWidgetConflicts(defMap); len(nestedErrs) > 0 {
-					for _, e := range nestedErrs {
-						errs = append(errs, fmt.Sprintf("widget[%d].%s.%s", wi, spec.HCLKey, e))
-					}
-				}
+			if f.Type == TypeBlock || f.Type == TypeBlockList {
+				errs = append(errs, validateRequestBlockConflicts(item, f, path)...)
 			}
 		}
 	}

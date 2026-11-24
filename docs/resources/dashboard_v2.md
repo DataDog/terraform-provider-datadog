@@ -427,7 +427,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--apm_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--log_query))
@@ -6367,7 +6367,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--apm_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--log_query))
@@ -18442,7 +18442,7 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
@@ -19905,7 +19905,7 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
@@ -21915,7 +21915,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection))
@@ -25383,7 +25383,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
@@ -26891,7 +26891,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query))
@@ -28505,7 +28505,7 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
@@ -30098,7 +30098,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection))
@@ -40302,7 +40302,7 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
@@ -41765,7 +41765,7 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
@@ -43775,7 +43775,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection))
@@ -49608,7 +49608,7 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
@@ -51071,7 +51071,7 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
@@ -52517,7 +52517,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection))
@@ -55792,7 +55792,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
@@ -57300,7 +57300,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query))
@@ -58914,7 +58914,7 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
@@ -60372,7 +60372,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection))
@@ -61495,7 +61495,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
@@ -63003,7 +63003,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query))
@@ -64617,7 +64617,7 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
@@ -66210,7 +66210,7 @@ Optional:
 
 Optional:
 
-- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--dataset))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--dataset))
 - `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula))
 - `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection))

@@ -1341,7 +1341,8 @@ func inlineDDSQLRequestFields(widgetType string) []FieldSpec {
 		{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
 			Description: "Request type for inline DDSQL.", ValidValues: []string{"advanced_query"}},
 		{HCLKey: "dataset", JSONKey: "datasets", Type: TypeBlockList, MaxItems: 1, OmitEmpty: true,
-			Description: "Inline SQL dataset used by the request.",
+			ConflictsWith: []string{"query", "formula"},
+			Description:   "Inline SQL dataset used by the request. Cannot be combined with a `query` or `formula` block in the same request.",
 			Children: []FieldSpec{
 				{HCLKey: "data_source", Type: TypeString, Required: true,
 					Description: "Source of the inline dataset.", ValidValues: []string{"analysis_dataset"}},

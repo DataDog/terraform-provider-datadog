@@ -300,6 +300,60 @@ func TestDashboardV2PlanValidationPreservesInlineDDSQL(t *testing.T) {
 	require.NotContains(t, dimensions[1], "is_hidden")
 }
 
+func TestDashboardV2PlanInlineDDSQLRequestConflicts(t *testing.T) {
+	type obj = map[string]interface{}
+	block := func(m obj) []interface{} { return []interface{}{m} }
+	dataset := block(obj{"data_source": "analysis_dataset", "name": "rows", "query": block(obj{"type": "sql_analysis", "sql_query": "SELECT 1 AS n"})})
+	query := block(obj{"metric_query": block(obj{"name": "query1", "data_source": "metrics", "query": "avg:system.cpu.user{*}"})})
+	formula := block(obj{"formula_expression": "query1"})
+	for _, tc := range []struct{ name, viz, field, wantPath string }{
+		{"query value with metric query", "query_value", "query", "widget[0].query_value_definition.request[0]"},
+		{"query table with formula", "query_table", "formula", "widget[0].query_table_definition.request[0]"},
+		{"scatterplot table with query", "scatterplot", "query", "widget[0].scatterplot_definition.request[0].scatterplot_table[0]"},
+		{"split graph source with query", "split_graph", "query", "widget[0].split_graph_definition.source_widget_definition[0].query_value_definition.request[0]"},
+		{"timeseries with separate overlay", "timeseries", "", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			req := obj{"request_type": "advanced_query", "response_format": "tabular", "dataset_to_query": "rows", "dataset": dataset}
+			requests := block(req)
+			switch tc.field {
+			case "query":
+				req["query"] = query
+			case "formula":
+				req["formula"] = formula
+			}
+			switch tc.viz {
+			case "timeseries":
+				req["response_format"] = "timeseries"
+				requests = append(requests, obj{"display_type": "overlay", "query": query, "formula": formula})
+			case "scatterplot":
+				requests = block(obj{"scatterplot_table": requests})
+			}
+			definition := block(obj{"request": requests})
+			widget := obj{tc.viz + "_definition": definition}
+			if tc.viz == "split_graph" {
+				widget = obj{"split_graph_definition": block(obj{
+					"size":                     "sm",
+					"source_widget_definition": block(obj{"query_value_definition": definition}),
+					"split_config": block(obj{
+						"split_dimensions": block(obj{"one_graph_per": "service"}),
+						"sort":             block(obj{"order": "asc"}),
+					}),
+				})}
+			}
+			// Disable the remote validator: a lossy request must fail locally,
+			// while the nested dataset.query alone must never trigger the conflict.
+			cfg := terraform.NewResourceConfigRaw(obj{"title": "Query styles", "layout_type": "ordered", "validate": false, "widget": block(widget)})
+			_, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, cfg, nil)
+			if tc.wantPath == "" {
+				require.NoError(t, err)
+			} else {
+				require.ErrorContains(t, err, tc.wantPath+`: "dataset" conflicts with "`+tc.field+`"`)
+			}
+		})
+	}
+}
+
 func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 	const malformedQuery = "sum:metric.name{env:test} by {service.ad_count()"
 
