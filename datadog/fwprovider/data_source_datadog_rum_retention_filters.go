@@ -21,7 +21,7 @@ func NewRumRetentionFiltersDataSource() datasource.DataSource {
 }
 
 type rumRetentionFiltersDataSource struct {
-	Api  *datadogV2.RumRetentionFiltersApi
+	Api  *datadogV2.RUMRetentionFiltersApi
 	Auth context.Context
 }
 
@@ -95,7 +95,7 @@ func (r *rumRetentionFiltersDataSource) Read(ctx context.Context, request dataso
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *rumRetentionFiltersDataSource) updateState(state *rumRetentionFiltersDataSourceModel, resp *datadogV2.RumRetentionFiltersResponse) {
+func (r *rumRetentionFiltersDataSource) updateState(state *rumRetentionFiltersDataSourceModel, resp *datadogV2.RUMRetentionFiltersResponse) {
 	retentionFilters := make([]rumRetentionFilterDataSourceModel, len(resp.GetData()))
 	for i, retentionFilter := range resp.GetData() {
 		retentionFilters[i] = rumRetentionFilterDataSourceModel{
