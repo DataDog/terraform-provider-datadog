@@ -42,8 +42,8 @@ Optional:
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `bearer_token`. Defaults to `"bearer_token"`.
-- `token` (String, Sensitive) Secret token used to authenticate with ChatGPT Enterprise. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
-- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret token used to authenticate with ChatGPT Enterprise. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `token` (String, Sensitive) ChatGPT Enterprise admin API key with the **Costs** permission set to **Read** and every other permission category set to **None**. Create it in the [OpenAI Admin Console](https://admin.openai.com/credentials?tab=admin-keys) of your ChatGPT Enterprise workspace, not in the API Platform admin-key console. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) ChatGPT Enterprise admin API key with the **Costs** permission set to **Read** and every other permission category set to **None**. Create it in the [OpenAI Admin Console](https://admin.openai.com/credentials?tab=admin-keys) of your ChatGPT Enterprise workspace, not in the API Platform admin-key console. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `token_wo_version` (String) Version trigger for token_wo rotation. String length must be at least 1.
 
 

@@ -38,8 +38,8 @@ Optional:
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `bearer_token`. Defaults to `"bearer_token"`.
-- `token` (String, Sensitive) Secret token used to authenticate with Claude Compliance. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
-- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret token used to authenticate with Claude Compliance. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `token` (String, Sensitive) Anthropic Admin API key (prefix `sk-ant-admin01-`) with the `read:compliance_activities` scope, or a dedicated Compliance Access key (prefix `sk-ant-api01-`). Generate an Admin API key in the Anthropic Console under **Organization settings > API keys**. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Anthropic Admin API key (prefix `sk-ant-admin01-`) with the `read:compliance_activities` scope, or a dedicated Compliance Access key (prefix `sk-ant-api01-`). Generate an Admin API key in the Anthropic Console under **Organization settings > API keys**. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `token_wo_version` (String) Version trigger for token_wo rotation. String length must be at least 1.
 
 
