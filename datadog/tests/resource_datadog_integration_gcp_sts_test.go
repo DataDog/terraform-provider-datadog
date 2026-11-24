@@ -159,6 +159,80 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 	})
 }
 
+func TestAccIntegrationGcpStsProjectFilterConfigs(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	withFilters := fmt.Sprintf(`
+	resource "datadog_integration_gcp_sts" "foo" {
+	  client_email = "%s@test-project.iam.gserviceaccount.com"
+	  project_filter_configs = [
+		{
+		  type    = "project_id"
+		  filters = ["prod-*", "!prod-legacy"]
+		},
+		{
+		  type    = "project_label"
+		  filters = ["env:prod*"]
+		},
+	  ]
+	}`, uniq)
+	withFiltersCheck := knownvalue.SetExact([]knownvalue.Check{
+		knownvalue.ObjectExact(map[string]knownvalue.Check{
+			"type": knownvalue.StringExact("project_id"),
+			"filters": knownvalue.SetExact([]knownvalue.Check{
+				knownvalue.StringExact("prod-*"),
+				knownvalue.StringExact("!prod-legacy"),
+			}),
+		}),
+		knownvalue.ObjectExact(map[string]knownvalue.Check{
+			"type": knownvalue.StringExact("project_label"),
+			"filters": knownvalue.SetExact([]knownvalue.Check{
+				knownvalue.StringExact("env:prod*"),
+			}),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: withFilters,
+				Check:  resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("project_filter_configs"), withFiltersCheck),
+				},
+			},
+			{
+				// Omitting the field keeps the filters already set.
+				Config: fmt.Sprintf(`
+				resource "datadog_integration_gcp_sts" "foo" {
+				  client_email = "%s@test-project.iam.gserviceaccount.com"
+				  automute     = "true"
+				}`, uniq),
+				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("project_filter_configs"), withFiltersCheck),
+				},
+			},
+			{
+				Config: fmt.Sprintf(`
+				resource "datadog_integration_gcp_sts" "foo" {
+				  client_email           = "%s@test-project.iam.gserviceaccount.com"
+				  automute               = "true"
+				  project_filter_configs = []
+				}`, uniq),
+				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("project_filter_configs"), knownvalue.SetExact(nil)),
+				},
+			},
+		},
+	})
+}
+
 func TestAccIntegrationGcpStsBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
