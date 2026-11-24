@@ -141,6 +141,12 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 				),
 			},
 			{
+				// Destroying foo and creating bar in one apply runs the disable and the
+				// re-enable of the same user concurrently; the disable can land last.
+				Config: roleDatasources,
+				Check:  testAccCheckUserIsDisabled(accProvider, username),
+			},
+			{
 				Config: testAccCheckDatadogUserConfigOtherUser(username),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.bar"),
