@@ -228,39 +228,22 @@ func splitGraphSourceWidgetSDKv2Schemas() map[string]*schema.Schema {
 	return result
 }
 
-// AllWidgetSDKv2SchemaNoGroup returns the widget schema map for all widget types EXCEPT group.
-// Used for widgets nested inside a group_definition block.
+// AllWidgetSDKv2SchemaNoGroup returns the widget schema map excluding group,
+// powerpack, and split graph widgets. It terminates group nesting in the schema.
 func AllWidgetSDKv2SchemaNoGroup() map[string]*schema.Schema {
-	result := map[string]*schema.Schema{
-		"id": {
-			Type:        schema.TypeInt,
-			Computed:    true,
-			Optional:    true,
-			Description: "The ID of the widget.",
-		},
-		"widget_layout": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem: &schema.Resource{
-				Schema: FieldSpecsToSDKv2Schema(widgetLayoutFieldSpecs),
-			},
-		},
-	}
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType == "group" || spec.JSONType == "powerpack" || spec.JSONType == "split_group" {
-			continue
-		}
-		result[spec.HCLKey] = WidgetSpecToSDKv2Schema(spec)
-	}
-	return result
+	return allWidgetSDKv2Schema(true, 0)
 }
 
 // AllWidgetSDKv2Schema returns the complete widget schema map for all widget definition types,
 // including widget_layout and id wrapper fields.
 // If excludePowerpackOnly is true, powerpack and split_graph definitions are excluded.
 func AllWidgetSDKv2Schema(excludePowerpackOnly bool) map[string]*schema.Schema {
+	// Terraform schemas must be finite: support a group containing another group,
+	// whose children are non-group widgets.
+	return allWidgetSDKv2Schema(excludePowerpackOnly, 2)
+}
+
+func allWidgetSDKv2Schema(excludePowerpackOnly bool, groupDepth int) map[string]*schema.Schema {
 	result := map[string]*schema.Schema{
 		"id": {
 			Type:        schema.TypeInt,
@@ -279,6 +262,9 @@ func AllWidgetSDKv2Schema(excludePowerpackOnly bool) map[string]*schema.Schema {
 		},
 	}
 	for _, spec := range allWidgetSpecs {
+		if spec.JSONType == "group" && groupDepth == 0 {
+			continue
+		}
 		if excludePowerpackOnly && (spec.JSONType == "powerpack" || spec.JSONType == "split_group") {
 			continue
 		}
@@ -300,12 +286,18 @@ func AllWidgetSDKv2Schema(excludePowerpackOnly bool) map[string]*schema.Schema {
 
 		// Inject nested widget list into group_definition.
 		if spec.JSONType == "group" {
+			var childSchema map[string]*schema.Schema
+			if groupDepth > 1 {
+				childSchema = allWidgetSDKv2Schema(true, groupDepth-1)
+			} else {
+				childSchema = AllWidgetSDKv2SchemaNoGroup()
+			}
 			widgetResource.Schema["widget"] = &schema.Schema{
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "The list of widgets in this group.",
 				Elem: &schema.Resource{
-					Schema: AllWidgetSDKv2SchemaNoGroup(),
+					Schema: childSchema,
 				},
 			}
 		}

@@ -1,6 +1,7 @@
 package dashboardmapping
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/hashicorp/go-cty/cty"
@@ -53,5 +54,93 @@ func TestFieldSpecJSONValidation(t *testing.T) {
 	}
 	if diags := jsonSchema.ValidateDiagFunc("not-json", cty.Path{}); !diags.HasError() {
 		t.Fatal("expected invalid JSON to fail validation")
+	}
+}
+
+func TestNestedGroupWidgetSchemaRoundTrip(t *testing.T) {
+	group := func(title string, child map[string]interface{}) map[string]interface{} {
+		return map[string]interface{}{
+			"group_definition": []interface{}{map[string]interface{}{
+				"title":       title,
+				"layout_type": "ordered",
+				"widget":      []interface{}{child},
+			}},
+		}
+	}
+	leaf := map[string]interface{}{
+		"id": 123,
+		"note_definition": []interface{}{map[string]interface{}{
+			"content": "Nested note",
+		}},
+		"widget_layout": []interface{}{map[string]interface{}{
+			"x": 0, "y": 0, "width": 4, "height": 2,
+		}},
+	}
+	inner := group("Inner group", leaf)
+	inner["id"] = 456
+	inner["widget_layout"] = []interface{}{map[string]interface{}{
+		"x": 0, "y": 0, "width": 12, "height": 4,
+	}}
+	config := map[string]interface{}{
+		"widget": []interface{}{group("Outer group", inner)},
+	}
+
+	for _, tc := range []struct {
+		name                 string
+		excludePowerpackOnly bool
+	}{
+		{name: "dashboard"},
+		{name: "powerpack", excludePowerpackOnly: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			widgetSchema := AllWidgetSDKv2Schema(tc.excludePowerpackOnly)
+			children := widgetSchema
+			for depth := 0; depth < 2; depth++ {
+				groupSchema, ok := children["group_definition"]
+				if !ok {
+					t.Fatalf("missing group schema at depth %d", depth)
+				}
+				groupResource := groupSchema.Elem.(*schema.Resource)
+				children = groupResource.Schema["widget"].Elem.(*schema.Resource).Schema
+				for _, excluded := range []string{"powerpack_definition", "split_graph_definition"} {
+					if _, ok := children[excluded]; ok {
+						t.Fatalf("%s must remain excluded inside groups", excluded)
+					}
+				}
+			}
+			if _, ok := children["group_definition"]; ok {
+				t.Fatal("group nesting must terminate after two group levels")
+			}
+
+			resourceSchema := map[string]*schema.Schema{
+				"widget": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Dashboard widgets.",
+					Elem:        &schema.Resource{Schema: widgetSchema},
+				},
+			}
+			data := schema.TestResourceDataRaw(t, resourceSchema, config)
+			leafPath := "widget.0.group_definition.0.widget.0.group_definition.0.widget.0"
+			if got := data.Get(leafPath + ".note_definition.0.content"); got != "Nested note" {
+				t.Fatalf("nested note was lost: %#v", got)
+			}
+			if got := data.Get(leafPath + ".id"); got != 123 {
+				t.Fatalf("nested note ID was lost: %#v", got)
+			}
+			widget := data.Get("widget").([]interface{})[0].(map[string]interface{})
+			payload := BuildWidgetEngineJSONFromMap(widget)
+			flattened, drops := FlattenWidgetsForSDKv2([]interface{}{payload})
+			if len(drops) != 0 {
+				t.Fatalf("nested widget fields were dropped: %v", drops)
+			}
+			refreshed := schema.TestResourceDataRaw(t, resourceSchema, nil)
+			if err := refreshed.Set("widget", flattened); err != nil {
+				t.Fatalf("cannot save nested groups to state: %v", err)
+			}
+			if !reflect.DeepEqual(data.Get("widget"), refreshed.Get("widget")) {
+				t.Fatalf("nested groups changed after refresh:\n got: %#v\nwant: %#v", refreshed.Get("widget"), data.Get("widget"))
+			}
+		})
 	}
 }
