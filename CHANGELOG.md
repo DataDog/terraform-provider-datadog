@@ -1,3 +1,29 @@
+## 4.32.0 (November 24, 2026)
+
+### BUGFIXES
+* [datadog_csm_threats_agent_rule] Retry on 423 Locked during policy deployments by @Raganof in https://github.com/DataDog/terraform-provider-datadog/pull/4564
+* [datadog_child_organization] Mark API and application keys as sensitive by @TamaraLewis in https://github.com/DataDog/terraform-provider-datadog/pull/4348
+* [datadog_integration_aws_account] Fix tag filter updates and AWS integration tests by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/4544
+* [generated] Improve token descriptions for Claude Compliance, ChatGPT Enterprise, and OpenAI Codex by @dd-octo-sts[bot] in https://github.com/DataDog/terraform-provider-datadog/pull/4591
+### IMPROVEMENTS
+* [datadog_logs_pipeline_order] Allow relative ordering of selected pipelines by @bvolpato-dd in https://github.com/DataDog/terraform-provider-datadog/pull/4523
+### FEATURES
+* [datadog_monitor] Support aastra job status and job duration data-jobs monitors by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/4492
+* [datadog_deployment_gate] Support cross-environment gates (SDCD-3587) by @GabrielAnca in https://github.com/DataDog/terraform-provider-datadog/pull/4481
+* [datadog_integrations] Add generated integration accounts by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/4598
+* [datadog_observability_pipeline] add support to configure grok rule name by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/4590
+* [datadog_observability_pipeline] Add UI metadata fields by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4585
+* [generated] Add Integration Accounts v2 API for GitHub Costs by @dd-octo-sts[bot] in https://github.com/DataDog/terraform-provider-datadog/pull/4592
+### DOCUMENTATION
+* [datadog_csm_threats_agent_rule] Add migration guide from datadog_cloud_workload_security_agent_rule by @Raganof in https://github.com/DataDog/terraform-provider-datadog/pull/4593
+
+## New Contributors
+* @TamaraLewis made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4348
+* @bvolpato-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4523
+* @GabrielAnca made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4481
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.31.0...v4.32.0
+
 ## 4.31.0 (November 19, 2026)
 
 ### BUGFIXES
