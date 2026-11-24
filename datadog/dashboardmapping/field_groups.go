@@ -1093,18 +1093,14 @@ var numberFormatUnitScaleFields = []FieldSpec{
 		Description: "The name of the unit."},
 }
 
-// widgetNumberFormatFields corresponds to OpenAPI WidgetNumberFormat.
-// Used inside widgetFormulaFields as the "number_format" block.
-//
-// The "unit" field is a TypeOneOf corresponding to OpenAPI NumberFormatUnit.
-// The JSON discriminator is "type": "canonical_unit" or "custom_unit_label".
-// HCL: unit { canonical { ... } } or unit { custom { ... } } — unchanged from before.
-var widgetNumberFormatFields = []FieldSpec{
-	{
+// numberFormatUnitField shares the canonical/custom unit blocks. Formula number
+// formats require a unit, while a DDSQL projection can specify only precision.
+func numberFormatUnitField(required bool) FieldSpec {
+	return FieldSpec{
 		HCLKey:        "unit",
 		Type:          TypeOneOf,
-		OmitEmpty:     false,
-		Required:      true,
+		OmitEmpty:     !required,
+		Required:      required,
 		Description:   "Unit of the number format.",
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
@@ -1125,7 +1121,12 @@ var widgetNumberFormatFields = []FieldSpec{
 				Children:      numberFormatUnitCustomFields,
 			},
 		},
-	},
+	}
+}
+
+// widgetNumberFormatFields corresponds to OpenAPI WidgetNumberFormat.
+var widgetNumberFormatFields = []FieldSpec{
+	numberFormatUnitField(true),
 	{HCLKey: "unit_scale", Type: TypeBlock, OmitEmpty: true,
 		Description: "The definition of `NumberFormatUnitScale` object.",
 		Children:    numberFormatUnitScaleFields},
@@ -1327,6 +1328,60 @@ var datasetListQueryFields = []FieldSpec{
 	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
 		Description: "Sort configuration for the dataset query.",
 		Children:    datasetListQuerySortFields},
+}
+
+// inlineDDSQLRequestFields maps a single inline SQL dataset. The request-level
+// fields are optional because the same HCL block also represents non-DDSQL requests.
+func inlineDDSQLRequestFields(responseFormat string, projectionFields []FieldSpec) []FieldSpec {
+	return []FieldSpec{
+		{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+			Description: "Request type for inline DDSQL.", ValidValues: []string{"advanced_query"}},
+		{HCLKey: "dataset", JSONKey: "datasets", Type: TypeBlockList, MaxItems: 1, OmitEmpty: true,
+			Description: "Inline SQL dataset used by the request.",
+			Children: []FieldSpec{
+				{HCLKey: "data_source", Type: TypeString, Required: true,
+					Description: "Source of the inline dataset.", ValidValues: []string{"analysis_dataset"}},
+				{HCLKey: "name", Type: TypeString, Required: true,
+					Description: "Local name referenced by `dataset_to_query`."},
+				{HCLKey: "query", Type: TypeBlock, Required: true,
+					Description: "SQL query defining the dataset.",
+					Children: []FieldSpec{
+						{HCLKey: "type", Type: TypeString, Required: true,
+							Description: "Type of the dataset query.", ValidValues: []string{"sql_analysis"}},
+						{HCLKey: "sql_query", Type: TypeString, Required: true,
+							Description: "Inline DDSQL statement."},
+					}},
+			}},
+		{HCLKey: "dataset_to_query", Type: TypeString, OmitEmpty: true,
+			Description: "Name of the inline dataset to query."},
+		{HCLKey: "response_format", Type: TypeString, OmitEmpty: true,
+			Description: "Response format for the inline DDSQL request.", ValidValues: []string{responseFormat}},
+		{HCLKey: "projection", Type: TypeBlock, OmitEmpty: true,
+			Description: "Mapping from result columns to widget dimensions.", Children: projectionFields},
+	}
+}
+
+var queryValueProjectionFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, Required: true,
+		Description: "Type of the projection.", ValidValues: []string{"query_value"}},
+	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, Required: true, MaxItems: 1,
+		Description: "Result column to display in the Query Value.",
+		Children: []FieldSpec{
+			{HCLKey: "column", Type: TypeString, Required: true, Description: "Name of the SQL result column."},
+			{HCLKey: "dimension", Type: TypeString, Required: true, Description: "Role of the result column (`value` for Query Value)."},
+			{HCLKey: "number_format", Type: TypeBlock, Description: "Number format for the projected value.",
+				Children: []FieldSpec{
+					{HCLKey: "precision", Type: TypeIntOrString, OmitEmpty: true,
+						Description: "Number of decimal places (0–10), `*`, or `integer`."},
+					numberFormatUnitField(false),
+					{HCLKey: "unit_scale", Type: TypeBlock, EmptyBlockAsNull: true,
+						Description: "Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset.",
+						Children: []FieldSpec{
+							{HCLKey: "type", Type: TypeString, OmitEmpty: true, Description: "Type of the scale.", ValidValues: []string{"canonical_unit"}},
+							{HCLKey: "unit_name", Type: TypeString, OmitEmpty: true, Description: "Name of the canonical unit."},
+						}},
+				}},
+		}},
 }
 
 // hostmapProjectionDimensionMappingFields corresponds to OpenAPI

@@ -34,6 +34,9 @@ const (
 	TypeBlockList                   // list of blocks
 	TypeOneOf                       // polymorphic block — exactly one child variant should be set
 	TypeJSON                        // arbitrary JSON — HCL string ↔ JSON object/array
+
+	// TypeIntOrString represents JSON integers and string keywords as one HCL string.
+	TypeIntOrString
 )
 
 // OneOfDiscriminator configures how a TypeOneOf field determines which variant is active.
@@ -164,6 +167,10 @@ type FieldSpec struct {
 	// that distinguishes absent from null receives the explicit clear signal.
 	// Only meaningful on TypeBlock fields.
 	NullOnClear bool
+
+	// EmptyBlockAsNull maps an explicitly empty TypeBlock to JSON null in both
+	// directions, keeping it distinct from an omitted block.
+	EmptyBlockAsNull bool
 
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
@@ -355,8 +362,11 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 		if f.SchemaOnly {
 			continue
 		}
-		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
+		jsonVal, present := getAtJSONPath(data, f.effectiveJSONPath())
 		if jsonVal == nil {
+			if present && f.EmptyBlockAsNull {
+				result[f.HCLKey] = []interface{}{map[string]interface{}{}}
+			}
 			// The API omits optional fields that were never set. SDKv2 would
 			// read them back as false, but the UI renders a missing field
 			// using its default (e.g. has_padding = true), so match that.
@@ -367,7 +377,7 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 		}
 
 		switch f.Type {
-		case TypeString:
+		case TypeString, TypeIntOrString:
 			result[f.HCLKey] = fmt.Sprintf("%v", jsonVal)
 
 		case TypeBool:
@@ -478,19 +488,16 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 	return result
 }
 
-// getAtJSONPath retrieves a value from a nested map following a dotted path.
-func getAtJSONPath(m map[string]interface{}, path string) interface{} {
+// getAtJSONPath distinguishes an explicit JSON null from a missing dotted path.
+func getAtJSONPath(m map[string]interface{}, path string) (interface{}, bool) {
 	parts := strings.SplitN(path, ".", 2)
 	val, ok := m[parts[0]]
-	if !ok || val == nil {
-		return nil
-	}
 	if len(parts) == 1 {
-		return val
+		return val, ok
 	}
 	sub, ok := val.(map[string]interface{})
 	if !ok {
-		return nil
+		return nil, false
 	}
 	return getAtJSONPath(sub, parts[1])
 }
@@ -1900,10 +1907,16 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 		}
 
 		switch f.Type {
-		case TypeString:
+		case TypeString, TypeIntOrString:
 			strVal := getStringFromMap(data, f.HCLKey)
 			if f.OmitEmpty && strVal == "" {
 				continue
+			}
+			if f.Type == TypeIntOrString {
+				if n, err := strconv.Atoi(strVal); err == nil {
+					setAtJSONPath(result, f.effectiveJSONPath(), n)
+					continue
+				}
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), strVal)
 
@@ -1959,6 +1972,10 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 				continue
 			}
 			nested := buildEngineJSONFromMap(child, f.Children, ctx.block(f.HCLKey, 0))
+			if len(nested) == 0 && f.EmptyBlockAsNull {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
@@ -3319,7 +3336,7 @@ func fieldIsSetInMap(data map[string]interface{}, f FieldSpec) bool {
 		return false
 	}
 	switch f.Type {
-	case TypeString:
+	case TypeString, TypeIntOrString:
 		return v.(string) != ""
 	case TypeBlockList:
 		if list, ok := v.([]interface{}); ok {

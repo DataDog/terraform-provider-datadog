@@ -1037,7 +1037,7 @@ var HostmapWidgetSpec = WidgetSpec{
 }
 
 // QueryValueWidgetSpec corresponds to OpenAPI QueryValueWidgetDefinition.
-var queryValueRequestFields = append([]FieldSpec{
+var queryValueRequestFields = append(append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
 		ConflictsWith: []string{"query", "formula"},
@@ -1053,7 +1053,7 @@ var queryValueRequestFields = append([]FieldSpec{
 		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields},
 	queryValueWidgetComparisonField,
-}, standardQueryFields...)
+}, standardQueryFields...), inlineDDSQLRequestFields("tabular", queryValueProjectionFields)...)
 
 var QueryValueWidgetSpec = WidgetSpec{
 	HCLKey:      "query_value_definition",
@@ -1074,7 +1074,7 @@ var QueryValueWidgetSpec = WidgetSpec{
 			Description: "Set a timeseries on the widget background.",
 			Children:    timeseriesBackgroundFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
+			Description: "The Formula, legacy, or inline DDSQL request used to display the Query Value.",
 			Children:    queryValueRequestFields},
 		widgetCustomLinkField,
 	},
