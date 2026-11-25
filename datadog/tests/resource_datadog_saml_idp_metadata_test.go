@@ -32,9 +32,11 @@ g8LXvsjmbx2BPFT9baM1JerhrkSGRFaANN/awmA+cKkU4/dpYuSVafkl2H2KfJnwb8GUZTR0ScMf
 func TestAccSamlIdpMetadataBasic(t *testing.T) {
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	entityId := fmt.Sprintf("https://idp.example.com/%s", uniq)
-	ssoUrl := fmt.Sprintf("https://idp.example.com/%s/sso", uniq)
-	ssoUrlUpdated := fmt.Sprintf("https://idp.example.com/%s/sso2", uniq)
+	// The API rejects SingleSignOnService locations on example.com since
+	// 2026-11-23; the reserved .test TLD is accepted.
+	entityId := fmt.Sprintf("https://idp.terraform-provider-datadog.test/%s", uniq)
+	ssoUrl := fmt.Sprintf("https://idp.terraform-provider-datadog.test/%s/sso", uniq)
+	ssoUrlUpdated := fmt.Sprintf("https://idp.terraform-provider-datadog.test/%s/sso2", uniq)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
