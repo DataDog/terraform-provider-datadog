@@ -32,3 +32,7 @@ $ make build
 If you're building the provider, follow the instructions to [install it as a plugin.](./DEVELOPMENT.md) After placing it into your plugins directory, run `terraform init` to initialize it.
 
 Further [usage documentation is available on the Terraform website](https://www.terraform.io/docs/providers/datadog/index.html).
+
+## Defining resources as Go code
+
+To define Datadog Terraform resources as Go code instead of HCL, see [tforge](https://github.com/DataDog/tforge), an open source tool that generates Go libraries for any Terraform provider.
