@@ -1,0 +1,240 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 403
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":true,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":null,"model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":5,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:34:41.051532Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.853708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 403
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":true,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":null,"model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":5,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:34:41.051532Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 32.513666ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 195
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"allow_fast_mode":false,"expected_revision":5,"max_reasoning_level":"high","model_ids":[],"provider_ids":[],"routing_rule_slugs":[]},"id":"default","type":"model-groups"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":false,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":"high","model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":6,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:44:57.374952Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 77.345291ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":false,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":"high","model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":6,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:44:57.374952Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 114.208708ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":false,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":"high","model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":6,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:44:57.374952Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 30.782125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 192
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"allow_fast_mode":true,"expected_revision":6,"max_reasoning_level":null,"model_ids":[],"provider_ids":[],"routing_rule_slugs":[]},"id":"default","type":"model-groups"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 403
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":true,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":null,"model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":7,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:44:59.154115Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 65.082958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/model-groups/default
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 403
+        uncompressed: false
+        body: '{"data":{"id":"default","type":"model-groups","attributes":{"allow_fast_mode":true,"created_at":"2026-11-12T19:49:59.401908Z","max_reasoning_level":null,"model_ids":[],"models":[],"models_restricted":false,"name":"Org-wide access","provider_ids":[],"providers":[],"providers_restricted":false,"revision":7,"routing_rules":[],"routing_rules_restricted":false,"updated_at":"2026-11-25T18:44:59.154115Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.414209ms

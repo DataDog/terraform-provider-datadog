@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -25,8 +26,6 @@ var (
 	_ resource.ResourceWithImportState = &aiGatewayModelGroupResource{}
 )
 
-// aiGatewayDefaultModelGroupID is the ID of the organization-wide model group. It always exists, cannot be deleted,
-// and needs expected_revision on update, so this resource does not manage it.
 const aiGatewayDefaultModelGroupID = "default"
 
 type aiGatewayModelGroupResource struct {
@@ -61,7 +60,7 @@ func (r *aiGatewayModelGroupResource) Metadata(_ context.Context, request resour
 func (r *aiGatewayModelGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog AI Gateway model group resource. A model group selects the models, providers, and routing rules that its members can use, " +
-			"and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. " +
+			"and the request options that apply to them. To manage the organization-wide default model group, import it with the ID `default` and set `name` to `Org-wide access`. Destroying the default model group only removes it from the Terraform state. " +
 			"This resource is in Preview.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
@@ -114,10 +113,6 @@ func (r *aiGatewayModelGroupResource) Schema(_ context.Context, _ resource.Schem
 }
 
 func (r *aiGatewayModelGroupResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	if request.ID == aiGatewayDefaultModelGroupID {
-		response.Diagnostics.AddError("unsupported model group", "the organization-wide default model group cannot be managed by datadog_ai_gateway_model_group")
-		return
-	}
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
@@ -144,6 +139,7 @@ func (r *aiGatewayModelGroupResource) Read(ctx context.Context, request resource
 
 	response.Diagnostics.Append(updateAiGatewayModelGroupState(ctx, &state, resp.GetData())...)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(setAiGatewayModelGroupRevision(ctx, response.Private, resp.GetData())...)
 }
 
 func (r *aiGatewayModelGroupResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -187,6 +183,17 @@ func (r *aiGatewayModelGroupResource) Update(ctx context.Context, request resour
 	if response.Diagnostics.HasError() {
 		return
 	}
+	if id == aiGatewayDefaultModelGroupID {
+		raw, d := request.Private.GetKey(ctx, aiGatewayModelGroupRevisionKey)
+		response.Diagnostics.Append(d...)
+		var revision int64
+		if err := json.Unmarshal(raw, &revision); err != nil {
+			response.Diagnostics.AddError("missing model group revision", err.Error())
+			return
+		}
+		attributes.SetExpectedRevision(revision)
+		attributes.Name = nil
+	}
 	body := datadogV2.NewAiGatewayModelGroupUpdateRequest(*datadogV2.NewAiGatewayModelGroupUpdateData(*attributes, id, datadogV2.AIGATEWAYMODELGROUPTYPE_MODEL_GROUPS))
 
 	resp, _, err := r.Api.UpdateAiGatewayModelGroup(r.Auth, id, *body)
@@ -201,12 +208,13 @@ func (r *aiGatewayModelGroupResource) Update(ctx context.Context, request resour
 
 	response.Diagnostics.Append(updateAiGatewayModelGroupState(ctx, &state, resp.GetData())...)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(setAiGatewayModelGroupRevision(ctx, response.Private, resp.GetData())...)
 }
 
 func (r *aiGatewayModelGroupResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state aiGatewayModelGroupModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
+	if response.Diagnostics.HasError() || state.ID.ValueString() == aiGatewayDefaultModelGroupID {
 		return
 	}
 
@@ -226,11 +234,6 @@ func updateAiGatewayModelGroupState(ctx context.Context, state *aiGatewayModelGr
 	var diags diag.Diagnostics
 	attributes := data.GetAttributes()
 
-	if attributes.Revision != nil || data.GetId() == aiGatewayDefaultModelGroupID {
-		diags.AddError("unsupported model group", "the organization-wide default model group cannot be managed by datadog_ai_gateway_model_group")
-		return diags
-	}
-
 	slugs := make([]string, 0, len(attributes.GetRoutingRules()))
 	for _, rule := range attributes.GetRoutingRules() {
 		slugs = append(slugs, rule.GetSlug())
@@ -249,6 +252,19 @@ func updateAiGatewayModelGroupState(ctx context.Context, state *aiGatewayModelGr
 	}
 
 	return diags
+}
+
+const aiGatewayModelGroupRevisionKey = "revision"
+
+func setAiGatewayModelGroupRevision(ctx context.Context, private interface {
+	SetKey(context.Context, string, []byte) diag.Diagnostics
+}, data datadogV2.AiGatewayModelGroupResource) diag.Diagnostics {
+	revision := data.GetAttributes().Revision
+	if revision == nil {
+		return nil
+	}
+	raw, _ := json.Marshal(*revision)
+	return private.SetKey(ctx, aiGatewayModelGroupRevisionKey, raw)
 }
 
 // aiGatewayModelGroupSetValue maps an empty selection to null, so an omitted attribute does not diff. An attribute
@@ -288,7 +304,6 @@ func buildAiGatewayModelGroupCreateAttributes(ctx context.Context, state *aiGate
 
 // buildAiGatewayModelGroupUpdateAttributes sends every field. The API keeps a selection that is omitted, so a
 // selection removed from the configuration is sent as [], and an unset max_reasoning_level is sent as null.
-// expected_revision is never sent: it is only for the default model group.
 func buildAiGatewayModelGroupUpdateAttributes(ctx context.Context, state *aiGatewayModelGroupModel) (*datadogV2.AiGatewayModelGroupUpdateAttributes, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	attributes := datadogV2.NewAiGatewayModelGroupUpdateAttributes()

@@ -59,6 +59,49 @@ func TestAccAiGatewayModelGroup(t *testing.T) {
 	})
 }
 
+// TestAccAiGatewayModelGroupDefault changes the test organization's default model group and ends with fast mode
+// allowed and no reasoning level limit.
+func TestAccAiGatewayModelGroupDefault(t *testing.T) {
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	config := func(options string) string {
+		return fmt.Sprintf(`
+resource "datadog_ai_gateway_model_group" "default" {
+  name = "Org-wide access"
+  %s
+}`, options)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:             config(""),
+				ResourceName:       "datadog_ai_gateway_model_group.default",
+				ImportState:        true,
+				ImportStateId:      "default",
+				ImportStatePersist: true,
+			},
+			{
+				Config: config(`allow_fast_mode = false
+  max_reasoning_level = "high"`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_ai_gateway_model_group.default", "id", "default"),
+					resource.TestCheckResourceAttr("datadog_ai_gateway_model_group.default", "allow_fast_mode", "false"),
+					resource.TestCheckResourceAttr("datadog_ai_gateway_model_group.default", "max_reasoning_level", "high"),
+				),
+			},
+			{
+				Config: config(""),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_ai_gateway_model_group.default", "allow_fast_mode", "true"),
+					resource.TestCheckNoResourceAttr("datadog_ai_gateway_model_group.default", "max_reasoning_level"),
+				),
+			},
+		},
+	})
+}
+
 func testAccAiGatewayModelGroupConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_ai_gateway_model_group" "foo" {
