@@ -131,6 +131,7 @@ type sourceModel struct {
 	OpentelemetrySource         []*observability_pipeline.OpentelemetrySourceModel         `tfsdk:"opentelemetry"`
 	WebsocketSource             []*observability_pipeline.WebsocketSourceModel             `tfsdk:"websocket"`
 	PrometheusRemoteWriteSource []*observability_pipeline.PrometheusRemoteWriteSourceModel `tfsdk:"prometheus_remote_write"`
+	CrowdStrikeFdrSource        []*observability_pipeline.CrowdStrikeFdrSourceModel        `tfsdk:"crowdstrike_fdr"`
 }
 
 type logstashSourceModel struct {
@@ -1256,6 +1257,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"opentelemetry":           observability_pipeline.OpentelemetrySourceSchema(),
 									"websocket":               observability_pipeline.WebsocketSourceSchema(),
 									"prometheus_remote_write": observability_pipeline.PrometheusRemoteWriteSourceSchema(),
+									"crowdstrike_fdr":         observability_pipeline.CrowdStrikeFdrSourceSchema(),
 								},
 							},
 						},
@@ -3207,6 +3209,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, p := range sourceBlock.PrometheusRemoteWriteSource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandPrometheusRemoteWriteSource(p, sourceId))
 		}
+		for _, c := range sourceBlock.CrowdStrikeFdrSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandCrowdStrikeFdrSource(c, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3424,6 +3429,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if p := observability_pipeline.FlattenPrometheusRemoteWriteSource(src.ObservabilityPipelinePrometheusRemoteWriteSource); p != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelinePrometheusRemoteWriteSource.GetId())
 			sourceBlock.PrometheusRemoteWriteSource = append(sourceBlock.PrometheusRemoteWriteSource, p)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if c := observability_pipeline.FlattenCrowdStrikeFdrSource(src.ObservabilityPipelineCrowdStrikeFdrSource); c != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineCrowdStrikeFdrSource.GetId())
+			sourceBlock.CrowdStrikeFdrSource = append(sourceBlock.CrowdStrikeFdrSource, c)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}

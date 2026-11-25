@@ -10557,3 +10557,105 @@ resource "datadog_observability_pipeline" "traces_otel" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_crowdstrikeFdrSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.crowdstrike_fdr_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "crowdstrike_fdr_source" {
+  name = "crowdstrike-fdr-source-pipeline"
+
+  config {
+    source {
+      id = "crowdstrike-fdr-source-1"
+
+      crowdstrike_fdr {
+        region                  = "us-west-1"
+        url_key                 = "CROWDSTRIKE_FDR_SQS_URL"
+        access_key_id_key       = "CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID"
+        secret_access_key_key   = "CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY"
+        visibility_timeout_secs = 900
+        client_concurrency      = 4
+        max_number_of_messages  = 5
+
+        tls {
+          crt_file     = "/etc/ssl/certs/fdr.crt"
+          ca_file      = "/etc/ssl/certs/fdr.ca"
+          key_file     = "/etc/ssl/private/fdr.key"
+          key_pass_key = "CROWDSTRIKE_FDR_KEY_PASS"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["crowdstrike-fdr-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "crowdstrike-fdr-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.region", "us-west-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.url_key", "CROWDSTRIKE_FDR_SQS_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.access_key_id_key", "CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.secret_access_key_key", "CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.visibility_timeout_secs", "900"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.client_concurrency", "4"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.max_number_of_messages", "5"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.tls.0.crt_file", "/etc/ssl/certs/fdr.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.tls.0.ca_file", "/etc/ssl/certs/fdr.ca"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.tls.0.key_file", "/etc/ssl/private/fdr.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.tls.0.key_pass_key", "CROWDSTRIKE_FDR_KEY_PASS"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "crowdstrike_fdr_source" {
+  name = "crowdstrike-fdr-source-pipeline"
+
+  config {
+    source {
+      id = "crowdstrike-fdr-source-1"
+
+      crowdstrike_fdr {
+        region = "us-west-1"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["crowdstrike-fdr-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.region", "us-west-1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.url_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.access_key_id_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.secret_access_key_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.visibility_timeout_secs"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.client_concurrency"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.max_number_of_messages"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.crowdstrike_fdr.0.tls.#", "0"),
+				),
+			},
+		},
+	})
+}
