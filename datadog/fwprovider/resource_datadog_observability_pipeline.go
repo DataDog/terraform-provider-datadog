@@ -502,13 +502,13 @@ type fluentBitSourceModel struct {
 }
 
 type httpServerSourceModel struct {
-	AddressKey   types.String                                `tfsdk:"address_key"`
-	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
-	Decoding     types.String                                `tfsdk:"decoding"`
-	PasswordKey  types.String                                `tfsdk:"password_key"`
-	UsernameKey  types.String                                `tfsdk:"username_key"`
-	ValidTokens  []httpServerValidTokenModel                 `tfsdk:"valid_token"`
-	Tls          []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey   types.String                                                  `tfsdk:"address_key"`
+	AuthStrategy types.String                                                  `tfsdk:"auth_strategy"`
+	Decoding     types.String                                                  `tfsdk:"decoding"`
+	PasswordKey  types.String                                                  `tfsdk:"password_key"`
+	UsernameKey  types.String                                                  `tfsdk:"username_key"`
+	ValidTokens  []httpServerValidTokenModel                                   `tfsdk:"valid_token"`
+	Tls          []observability_pipeline.MtlsServerTlsWithClientIdentityModel `tfsdk:"tls"`
 }
 
 type httpServerValidTokenModel struct {
@@ -524,10 +524,10 @@ type httpServerValidTokenPathToTokenModel struct {
 }
 
 type splunkHecSourceModel struct {
-	AddressKey    types.String                                `tfsdk:"address_key"`
-	StoreHecToken types.Bool                                  `tfsdk:"store_hec_token"`
-	ValidTokens   []splunkHecValidTokenModel                  `tfsdk:"valid_token"`
-	Tls           []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey    types.String                                                  `tfsdk:"address_key"`
+	StoreHecToken types.Bool                                                    `tfsdk:"store_hec_token"`
+	ValidTokens   []splunkHecValidTokenModel                                    `tfsdk:"valid_token"`
+	Tls           []observability_pipeline.MtlsServerTlsWithClientIdentityModel `tfsdk:"tls"`
 }
 
 type splunkHecValidTokenModel struct {
@@ -564,9 +564,9 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	AddressKey                types.String                                `tfsdk:"address_key"`
-	MaxConnectionDurationSecs types.Int64                                 `tfsdk:"max_connection_duration_secs"`
-	Tls                       []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey                types.String                                                  `tfsdk:"address_key"`
+	MaxConnectionDurationSecs types.Int64                                                   `tfsdk:"max_connection_duration_secs"`
+	Tls                       []observability_pipeline.MtlsServerTlsWithClientIdentityModel `tfsdk:"tls"`
 }
 
 type gcsDestinationModel struct {
@@ -994,7 +994,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.MtlsServerTlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsWithClientIdentitySchema(),
 												"valid_token": schema.ListNestedBlock{
 													Description: "A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy.",
 													Validators: []validator.List{
@@ -1061,7 +1061,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.MtlsServerTlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsWithClientIdentitySchema(),
 												"valid_token": schema.ListNestedBlock{
 													Description: "A HEC token accepted for authenticating incoming Splunk HEC requests.",
 													Validators: []validator.List{
@@ -1101,7 +1101,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.MtlsServerTlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsWithClientIdentitySchema(),
 											},
 										},
 									},
@@ -5806,7 +5806,7 @@ func expandHttpServerSource(src *httpServerSourceModel, id string) datadogV2.Obs
 	if len(src.ValidTokens) > 0 {
 		s.SetValidTokens(expandHttpServerValidTokens(src.ValidTokens))
 	}
-	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
+	s.Tls = observability_pipeline.ExpandMtlsServerTlsWithClientIdentity(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpServerSource: s,
@@ -5835,7 +5835,7 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 		out.ValidTokens = flattenHttpServerValidTokens(*tokens)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTlsWithClientIdentity(src.Tls)
 	}
 
 	return out
@@ -5854,7 +5854,7 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 		s.SetValidTokens(expandSplunkHecValidTokens(src.ValidTokens))
 	}
 	if src.Tls != nil {
-		s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
+		s.Tls = observability_pipeline.ExpandMtlsServerTlsWithClientIdentity(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -5878,7 +5878,7 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 		out.ValidTokens = flattenSplunkHecValidTokens(*tokens)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTlsWithClientIdentity(src.Tls)
 	}
 
 	return out
@@ -6251,7 +6251,7 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	if !src.MaxConnectionDurationSecs.IsNull() {
 		s.SetMaxConnectionDurationSecs(src.MaxConnectionDurationSecs.ValueInt64())
 	}
-	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
+	s.Tls = observability_pipeline.ExpandMtlsServerTlsWithClientIdentity(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSplunkTcpSource: s,
@@ -6270,7 +6270,7 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 		out.MaxConnectionDurationSecs = types.Int64Value(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTlsWithClientIdentity(src.Tls)
 	}
 	return out
 }

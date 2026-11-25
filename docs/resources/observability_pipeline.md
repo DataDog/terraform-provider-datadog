@@ -3424,7 +3424,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `password_key` (String) Name of the environment variable or secret that holds the password.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients, or mutual TLS when `verify_certificate` is `true`. Mutual TLS also enables an optional allowlist of client certificate identities. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
 - `username_key` (String) Name of the environment variable or secret that holds the username.
 - `valid_token` (Block List) A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token))
 
@@ -3438,9 +3438,42 @@ Required:
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `client_identity` (Block List) Restricts which clients may connect, based on the identities in their TLS certificate. Checks run during the TLS handshake, after the client certificate chain is validated against `ca_file`, and never relax that validation. Requires `verify_certificate = true` and `ca_file`. Set exactly one of `allowlist_file` or `allowlist`. When set, connections are closed after a maximum age of 300 seconds so that clients removed from the allowlist are disconnected. Requires Observability Pipelines Worker 2.27 or later. (see [below for nested schema](#nestedblock--config--source--http_server--tls--client_identity))
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+<a id="nestedblock--config--source--http_server--tls--client_identity"></a>
+### Nested Schema for `config.source.http_server.tls.client_identity`
+
+Optional:
+
+- `allowlist` (Block List) An allowlist of client identities. A client is allowed when any rule matches. (see [below for nested schema](#nestedblock--config--source--http_server--tls--client_identity--allowlist))
+- `allowlist_file` (String) Path to an allowlist file, relative to the Worker's data directory. The Worker reloads the file when it changes. Must not contain parent directory (`..`) references. String length must be at least 1.
+- `mode` (String) What happens to a client that no rule allows. `enforce` rejects the TLS handshake. `audit` accepts the client and reports that it would have been rejected. Valid values are `enforce`, `audit`. Defaults to `"enforce"`.
+
+<a id="nestedblock--config--source--http_server--tls--client_identity--allowlist"></a>
+### Nested Schema for `config.source.http_server.tls.client_identity.allowlist`
+
+Optional:
+
+- `rule` (Block List) A named rule, evaluated in order. The first matching rule is the one reported in metrics. It matches when every constraint it defines matches at least one identity in the client's certificate. It must define at least one of `common_names`, `dns_sans`, or `uri_sans`. (see [below for nested schema](#nestedblock--config--source--http_server--tls--client_identity--allowlist--rule))
+
+<a id="nestedblock--config--source--http_server--tls--client_identity--allowlist--rule"></a>
+### Nested Schema for `config.source.http_server.tls.client_identity.allowlist.rule`
+
+Required:
+
+- `name` (String) Unique rule name, reported in metrics. Must contain only letters, digits, `.`, `_`, or `-`.
+
+Optional:
+
+- `common_names` (List of String) Patterns for the certificate subject common name. Matching is case-sensitive, and `*` matches any characters, including dots.
+- `dns_sans` (List of String) Patterns for DNS subject alternative names. Matching is case-insensitive, and `*` matches any characters within one DNS label.
+- `uri_sans` (List of String) Patterns for URI subject alternative names. Matching is case-sensitive. `*` matches any characters within one path segment, and a trailing `/**` matches the path and everything below it. Wildcards are only supported in the path.
+
+
+
 
 
 <a id="nestedblock--config--source--http_server--valid_token"></a>
@@ -3559,7 +3592,7 @@ Optional:
 
 - `grpc_address_key` (String) Environment variable name containing the gRPC server address for receiving OTLP data.
 - `http_address_key` (String) Environment variable name containing the HTTP server address for receiving OTLP data.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients, or mutual TLS when `verify_certificate` is `true`. Mutual TLS also enables an optional allowlist of client certificate identities. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
 
 <a id="nestedblock--config--source--opentelemetry--tls"></a>
 ### Nested Schema for `config.source.opentelemetry.tls`
@@ -3571,9 +3604,42 @@ Required:
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `client_identity` (Block List) Restricts which clients may connect, based on the identities in their TLS certificate. Checks run during the TLS handshake, after the client certificate chain is validated against `ca_file`, and never relax that validation. Requires `verify_certificate = true` and `ca_file`. Set exactly one of `allowlist_file` or `allowlist`. When set, connections are closed after a maximum age of 300 seconds so that clients removed from the allowlist are disconnected. Requires Observability Pipelines Worker 2.27 or later. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls--client_identity))
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+<a id="nestedblock--config--source--opentelemetry--tls--client_identity"></a>
+### Nested Schema for `config.source.opentelemetry.tls.client_identity`
+
+Optional:
+
+- `allowlist` (Block List) An allowlist of client identities. A client is allowed when any rule matches. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls--client_identity--allowlist))
+- `allowlist_file` (String) Path to an allowlist file, relative to the Worker's data directory. The Worker reloads the file when it changes. Must not contain parent directory (`..`) references. String length must be at least 1.
+- `mode` (String) What happens to a client that no rule allows. `enforce` rejects the TLS handshake. `audit` accepts the client and reports that it would have been rejected. Valid values are `enforce`, `audit`. Defaults to `"enforce"`.
+
+<a id="nestedblock--config--source--opentelemetry--tls--client_identity--allowlist"></a>
+### Nested Schema for `config.source.opentelemetry.tls.client_identity.allowlist`
+
+Optional:
+
+- `rule` (Block List) A named rule, evaluated in order. The first matching rule is the one reported in metrics. It matches when every constraint it defines matches at least one identity in the client's certificate. It must define at least one of `common_names`, `dns_sans`, or `uri_sans`. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls--client_identity--allowlist--rule))
+
+<a id="nestedblock--config--source--opentelemetry--tls--client_identity--allowlist--rule"></a>
+### Nested Schema for `config.source.opentelemetry.tls.client_identity.allowlist.rule`
+
+Required:
+
+- `name` (String) Unique rule name, reported in metrics. Must contain only letters, digits, `.`, `_`, or `-`.
+
+Optional:
+
+- `common_names` (List of String) Patterns for the certificate subject common name. Matching is case-sensitive, and `*` matches any characters, including dots.
+- `dns_sans` (List of String) Patterns for DNS subject alternative names. Matching is case-insensitive, and `*` matches any characters within one DNS label.
+- `uri_sans` (List of String) Patterns for URI subject alternative names. Matching is case-sensitive. `*` matches any characters within one path segment, and a trailing `/**` matches the path and everything below it. Wildcards are only supported in the path.
+
+
+
 
 
 
@@ -3712,7 +3778,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
 - `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients, or mutual TLS when `verify_certificate` is `true`. Mutual TLS also enables an optional allowlist of client certificate identities. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 - `valid_token` (Block List) A HEC token accepted for authenticating incoming Splunk HEC requests. (see [below for nested schema](#nestedblock--config--source--splunk_hec--valid_token))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
@@ -3725,9 +3791,42 @@ Required:
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `client_identity` (Block List) Restricts which clients may connect, based on the identities in their TLS certificate. Checks run during the TLS handshake, after the client certificate chain is validated against `ca_file`, and never relax that validation. Requires `verify_certificate = true` and `ca_file`. Set exactly one of `allowlist_file` or `allowlist`. When set, connections are closed after a maximum age of 300 seconds so that clients removed from the allowlist are disconnected. Requires Observability Pipelines Worker 2.27 or later. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls--client_identity))
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+<a id="nestedblock--config--source--splunk_hec--tls--client_identity"></a>
+### Nested Schema for `config.source.splunk_hec.tls.client_identity`
+
+Optional:
+
+- `allowlist` (Block List) An allowlist of client identities. A client is allowed when any rule matches. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls--client_identity--allowlist))
+- `allowlist_file` (String) Path to an allowlist file, relative to the Worker's data directory. The Worker reloads the file when it changes. Must not contain parent directory (`..`) references. String length must be at least 1.
+- `mode` (String) What happens to a client that no rule allows. `enforce` rejects the TLS handshake. `audit` accepts the client and reports that it would have been rejected. Valid values are `enforce`, `audit`. Defaults to `"enforce"`.
+
+<a id="nestedblock--config--source--splunk_hec--tls--client_identity--allowlist"></a>
+### Nested Schema for `config.source.splunk_hec.tls.client_identity.allowlist`
+
+Optional:
+
+- `rule` (Block List) A named rule, evaluated in order. The first matching rule is the one reported in metrics. It matches when every constraint it defines matches at least one identity in the client's certificate. It must define at least one of `common_names`, `dns_sans`, or `uri_sans`. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls--client_identity--allowlist--rule))
+
+<a id="nestedblock--config--source--splunk_hec--tls--client_identity--allowlist--rule"></a>
+### Nested Schema for `config.source.splunk_hec.tls.client_identity.allowlist.rule`
+
+Required:
+
+- `name` (String) Unique rule name, reported in metrics. Must contain only letters, digits, `.`, `_`, or `-`.
+
+Optional:
+
+- `common_names` (List of String) Patterns for the certificate subject common name. Matching is case-sensitive, and `*` matches any characters, including dots.
+- `dns_sans` (List of String) Patterns for DNS subject alternative names. Matching is case-insensitive, and `*` matches any characters within one DNS label.
+- `uri_sans` (List of String) Patterns for URI subject alternative names. Matching is case-sensitive. `*` matches any characters within one path segment, and a trailing `/**` matches the path and everything below it. Wildcards are only supported in the path.
+
+
+
 
 
 <a id="nestedblock--config--source--splunk_hec--valid_token"></a>
@@ -3760,7 +3859,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
 - `max_connection_duration_secs` (Number) Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients, or mutual TLS when `verify_certificate` is `true`. Mutual TLS also enables an optional allowlist of client certificate identities. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>
 ### Nested Schema for `config.source.splunk_tcp.tls`
@@ -3772,9 +3871,42 @@ Required:
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `client_identity` (Block List) Restricts which clients may connect, based on the identities in their TLS certificate. Checks run during the TLS handshake, after the client certificate chain is validated against `ca_file`, and never relax that validation. Requires `verify_certificate = true` and `ca_file`. Set exactly one of `allowlist_file` or `allowlist`. When set, connections are closed after a maximum age of 300 seconds so that clients removed from the allowlist are disconnected. Requires Observability Pipelines Worker 2.27 or later. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls--client_identity))
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+<a id="nestedblock--config--source--splunk_tcp--tls--client_identity"></a>
+### Nested Schema for `config.source.splunk_tcp.tls.client_identity`
+
+Optional:
+
+- `allowlist` (Block List) An allowlist of client identities. A client is allowed when any rule matches. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls--client_identity--allowlist))
+- `allowlist_file` (String) Path to an allowlist file, relative to the Worker's data directory. The Worker reloads the file when it changes. Must not contain parent directory (`..`) references. String length must be at least 1.
+- `mode` (String) What happens to a client that no rule allows. `enforce` rejects the TLS handshake. `audit` accepts the client and reports that it would have been rejected. Valid values are `enforce`, `audit`. Defaults to `"enforce"`.
+
+<a id="nestedblock--config--source--splunk_tcp--tls--client_identity--allowlist"></a>
+### Nested Schema for `config.source.splunk_tcp.tls.client_identity.allowlist`
+
+Optional:
+
+- `rule` (Block List) A named rule, evaluated in order. The first matching rule is the one reported in metrics. It matches when every constraint it defines matches at least one identity in the client's certificate. It must define at least one of `common_names`, `dns_sans`, or `uri_sans`. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls--client_identity--allowlist--rule))
+
+<a id="nestedblock--config--source--splunk_tcp--tls--client_identity--allowlist--rule"></a>
+### Nested Schema for `config.source.splunk_tcp.tls.client_identity.allowlist.rule`
+
+Required:
+
+- `name` (String) Unique rule name, reported in metrics. Must contain only letters, digits, `.`, `_`, or `-`.
+
+Optional:
+
+- `common_names` (List of String) Patterns for the certificate subject common name. Matching is case-sensitive, and `*` matches any characters, including dots.
+- `dns_sans` (List of String) Patterns for DNS subject alternative names. Matching is case-insensitive, and `*` matches any characters within one DNS label.
+- `uri_sans` (List of String) Patterns for URI subject alternative names. Matching is case-sensitive. `*` matches any characters within one path segment, and a trailing `/**` matches the path and everything below it. Wildcards are only supported in the path.
+
+
+
 
 
 
