@@ -20,4 +20,14 @@ resource "datadog_integration_gcp_sts" "foo" {
   cloud_run_revision_filters = ["filter_one", "filter_two"]
   automute                   = true
   is_cspm_enabled            = false
+  project_filter_configs = [
+    {
+      type    = "project_id"
+      filters = ["prod-*", "!prod-legacy"]
+    },
+    {
+      type    = "project_label"
+      filters = ["env:prod*"]
+    },
+  ]
 }

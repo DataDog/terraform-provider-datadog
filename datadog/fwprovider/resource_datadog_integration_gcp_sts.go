@@ -41,6 +41,15 @@ var (
 			},
 		},
 	}
+
+	ProjectFilterConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"type": types.StringType,
+			"filters": types.SetType{
+				ElemType: types.StringType,
+			},
+		},
+	}
 )
 
 type integrationGcpStsResource struct {
@@ -55,6 +64,11 @@ type MetricNamespaceConfigModel struct {
 }
 
 type MonitoredResourceConfigModel struct {
+	Type    types.String `tfsdk:"type"`
+	Filters types.Set    `tfsdk:"filters"`
+}
+
+type ProjectFilterConfigModel struct {
 	Type    types.String `tfsdk:"type"`
 	Filters types.Set    `tfsdk:"filters"`
 }
@@ -77,6 +91,7 @@ type integrationGcpStsModel struct {
 	MonitoredResourceConfigs             types.Set    `tfsdk:"monitored_resource_configs"`
 	IsGlobalLocationEnabled              types.Bool   `tfsdk:"is_global_location_enabled"`
 	RegionFilterConfigs                  types.Set    `tfsdk:"region_filter_configs"`
+	ProjectFilterConfigs                 types.Set    `tfsdk:"project_filter_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -192,6 +207,12 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				Description: "Configurations for GCP location filtering, such as region, multi-region, or zone. Only monitored resources that match the specified regions are imported into Datadog. By default, Datadog collects from all locations.",
 				ElementType: types.StringType,
+			},
+			"project_filter_configs": schema.SetAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Configurations that limit which GCP projects Datadog monitors, out of the projects this service account can access. Each `type` (`project_id` or `project_label`) can have at most one configuration. `filters` support the `*` and `?` wildcards, and a leading `!` makes a filter an exclusion. For `project_label`, each filter is a label in the form `key:value`. A project is monitored only if it passes the filters of every configured type. By default, Datadog monitors every project the service account can access. Omit this field to keep the current filters, or set it to `[]` to remove them.",
+				ElementType: ProjectFilterConfigSpec,
 			},
 		},
 	}
@@ -413,6 +434,15 @@ func (r *integrationGcpStsResource) parseGcpStsResponseBody(ctx context.Context,
 		mrcs = append(mrcs, &mdl)
 	}
 	model.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
+
+	pfcs := make([]*ProjectFilterConfigModel, 0)
+	for _, pfc := range attributes.GetProjectFilterConfigs() {
+		var mdl ProjectFilterConfigModel
+		mdl.Type = types.StringValue(string(pfc.GetType()))
+		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, pfc.GetFilters())
+		pfcs = append(pfcs, &mdl)
+	}
+	model.ProjectFilterConfigs, _ = types.SetValueFrom(ctx, ProjectFilterConfigSpec, pfcs)
 }
 
 func (r *integrationGcpStsResource) buildGcpStsRequestBody(ctx context.Context, model *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
@@ -472,6 +502,18 @@ func (r *integrationGcpStsResource) buildGcpStsRequestBody(ctx context.Context, 
 		})
 	}
 	attributes.SetMonitoredResourceConfigs(mrcs)
+
+	// Omitted keeps the server's filters, which may have been set in the UI or during onboarding.
+	if cfgs := model.ProjectFilterConfigs; !cfgs.IsUnknown() {
+		pfcs := make([]datadogV2.GCPProjectFilterConfig, 0)
+		for _, pfc := range tfCollectionToSlice[*ProjectFilterConfigModel](ctx, diags, cfgs) {
+			pfcs = append(pfcs, datadogV2.GCPProjectFilterConfig{
+				Type:    ptrTo(datadogV2.GCPProjectFilterConfigType(pfc.Type.ValueString())),
+				Filters: tfCollectionToSlice[string](ctx, diags, pfc.Filters),
+			})
+		}
+		attributes.SetProjectFilterConfigs(pfcs)
+	}
 
 	return attributes, diags
 }

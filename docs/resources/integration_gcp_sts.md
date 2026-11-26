@@ -35,6 +35,16 @@ resource "datadog_integration_gcp_sts" "foo" {
   cloud_run_revision_filters = ["filter_one", "filter_two"]
   automute                   = true
   is_cspm_enabled            = false
+  project_filter_configs = [
+    {
+      type    = "project_id"
+      filters = ["prod-*", "!prod-legacy"]
+    },
+    {
+      type    = "project_label"
+      filters = ["env:prod*"]
+    },
+  ]
 }
 ```
 
@@ -59,6 +69,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
 - `metric_namespace_configs` (Set of Object) Configurations for GCP metric namespaces. (see [below for nested schema](#nestedatt--metric_namespace_configs))
 - `monitored_resource_configs` (Set of Object) Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog. (see [below for nested schema](#nestedatt--monitored_resource_configs))
+- `project_filter_configs` (Set of Object) Configurations that limit which GCP projects Datadog monitors, out of the projects this service account can access. Each `type` (`project_id` or `project_label`) can have at most one configuration. `filters` support the `*` and `?` wildcards, and a leading `!` makes a filter an exclusion. For `project_label`, each filter is a label in the form `key:value`. A project is monitored only if it passes the filters of every configured type. By default, Datadog monitors every project the service account can access. Omit this field to keep the current filters, or set it to `[]` to remove them. (see [below for nested schema](#nestedatt--project_filter_configs))
 - `region_filter_configs` (Set of String) Configurations for GCP location filtering, such as region, multi-region, or zone. Only monitored resources that match the specified regions are imported into Datadog. By default, Datadog collects from all locations.
 - `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all project-level resources in your GCP environment.
 
@@ -79,6 +90,15 @@ Optional:
 
 <a id="nestedatt--monitored_resource_configs"></a>
 ### Nested Schema for `monitored_resource_configs`
+
+Optional:
+
+- `filters` (Set of String)
+- `type` (String)
+
+
+<a id="nestedatt--project_filter_configs"></a>
+### Nested Schema for `project_filter_configs`
 
 Optional:
 
