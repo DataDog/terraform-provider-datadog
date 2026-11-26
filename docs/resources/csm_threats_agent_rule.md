@@ -12,11 +12,13 @@ Provides a Datadog Workload Protection (CSM Threats) Agent Rule API resource.
 ## Example Usage
 
 ```terraform
+# Warning: the kill action terminates every process that matches the expression.
+# This example uses a dedicated test file and starts disabled. Review the expression before you enable it.
 resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
   name         = "my_agent_rule"
-  enabled      = true
+  enabled      = false
   description  = "This is a rule"
-  expression   = "open.file.path == \"/etc/shadow\""
+  expression   = "open.file.path == \"/tmp/terraform-kill-test\""
   policy_id    = "jm4-lwh-8cs"
   product_tags = ["compliance_framework:PCI-DSS"]
   actions {
