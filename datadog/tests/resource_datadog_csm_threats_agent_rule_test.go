@@ -166,7 +166,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 
 // Create an agent rule with kill and network_filter actions, then update both actions
 func TestAccCSMThreatsAgentRule_KillAndNetworkFilter(t *testing.T) {
-	// The cassette must be recorded against the frog org with dd-auth before this test runs in replay.
+	skipUnlessReplaying(t, "the public agent rule endpoint rejects kill and network_filter with 400 \"not authorized to add actions\"")
 	skipIfNoCassette(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 

@@ -162,9 +162,3 @@ skipped_tests:
     reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
     added: "2026-10-22"
     author: fpighi
-
-  # CSM Threats agent rule kill/network_filter — rejected by the public API (1 test)
-  - test: TestAccCSMThreatsAgentRule_KillAndNetworkFilter
-    reason: "400 Bad Request 'not authorized to add actions' — the public agent rule create/update endpoints reject kill and network_filter actions"
-    added: "2026-11-26"
-    author: axel.manuel
