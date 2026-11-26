@@ -104,7 +104,7 @@ func TestCSMThreatsAgentRuleValidateActions(t *testing.T) {
 func TestCSMThreatsAgentRuleKillActionRoundTrip(t *testing.T) {
 	in := &KillActionModel{
 		Signal:                    types.StringValue("SIGTERM"),
-		Scope:                     types.StringValue("container"),
+		Scope:                     types.StringValue("cgroup"),
 		DisableContainerDisarmer:  types.BoolValue(true),
 		DisableExecutableDisarmer: types.BoolUnknown(),
 	}
@@ -117,7 +117,7 @@ func TestCSMThreatsAgentRuleKillActionRoundTrip(t *testing.T) {
 	got := flattenKillAction(built)
 	want := KillActionModel{
 		Signal:                    types.StringValue("SIGTERM"),
-		Scope:                     types.StringValue("container"),
+		Scope:                     types.StringValue("cgroup"),
 		DisableContainerDisarmer:  types.BoolValue(true),
 		DisableExecutableDisarmer: types.BoolValue(false),
 	}

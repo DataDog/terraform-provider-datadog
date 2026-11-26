@@ -227,12 +227,12 @@ func TestAccCSMThreatsAgentRule_KillAndNetworkFilter(t *testing.T) {
 				),
 			},
 			{
-				Config: ruleConfig("SIGTERM", "container", "udp port 53", "allow", "process"),
+				Config: ruleConfig("SIGTERM", "cgroup", "udp port 53", "allow", "process"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "actions.#", "2"),
 					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.signal", "SIGTERM"),
-					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.scope", "container"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.scope", "cgroup"),
 					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.filter", "udp port 53"),
 					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.policy", "allow"),
 					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.scope", "process"),

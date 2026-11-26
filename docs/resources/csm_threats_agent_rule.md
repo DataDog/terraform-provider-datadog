@@ -96,7 +96,7 @@ Optional:
 
 - `disable_container_disarmer` (Boolean) Whether to disable the container disarmer, which stops the kill action when too many distinct containers trigger it.
 - `disable_executable_disarmer` (Boolean) Whether to disable the executable disarmer, which stops the kill action when too many distinct executables trigger it.
-- `scope` (String) The scope of the kill action. Valid values are `process`, `container`, `cgroup`.
+- `scope` (String) The scope of the kill action. Valid values are `process`, `cgroup`.
 - `signal` (String) The signal to send to the process, for example SIGKILL or SIGTERM. Required in a kill action.
 
 

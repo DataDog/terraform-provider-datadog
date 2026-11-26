@@ -238,7 +238,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 									Computed:    true,
 									Description: "The scope of the kill action.",
 									Validators: []validator.String{
-										stringvalidator.OneOf("process", "container", "cgroup"),
+										stringvalidator.OneOf("process", "cgroup"),
 									},
 								},
 								"disable_container_disarmer": schema.BoolAttribute{
