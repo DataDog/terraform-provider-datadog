@@ -14,6 +14,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	resourceschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/stretchr/testify/assert"
@@ -245,4 +248,38 @@ func TestCSMThreatsAgentRulesDataSourceReadsKillAndNetworkFilter(t *testing.T) {
 		Policy: types.StringValue("drop"),
 		Scope:  types.StringValue("cgroup"),
 	}, *actions[1].NetworkFilter)
+}
+
+func TestCSMThreatsAgentRuleActionScopeValidators(t *testing.T) {
+	var response resource.SchemaResponse
+	NewCSMThreatsAgentRuleResource().Schema(context.Background(), resource.SchemaRequest{}, &response)
+	require.False(t, response.Diagnostics.HasError(), "%v", response.Diagnostics)
+
+	actionBlocks := response.Schema.Blocks["actions"].(resourceschema.ListNestedBlock).NestedObject.Blocks
+	scopeAttr := func(block string) resourceschema.StringAttribute {
+		return actionBlocks[block].(resourceschema.SingleNestedBlock).Attributes["scope"].(resourceschema.StringAttribute)
+	}
+
+	tests := []struct {
+		block string
+		scope string
+		valid bool
+	}{
+		{block: "kill", scope: "process", valid: true},
+		{block: "kill", scope: "cgroup", valid: true},
+		{block: "kill", scope: "container", valid: false},
+		{block: "network_filter", scope: "process", valid: true},
+		{block: "network_filter", scope: "cgroup", valid: true},
+		{block: "network_filter", scope: "container", valid: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.block+"/"+tt.scope, func(t *testing.T) {
+			attr := scopeAttr(tt.block)
+			require.Len(t, attr.Validators, 1)
+			var validation validator.StringResponse
+			attr.Validators[0].ValidateString(context.Background(), validator.StringRequest{ConfigValue: types.StringValue(tt.scope)}, &validation)
+			require.Equal(t, !tt.valid, validation.Diagnostics.HasError(), "%v", validation.Diagnostics)
+		})
+	}
 }
