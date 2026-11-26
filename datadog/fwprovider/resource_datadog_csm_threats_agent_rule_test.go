@@ -2,13 +2,23 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/stretchr/testify/require"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 )
 
 func TestRetryOnCSMThreatsLocked(t *testing.T) {
@@ -136,4 +146,102 @@ func TestCSMThreatsAgentRuleNetworkFilterActionRoundTrip(t *testing.T) {
 	if *got != *in {
 		t.Fatalf("got %+v, want %+v", *got, *in)
 	}
+}
+
+const csmThreatsKillAndNetworkFilterActionsJSON = `[
+	{"kill":{"signal":"SIGKILL","scope":"process","disable_container_disarmer":true}},
+	{"network_filter":{"filter":"tcp port 4444","policy":"drop","scope":"cgroup"}}
+]`
+
+func csmThreatsAgentRuleTestModel() *csmThreatsAgentRuleModel {
+	return &csmThreatsAgentRuleModel{
+		Id:          types.StringValue("rule-1"),
+		PolicyId:    types.StringValue("policy-1"),
+		Name:        types.StringValue("my_rule"),
+		Description: types.StringNull(),
+		Enabled:     types.BoolValue(true),
+		Expression:  customtypes.TrimSpaceStringValue{StringValue: types.StringValue("exec.file.name == \"nc\"")},
+		ProductTags: types.SetNull(types.StringType),
+		Silent:      types.BoolValue(false),
+		Actions: []ActionModel{
+			{Kill: &KillActionModel{
+				Signal:                    types.StringValue("SIGKILL"),
+				Scope:                     types.StringValue("process"),
+				DisableContainerDisarmer:  types.BoolValue(true),
+				DisableExecutableDisarmer: types.BoolUnknown(),
+			}},
+			{NetworkFilter: &NetworkFilterActionModel{
+				Filter: types.StringValue("tcp port 4444"),
+				Policy: types.StringValue("drop"),
+				Scope:  types.StringValue("cgroup"),
+			}},
+		},
+	}
+}
+
+func TestCSMThreatsAgentRuleCreatePayloadSendsKillAndNetworkFilter(t *testing.T) {
+	r := &csmThreatsAgentRuleResource{}
+	payload, err := r.buildCreateCSMThreatsAgentRulePayload(csmThreatsAgentRuleTestModel())
+	require.NoError(t, err)
+
+	actions, err := json.Marshal(payload.Data.Attributes.Actions)
+	require.NoError(t, err)
+	require.JSONEq(t, csmThreatsKillAndNetworkFilterActionsJSON, string(actions))
+}
+
+func TestCSMThreatsAgentRuleUpdatePayloadSendsKillAndNetworkFilter(t *testing.T) {
+	r := &csmThreatsAgentRuleResource{}
+	payload, err := r.buildUpdateCSMThreatsAgentRulePayload(csmThreatsAgentRuleTestModel())
+	require.NoError(t, err)
+
+	actions, err := json.Marshal(payload.Data.Attributes.Actions)
+	require.NoError(t, err)
+	require.JSONEq(t, csmThreatsKillAndNetworkFilterActionsJSON, string(actions))
+}
+
+func TestCSMThreatsAgentRulesDataSourceReadsKillAndNetworkFilter(t *testing.T) {
+	ctx := context.Background()
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		require.Equal(t, "/api/v2/remote_config/products/cws/agent_rules", request.URL.Path)
+		require.Equal(t, "policy-1", request.URL.Query().Get("policy_id"))
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"data":[{"id":"rule-1","type":"agent_rule","attributes":{"name":"my_rule","description":"","enabled":true,"expression":"exec.file.name == \"nc\"","product_tags":[],"actions":%s}}]}`, csmThreatsKillAndNetworkFilterActionsJSON)
+	}))
+	defer server.Close()
+
+	clientConfig := datadog.NewConfiguration()
+	clientConfig.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	clientConfig.OperationServers = nil
+	clientConfig.HTTPClient = server.Client()
+	d := &csmThreatsAgentRulesDataSource{api: datadogV2.NewCSMThreatsApi(datadog.NewAPIClient(clientConfig)), auth: ctx}
+
+	var schemaResponse datasource.SchemaResponse
+	d.Schema(ctx, datasource.SchemaRequest{}, &schemaResponse)
+	configPlan := tfsdk.Plan{Schema: schemaResponse.Schema}
+	require.False(t, configPlan.Set(ctx, &csmThreatsAgentRulesDataSourceModel{
+		PolicyId:      types.StringValue("policy-1"),
+		Id:            types.StringNull(),
+		AgentRulesIds: types.ListNull(types.StringType),
+	}).HasError())
+
+	response := datasource.ReadResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
+	d.Read(ctx, datasource.ReadRequest{Config: tfsdk.Config{Raw: configPlan.Raw, Schema: schemaResponse.Schema}}, &response)
+	require.False(t, response.Diagnostics.HasError(), "%v", response.Diagnostics)
+
+	var state csmThreatsAgentRulesDataSourceModel
+	require.False(t, response.State.Get(ctx, &state).HasError())
+	require.Len(t, state.AgentRules, 1)
+	actions := state.AgentRules[0].Actions
+	require.Len(t, actions, 2)
+	require.Equal(t, KillActionModel{
+		Signal:                    types.StringValue("SIGKILL"),
+		Scope:                     types.StringValue("process"),
+		DisableContainerDisarmer:  types.BoolValue(true),
+		DisableExecutableDisarmer: types.BoolValue(false),
+	}, *actions[0].Kill)
+	require.Equal(t, NetworkFilterActionModel{
+		Filter: types.StringValue("tcp port 4444"),
+		Policy: types.StringValue("drop"),
+		Scope:  types.StringValue("cgroup"),
+	}, *actions[1].NetworkFilter)
 }
