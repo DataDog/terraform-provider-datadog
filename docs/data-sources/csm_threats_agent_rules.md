@@ -49,6 +49,8 @@ Read-Only:
 Read-Only:
 
 - `hash` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--hash))
+- `kill` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--kill))
+- `network_filter` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--network_filter))
 - `set` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--set))
 
 <a id="nestedobjatt--agent_rules--actions--hash"></a>
@@ -57,6 +59,27 @@ Read-Only:
 Read-Only:
 
 - `field` (String)
+
+
+<a id="nestedobjatt--agent_rules--actions--kill"></a>
+### Nested Schema for `agent_rules.actions.kill`
+
+Read-Only:
+
+- `disable_container_disarmer` (Boolean)
+- `disable_executable_disarmer` (Boolean)
+- `scope` (String)
+- `signal` (String)
+
+
+<a id="nestedobjatt--agent_rules--actions--network_filter"></a>
+### Nested Schema for `agent_rules.actions.network_filter`
+
+Read-Only:
+
+- `filter` (String)
+- `policy` (String)
+- `scope` (String)
 
 
 <a id="nestedobjatt--agent_rules--actions--set"></a>

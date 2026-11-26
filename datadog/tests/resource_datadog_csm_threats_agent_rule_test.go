@@ -164,6 +164,82 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 	})
 }
 
+// Create an agent rule with kill and network_filter actions, then update both actions
+func TestAccCSMThreatsAgentRule_KillAndNetworkFilter(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	agentRuleName := uniqueAgentRuleName(ctx)
+	resourceName := "datadog_csm_threats_agent_rule.agent_rule_test"
+
+	policyName := uniqueAgentRuleName(ctx)
+	policyConfig := fmt.Sprintf(`
+	resource "datadog_csm_threats_policy" "policy_for_test" {
+		name              = "%s"
+		enabled           = true
+		description       = "im a policy"
+		tags              = ["host_name:test_host"]
+	}
+	`, policyName)
+
+	ruleConfig := func(signal, killScope, filter, policy, filterScope string) string {
+		return fmt.Sprintf(`
+		%s
+		resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
+			name              = "%s"
+			policy_id         = datadog_csm_threats_policy.policy_for_test.id
+			enabled           = true
+			description       = "im a rule"
+			expression        = "exec.file.name == \"nc\""
+			product_tags      = ["compliance_framework:PCI-DSS"]
+			actions {
+				kill {
+					signal = "%s"
+					scope  = "%s"
+				}
+			}
+			actions {
+				network_filter {
+					filter = "%s"
+					policy = "%s"
+					scope  = "%s"
+				}
+			}
+		}`, policyConfig, agentRuleName, signal, killScope, filter, policy, filterScope)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: ruleConfig("SIGKILL", "process", "tcp port 4444", "drop", "cgroup"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "actions.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.signal", "SIGKILL"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.scope", "process"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.filter", "tcp port 4444"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.policy", "drop"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.scope", "cgroup"),
+				),
+			},
+			{
+				Config: ruleConfig("SIGTERM", "container", "udp port 53", "allow", "process"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "actions.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.signal", "SIGTERM"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.kill.scope", "container"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.filter", "udp port 53"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.policy", "allow"),
+					resource.TestCheckResourceAttr(resourceName, "actions.1.network_filter.scope", "process"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[resourceName]
