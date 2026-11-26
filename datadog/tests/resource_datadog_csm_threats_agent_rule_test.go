@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -167,7 +168,9 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 // Create an agent rule with kill and network_filter actions, then update both actions
 func TestAccCSMThreatsAgentRule_KillAndNetworkFilter(t *testing.T) {
 	skipUnlessReplaying(t, "the public agent rule endpoint rejects kill and network_filter with 400 \"not authorized to add actions\"")
-	skipIfNoCassette(t)
+	if _, err := os.Stat(fmt.Sprintf("cassettes/%s.yaml", t.Name())); os.IsNotExist(err) {
+		t.Skip("no cassette: recording is blocked until the public API accepts kill and network_filter")
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	agentRuleName := uniqueAgentRuleName(ctx)
