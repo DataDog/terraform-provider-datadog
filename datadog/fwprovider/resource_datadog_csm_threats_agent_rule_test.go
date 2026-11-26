@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
@@ -202,8 +203,8 @@ func TestCSMThreatsAgentRuleUpdatePayloadSendsKillAndNetworkFilter(t *testing.T)
 func TestCSMThreatsAgentRulesDataSourceReadsKillAndNetworkFilter(t *testing.T) {
 	ctx := context.Background()
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
-		require.Equal(t, "/api/v2/remote_config/products/cws/agent_rules", request.URL.Path)
-		require.Equal(t, "policy-1", request.URL.Query().Get("policy_id"))
+		assert.Equal(t, "/api/v2/remote_config/products/cws/agent_rules", request.URL.Path)
+		assert.Equal(t, "policy-1", request.URL.Query().Get("policy_id"))
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"data":[{"id":"rule-1","type":"agent_rule","attributes":{"name":"my_rule","description":"","enabled":true,"expression":"exec.file.name == \"nc\"","product_tags":[],"actions":%s}}]}`, csmThreatsKillAndNetworkFilterActionsJSON)
 	}))
