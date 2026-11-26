@@ -77,8 +77,8 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 Optional:
 
 - `hash` (Block, Optional) Hash action configuration (see [below for nested schema](#nestedblock--actions--hash))
-- `kill` (Block, Optional) Kill action configuration. Kills the process that triggered the rule. (see [below for nested schema](#nestedblock--actions--kill))
-- `network_filter` (Block, Optional) Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter. (see [below for nested schema](#nestedblock--actions--network_filter))
+- `kill` (Block, Optional) Kill action configuration. Kills the process that triggered the rule. The public API currently rejects this action. (see [below for nested schema](#nestedblock--actions--kill))
+- `network_filter` (Block, Optional) Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter. The public API currently rejects this action. (see [below for nested schema](#nestedblock--actions--network_filter))
 - `set` (Block, Optional) Set action configuration (see [below for nested schema](#nestedblock--actions--set))
 
 <a id="nestedblock--actions--hash"></a>

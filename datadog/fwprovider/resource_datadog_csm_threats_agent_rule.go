@@ -227,7 +227,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 							},
 						},
 						"kill": schema.SingleNestedBlock{
-							Description: "Kill action configuration. Kills the process that triggered the rule.",
+							Description: "Kill action configuration. Kills the process that triggered the rule. The public API currently rejects this action.",
 							Attributes: map[string]schema.Attribute{
 								"signal": schema.StringAttribute{
 									Optional:    true,
@@ -254,7 +254,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 							},
 						},
 						"network_filter": schema.SingleNestedBlock{
-							Description: "Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter.",
+							Description: "Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter. The public API currently rejects this action.",
 							Attributes: map[string]schema.Attribute{
 								"filter": schema.StringAttribute{
 									Optional:    true,
