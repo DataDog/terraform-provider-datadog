@@ -166,6 +166,8 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 
 // Create an agent rule with kill and network_filter actions, then update both actions
 func TestAccCSMThreatsAgentRule_KillAndNetworkFilter(t *testing.T) {
+	// The cassette must be recorded against the frog org with dd-auth before this test runs in replay.
+	skipIfNoCassette(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	agentRuleName := uniqueAgentRuleName(ctx)
