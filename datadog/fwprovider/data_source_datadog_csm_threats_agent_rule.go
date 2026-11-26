@@ -198,6 +198,14 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 				action.Hash = hashAction
 			}
 
+			if act.Kill != nil {
+				action.Kill = flattenKillAction(act.Kill)
+			}
+
+			if act.NetworkFilter != nil {
+				action.NetworkFilter = flattenNetworkFilterAction(act.NetworkFilter)
+			}
+
 			actions = append(actions, action)
 		}
 		agentRuleModel.Actions = actions
@@ -266,6 +274,21 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 									"hash": types.ObjectType{
 										AttrTypes: map[string]attr.Type{
 											"field": types.StringType,
+										},
+									},
+									"kill": types.ObjectType{
+										AttrTypes: map[string]attr.Type{
+											"signal":                      types.StringType,
+											"scope":                       types.StringType,
+											"disable_container_disarmer":  types.BoolType,
+											"disable_executable_disarmer": types.BoolType,
+										},
+									},
+									"network_filter": types.ObjectType{
+										AttrTypes: map[string]attr.Type{
+											"filter": types.StringType,
+											"policy": types.StringType,
+											"scope":  types.StringType,
 										},
 									},
 								},
