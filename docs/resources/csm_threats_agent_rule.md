@@ -26,16 +26,12 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
       append = false
       scope  = "process"
     }
-    hash {}
   }
-}
-
-resource "datadog_csm_threats_agent_rule" "my_protection_rule" {
-  name        = "my_protection_rule"
-  enabled     = true
-  description = "Kill netcat and isolate its cgroup from port 4444"
-  expression  = "exec.file.name == \"nc\""
-  policy_id   = "jm4-lwh-8cs"
+  actions {
+    hash {
+      field = "open.file"
+    }
+  }
   actions {
     kill {
       signal = "SIGKILL"
