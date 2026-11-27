@@ -20,6 +20,7 @@ var generatedResources = []func() resource.Resource{
 	NewDatadogIntegrationGithubCostsAccountResource,
 	NewDatadogIntegrationNebiusCloudAccountResource,
 	NewDatadogIntegrationOpenaiCodexAccountResource,
+	NewDatadogIntegrationOpenaiModelInferenceAccountResource,
 	NewDatadogIntegrationSnowflakeAccountResource,
 	NewDatadogIntegrationTwilioAccountResource,
 }
