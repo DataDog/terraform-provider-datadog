@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -56,8 +57,11 @@ type teamRuleActionModel struct {
 }
 
 type slackMessageModel struct {
-	Workspace types.String `tfsdk:"workspace"`
-	Channel   types.String `tfsdk:"channel"`
+	Workspace          types.String `tfsdk:"workspace"`
+	Channel            types.String `tfsdk:"channel"`
+	IncludeDescription types.Bool   `tfsdk:"include_description"`
+	IncludeSource      types.Bool   `tfsdk:"include_source"`
+	MirrorReplies      types.Bool   `tfsdk:"mirror_replies"`
 }
 
 type teamsMessageModel struct {
@@ -306,6 +310,24 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"workspace": schema.StringAttribute{
 												Optional:    true,
 												Description: "Slack workspace ID.",
+											},
+											"include_description": schema.BoolAttribute{
+												Optional:    true,
+												Computed:    true,
+												Default:     booldefault.StaticBool(false),
+												Description: "Whether to include the page description in the Slack message.",
+											},
+											"include_source": schema.BoolAttribute{
+												Optional:    true,
+												Computed:    true,
+												Default:     booldefault.StaticBool(false),
+												Description: "Whether to include the page source in the Slack message.",
+											},
+											"mirror_replies": schema.BoolAttribute{
+												Optional:    true,
+												Computed:    true,
+												Default:     booldefault.StaticBool(false),
+												Description: "Whether to mirror replies in the Slack thread to the page timeline.",
 											},
 										},
 									},
@@ -623,10 +645,7 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		for _, action := range attributes.Actions {
 			if action.SendSlackMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
-					Slack: &slackMessageModel{
-						Workspace: types.StringValue(action.SendSlackMessageAction.Workspace),
-						Channel:   types.StringValue(action.SendSlackMessageAction.Channel),
-					},
+					Slack: slackMessageModelFromAction(action.SendSlackMessageAction),
 				})
 			} else if action.SendTeamsMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
@@ -698,6 +717,30 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 	return state
 }
 
+func slackMessageModelFromAction(action *datadogV2.SendSlackMessageAction) *slackMessageModel {
+	content := action.GetCustomizableContent()
+	return &slackMessageModel{
+		Workspace:          types.StringValue(action.Workspace),
+		Channel:            types.StringValue(action.Channel),
+		IncludeDescription: types.BoolValue(content.GetIncludeDescription()),
+		IncludeSource:      types.BoolValue(content.GetIncludeSource()),
+		MirrorReplies:      types.BoolValue(content.GetMirrorReplies()),
+	}
+}
+
+func setSlackCustomizableContent(action *datadogV2.SendSlackMessageAction, model *slackMessageModel) {
+	if !model.IncludeDescription.ValueBool() && !model.IncludeSource.ValueBool() && !model.MirrorReplies.ValueBool() {
+		return
+	}
+	content := datadogV2.NewSendSlackMessageActionCustomizableContent()
+	content.SetIncludeDescription(model.IncludeDescription.ValueBool())
+	content.SetIncludeSource(model.IncludeSource.ValueBool())
+	content.SetMirrorReplies(model.MirrorReplies.ValueBool())
+	// thread_timeline is not exposed in the UI, which always writes it as false.
+	content.SetThreadTimeline(false)
+	action.SetCustomizableContent(*content)
+}
+
 func (r *onCallTeamRoutingRulesResource) emptyTeamRoutingRules(id string) datadogV2.TeamRoutingRulesRequest {
 	req := datadogV2.NewTeamRoutingRulesRequestWithDefaults()
 
@@ -758,6 +801,7 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
 				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
 				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+				setSlackCustomizableContent(action.SendSlackMessageAction, plannedAction.Slack)
 			}
 			if plannedAction.Workflow != nil {
 				action.TriggerWorkflowAutomationAction = datadogV2.NewTriggerWorkflowAutomationActionWithDefaults()
