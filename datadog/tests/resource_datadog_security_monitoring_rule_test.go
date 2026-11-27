@@ -2818,6 +2818,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		action {
 			type = "block_user"
 		}
+        action {
+			type = "user_behavior"
+			options {
+				user_behavior_name = "behavior_name"
+			}
+		}
 	}
 
 	options {
@@ -2872,6 +2878,10 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider *fw
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.type", "user_behavior"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.options.0.user_behavior_name", "behavior_name"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.detection_method", "threshold"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.evaluation_window", "300"),
@@ -2919,6 +2929,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		}
 		action {
 			type = "block_user"
+		}
+		action {
+			type = "user_behavior"
+			options {
+				user_behavior_name = "behavior_name"
+			}
 		}
 	}
 
@@ -2973,6 +2989,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider *fwp
 			tfSecurityRuleName, "case.0.action.0.options.0.duration", "7200"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.type", "user_behavior"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.options.0.user_behavior_name", "behavior_name"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.detection_method", "threshold"),
 		resource.TestCheckResourceAttr(

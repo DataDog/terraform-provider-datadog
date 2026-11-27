@@ -55,6 +55,8 @@ type defaultRuleCaseModel struct {
 	Status        types.String `tfsdk:"status"`
 	CustomStatus  types.String `tfsdk:"custom_status"`
 	Notifications types.List   `tfsdk:"notifications"`
+
+	Actions []ruleCaseActionModel `tfsdk:"action"`
 }
 
 type defaultRuleQueryModel struct {
@@ -161,6 +163,9 @@ func securityMonitoringDefaultRuleSchema(version int64) schema.Schema {
 							ElementType: types.StringType,
 							Description: "Notification targets for each rule case.",
 						},
+					},
+					Blocks: map[string]schema.Block{
+						"action": ruleCaseActionBlock(),
 					},
 				},
 			},
@@ -555,6 +560,14 @@ func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.
 			}
 		}
 
+		// Actions are only tracked when the prior case declared them, so default rules
+		// shipping with API-side actions do not produce a diff for users not managing them.
+		if ref, hasRef := refByStatus[string(apiCase.GetStatus())]; hasRef && len(ref.Actions) > 0 {
+			if actions, ok := apiCase.GetActionsOk(); ok && len(*actions) > 0 {
+				stateCase.Actions = extractRuleCaseActions(*actions)
+			}
+		}
+
 		stateCases[idx] = stateCase
 	}
 	return stateCases, diags
@@ -794,6 +807,14 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 				shouldUpdate = true
 			}
 
+			// Actions are only managed when declared; omitting the block leaves the
+			// API-side actions untouched.
+			if len(planCase.Actions) > 0 && !defaultRuleActionsEqual(planCase.Actions, ruleCase.GetActions()) {
+				modifiedCases++
+				shouldUpdate = true
+				updatedRuleCase[i].Actions = buildPayloadCaseActions(planCase.Actions)
+			}
+
 		}
 		// Un-declared cases are left identity (no notification changes sent to API) —
 		// the block is the "I manage this case" toggle. Within a declared case, an
@@ -1019,6 +1040,40 @@ func compareOptions(currentOptions, payloadOptions *datadogV2.SecurityMonitoring
 		return false
 	}
 	return currentOptions.GetDecreaseCriticalityBasedOnEnv() == payloadOptions.GetDecreaseCriticalityBasedOnEnv()
+}
+
+// defaultRuleActionsEqual reports whether the planned actions match the API actions.
+// Order is significant. The comparison is strict and mirrors what Read stores in
+// state: an option omitted from the plan must also be absent from the API, otherwise
+// Read would surface it and produce a diff that Update never resolves.
+func defaultRuleActionsEqual(planActions []ruleCaseActionModel, apiActions []datadogV2.SecurityMonitoringRuleCaseAction) bool {
+	if len(planActions) != len(apiActions) {
+		return false
+	}
+	for i, planAction := range planActions {
+		if planAction.Type.ValueString() != string(apiActions[i].GetType()) {
+			return false
+		}
+		planOptions := ruleCaseActionOptionsModel{
+			Duration:         types.Int64Null(),
+			UserBehaviorName: types.StringNull(),
+		}
+		if len(planAction.Options) > 0 {
+			planOptions = planAction.Options[0]
+		}
+		apiOptions := apiActions[i].GetOptions()
+		apiDuration, hasAPIDuration := apiOptions.GetDurationOk()
+		if planOptions.Duration.IsNull() == hasAPIDuration ||
+			(hasAPIDuration && planOptions.Duration.ValueInt64() != *apiDuration) {
+			return false
+		}
+		apiUserBehaviorName, hasAPIUserBehaviorName := apiOptions.GetUserBehaviorNameOk()
+		if planOptions.UserBehaviorName.IsNull() == hasAPIUserBehaviorName ||
+			(hasAPIUserBehaviorName && planOptions.UserBehaviorName.ValueString() != *apiUserBehaviorName) {
+			return false
+		}
+	}
+	return true
 }
 
 func findRuleCaseForStatus(planCases []defaultRuleCaseModel, status datadogV2.SecurityMonitoringRuleSeverity) (*defaultRuleCaseModel, bool) {
