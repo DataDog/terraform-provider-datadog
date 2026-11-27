@@ -192,6 +192,7 @@ var Resources = []func() resource.Resource{
 	NewStatusPageDegradationTemplateResource,
 	NewStatusPageEmailAccessPolicyResource,
 	NewStatusPageMaintenanceTemplateResource,
+	NewFlakyTestsManagementPoliciesResource,
 }
 
 var Datasources = []func() datasource.DataSource{
