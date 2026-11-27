@@ -645,13 +645,7 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		for _, action := range attributes.Actions {
 			if action.SendSlackMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
-					Slack: &slackMessageModel{
-						Workspace:          types.StringValue(action.SendSlackMessageAction.Workspace),
-						Channel:            types.StringValue(action.SendSlackMessageAction.Channel),
-						IncludeDescription: slackCustomizableContentFlag(action.SendSlackMessageAction, "include_description"),
-						IncludeSource:      slackCustomizableContentFlag(action.SendSlackMessageAction, "include_source"),
-						MirrorReplies:      slackCustomizableContentFlag(action.SendSlackMessageAction, "mirror_replies"),
-					},
+					Slack: slackMessageModelFromAction(action.SendSlackMessageAction),
 				})
 			} else if action.SendTeamsMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
@@ -723,30 +717,28 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 	return state
 }
 
-// The Go client does not model `customizable_content` yet, so it travels through AdditionalProperties.
-func slackCustomizableContentFlag(action *datadogV2.SendSlackMessageAction, key string) types.Bool {
-	content, ok := action.AdditionalProperties["customizable_content"].(map[string]interface{})
-	if !ok {
-		return types.BoolValue(false)
+func slackMessageModelFromAction(action *datadogV2.SendSlackMessageAction) *slackMessageModel {
+	content := action.GetCustomizableContent()
+	return &slackMessageModel{
+		Workspace:          types.StringValue(action.Workspace),
+		Channel:            types.StringValue(action.Channel),
+		IncludeDescription: types.BoolValue(content.GetIncludeDescription()),
+		IncludeSource:      types.BoolValue(content.GetIncludeSource()),
+		MirrorReplies:      types.BoolValue(content.GetMirrorReplies()),
 	}
-	value, _ := content[key].(bool)
-	return types.BoolValue(value)
 }
 
 func setSlackCustomizableContent(action *datadogV2.SendSlackMessageAction, model *slackMessageModel) {
 	if !model.IncludeDescription.ValueBool() && !model.IncludeSource.ValueBool() && !model.MirrorReplies.ValueBool() {
 		return
 	}
-	if action.AdditionalProperties == nil {
-		action.AdditionalProperties = map[string]interface{}{}
-	}
+	content := datadogV2.NewSendSlackMessageActionCustomizableContent()
+	content.SetIncludeDescription(model.IncludeDescription.ValueBool())
+	content.SetIncludeSource(model.IncludeSource.ValueBool())
+	content.SetMirrorReplies(model.MirrorReplies.ValueBool())
 	// thread_timeline is not exposed in the UI, which always writes it as false.
-	action.AdditionalProperties["customizable_content"] = map[string]interface{}{
-		"include_description": model.IncludeDescription.ValueBool(),
-		"include_source":      model.IncludeSource.ValueBool(),
-		"mirror_replies":      model.MirrorReplies.ValueBool(),
-		"thread_timeline":     false,
-	}
+	content.SetThreadTimeline(false)
+	action.SetCustomizableContent(*content)
 }
 
 func (r *onCallTeamRoutingRulesResource) emptyTeamRoutingRules(id string) datadogV2.TeamRoutingRulesRequest {

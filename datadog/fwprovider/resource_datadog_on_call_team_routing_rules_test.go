@@ -74,10 +74,12 @@ func TestOnCallTeamRoutingRulesSlackCustomizableContentState(t *testing.T) {
 			var action datadogV2.SendSlackMessageAction
 			require.NoError(t, json.Unmarshal([]byte(tc.payload), &action))
 			require.Nil(t, action.UnparsedObject)
+			require.Empty(t, action.AdditionalProperties)
 
-			assert.Equal(t, tc.description, slackCustomizableContentFlag(&action, "include_description").ValueBool())
-			assert.Equal(t, tc.source, slackCustomizableContentFlag(&action, "include_source").ValueBool())
-			assert.Equal(t, tc.mirrorRep, slackCustomizableContentFlag(&action, "mirror_replies").ValueBool())
+			model := slackMessageModelFromAction(&action)
+			assert.Equal(t, tc.description, model.IncludeDescription.ValueBool())
+			assert.Equal(t, tc.source, model.IncludeSource.ValueBool())
+			assert.Equal(t, tc.mirrorRep, model.MirrorReplies.ValueBool())
 		})
 	}
 }
