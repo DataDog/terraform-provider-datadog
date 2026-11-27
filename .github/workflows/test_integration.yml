@@ -3,11 +3,10 @@ name: Run Integration Tests
 permissions:
   contents: read
 
-# pull_request_target so that PRs from forks can mint Datadog credentials via
-# OIDC. The credentialed job checks out the PR head and, for forks, runs in the
-# forks-prs environment.
+# Fork pull_request runs get no OIDC token, so the full suite runs only for
+# same-repo PRs. Fork PRs get affected tests from PR Test Selection -> PR Integration Tests.
 on: # yamllint disable-line rule:truthy
-  pull_request_target:
+  pull_request:
     types:
       - labeled
       - unlabeled
@@ -28,24 +27,19 @@ env:
 jobs:
   integration_tests:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request_target' && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
-    # Fork PRs run untrusted code with live (short-lived, test-org) credentials,
-    # so they run in the forks-prs environment. The scheduled run on master uses
-    # no environment gate.
-    environment: ${{ github.event.pull_request.head.repo.fork && 'forks-prs' || '' }}
+    # full_name and not head.repo.fork: head.repo is null for a deleted fork,
+    # and the expression null == false evaluates to true.
+    if: >-
+      (github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'ci/integrations')
+      && github.event.pull_request.head.repo.full_name == github.repository)
+      || github.event_name == 'schedule'
     permissions:
       contents: read
       id-token: write # Required to mint Datadog credentials via dd-sts
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          # PR head for pull_request_target; the triggering ref for the schedule.
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          # checkout v7 refuses fork-head checkouts under pull_request_target by
-          # default. Running the PR's code is intended here; fork runs are gated
-          # on the forks-prs environment declared above.
-          allow-unsafe-pr-checkout: true
       - name: Mint Datadog credentials
         id: dd-sts
         uses: DataDog/dd-sts-action@7d2d231c02fd54a3da912e582ff87cb995d1fd30 # v1.0.4
@@ -56,7 +50,6 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      # No GHA cache: under pull_request_target a shared cache lets PR code replace the binary that later trusted runs restore; the download costs seconds.
       - name: Install terraform
         run: |
           set -euo pipefail
