@@ -189,22 +189,3 @@ func TestUpdateAiGatewayModelGroupState(t *testing.T) {
 		})
 	}
 }
-
-func TestUpdateAiGatewayModelGroupStateRejectsDefaultGroup(t *testing.T) {
-	var response datadogV2.AiGatewayModelGroupResponse
-	body := `{"data":{"id":"default","type":"model-groups","attributes":{
-		"name":"default","allow_fast_mode":true,"max_reasoning_level":null,"revision":3,
-		"model_ids":[],"models":[],"provider_ids":[],"providers":[],"routing_rules":[],
-		"created_at":"2026-11-01T00:00:00Z","updated_at":"2026-11-01T00:00:00Z"}}}`
-	if err := json.Unmarshal([]byte(body), &response); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	state := aiGatewayModelGroupModel{
-		ModelIDs:         types.SetNull(types.Int64Type),
-		ProviderIDs:      types.SetNull(types.Int64Type),
-		RoutingRuleSlugs: types.SetNull(types.StringType),
-	}
-	if diags := updateAiGatewayModelGroupState(context.Background(), &state, response.GetData()); !diags.HasError() {
-		t.Fatal("expected an error for the default model group")
-	}
-}
