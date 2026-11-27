@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 // newSweepAPIClient creates an authenticated API client for sweep operations.
@@ -29,6 +31,9 @@ func newSweepAPIClient(t *testing.T) (context.Context, *common.APIClient) {
 	}
 
 	cfg := common.NewConfiguration()
+	if err := utils.ApplyHTTPRetryConfigFromEnv(false, cfg); err != nil {
+		t.Fatalf("sweep: invalid HTTP retry config: %v", err)
+	}
 	client := common.NewAPIClient(cfg)
 	return ctx, client
 }

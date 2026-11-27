@@ -34,6 +34,10 @@ report together.
 - [ ] Descriptions came through. Empty descriptions mean the OpenAPI properties lack
       them; fix the spec rather than the generated file.
 - [ ] Enums are validated, and the member list matches the spec.
+- [ ] Create-only inputs have typed replacement modifiers; mutable siblings and
+      computed-only fields do not. Check the
+      [lifecycle rules](../reference/scope.md#schema-shapes), including secret
+      plaintext/version triggers.
 - [ ] Secrets: anything credential-shaped is write-only or sensitive, and you know
       which of those keeps the value out of state. See
       [reference/scope.md](../reference/scope.md).
@@ -43,7 +47,13 @@ report together.
 - [ ] The SDK method called is the one the annotation named.
 - [ ] Path and query parameters are bound to the right schema fields.
 - [ ] For a resource, the update body sources `data.id` from state.
-- [ ] Omitted API fields map to Terraform **null**, not to empty strings or zeros.
+- [ ] Create-only and read-only fields are absent from the Update request.
+      Configured update-only fields follow the documented initialization rules.
+- [ ] For caller-assigned identity, create input, canonical API ID routing,
+      configured-name preservation, and import refresh follow the
+      [identity contract](../reference/scope.md#caller-assigned-resource-identity).
+- [ ] Omitted API fields preserve planned/existing resource values where intended;
+      fields with no value remain null rather than becoming empty strings or zeros.
 - [ ] A `oneOf` mapper rejects ambiguous or unmatched unions rather than producing
       partial state.
 
@@ -59,7 +69,15 @@ report together.
 
 - [ ] The test would fail if the state mapping broke. Asserting only that `id` is set
       does not meet that bar.
-- [ ] For a resource: create, update, and destroy are all exercised.
+- [ ] For a resource: create, update, and destroy are all exercised; assertions
+      inspect the update body for the actual HTTP method, including PUT.
+- [ ] Create-only changes replace the resource while mutable changes update in
+      place. Cover update-only initialization, omitted inputs, and retention of
+      the created API ID when initialization fails, where applicable.
+- [ ] For caller-assigned identity: cover name replacement, canonical-ID routing,
+      import, first-apply name adoption when updates are supported, and a no-change
+      plan after refresh. Without an update API, verify import uses the canonical
+      name and name changes require replacement.
 - [ ] The cassette was read, not just produced. See [cassettes.md](cassettes.md).
 - [ ] `RECORD=none` passed against the live API.
 

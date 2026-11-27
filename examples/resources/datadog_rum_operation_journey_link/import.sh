@@ -1,0 +1,1 @@
+terraform import datadog_rum_operation_journey_link.checkout "<operation_id>:<journey_id>"

@@ -58,7 +58,7 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping
     method: POST
   response:
     proto: HTTP/2.0
@@ -96,7 +96,7 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping
     method: POST
   response:
     proto: HTTP/2.0
@@ -129,7 +129,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: GET
   response:
     proto: HTTP/2.0
@@ -162,7 +162,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: GET
   response:
     proto: HTTP/2.0
@@ -228,7 +228,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: GET
   response:
     proto: HTTP/2.0
@@ -261,7 +261,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: GET
   response:
     proto: HTTP/2.0
@@ -294,7 +294,7 @@ interactions:
     headers:
       Accept:
       - "*/*"
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: DELETE
   response:
     proto: HTTP/2.0
@@ -356,7 +356,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    url: https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
     method: GET
   response:
     proto: HTTP/2.0

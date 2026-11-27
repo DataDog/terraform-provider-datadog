@@ -19,39 +19,22 @@ created elsewhere, or by a resource.
 ## Singular or plural
 
 ```yaml
-# one object, looked up by ID
-artifact_kind: data_source
-artifact_name: datastore
-cardinality: singular          # the default
-group:
-  read: GetDatastore
-
-# one object, resolved by filter
-group:
-  search: ListDatastores
-
-# either lookup style
-group:
-  read:   GetDatastore
-  search: ListDatastores
-
-# a collection
-artifact_name: datastores
-cardinality: plural
-group:
-  read: ListDatastores
+tags:
+  - name: Actions Datastores
+    x-datadog-tf-generator:
+      datastore:
+        datasource_singular:
+          group:
+            read: GetDatastore
+            search: ListDatastores
+        datasource_list:
+          group:
+            read: ListDatastores
 ```
 
-Note the asymmetry, because it catches people: for a **plural** data source the list
-operation goes in `group.read`, not `group.search`. `search` means "resolve exactly
-one record from a list endpoint" and is only meaningful for a singular data source.
-
-| Shape | Annotate | Group |
-|---|---|---|
-| One object by known ID | the by-ID operation | `read` |
-| One object by filter | the list operation | `search` |
-| Either | the by-ID operation | `read` + `search` |
-| A collection | the list operation | `read`, `cardinality: plural` |
+A singular data source can declare read, search, or both. For a list data source,
+put the list endpoint in `group.read`. The family name supplies the singular
+artifact name; the list block pluralizes it unless `artifact_name` overrides it.
 
 ## A singular search must match exactly one
 

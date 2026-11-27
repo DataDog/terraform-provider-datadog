@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 571
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"spike protection processor test"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 907
+        uncompressed: false
+        body: |
+            {"data":{"id":"e3c0b88c-d782-11f1-9db6-da7ad0900002","type":"pipelines","attributes":{"name":"spike protection processor test","config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"processors":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 486.293625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e3c0b88c-d782-11f1-9db6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 907
+        uncompressed: false
+        body: |
+            {"data":{"id":"e3c0b88c-d782-11f1-9db6-da7ad0900002","type":"pipelines","attributes":{"name":"spike protection processor test","config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"processors":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 243.258375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e3c0b88c-d782-11f1-9db6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 907
+        uncompressed: false
+        body: |
+            {"data":{"id":"e3c0b88c-d782-11f1-9db6-da7ad0900002","type":"pipelines","attributes":{"name":"spike protection processor test","config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"processors":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"ignore","enabled":true,"id":"spike-protection-processor","include":"*","name":"minimal rule","spike_action":"drop","type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 214.791083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 994
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"default_bucket","display_name":"Spike protection","enabled":true,"id":"spike-protection-processor","include":"service:my-service","minimal_threshold":1073741824,"minimal_threshold_overrides":[{"fields":[{"name":"service","value":"checkout"},{"name":"env","value":"prod"}],"minimal_threshold":{"bytes":2147483648,"type":"threshold"}},{"fields":[{"name":"service","value":"audit"}],"minimal_threshold":{"type":"always_keep"}}],"name":"full rule","partition_fields":["service","env"],"spike_action":"no_action","spike_threshold":3.5,"type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"spike protection processor test"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e3c0b88c-d782-11f1-9db6-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"e3c0b88c-d782-11f1-9db6-da7ad0900002","type":"pipelines","attributes":{"name":"spike protection processor test","config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"default_bucket","display_name":"Spike protection","enabled":true,"id":"spike-protection-processor","include":"service:my-service","minimal_threshold":1073741824,"minimal_threshold_overrides":[{"fields":[{"name":"service","value":"checkout"},{"name":"env","value":"prod"}],"minimal_threshold":{"bytes":2147483648,"type":"threshold"}},{"fields":[{"name":"service","value":"audit"}],"minimal_threshold":{"type":"always_keep"}}],"name":"full rule","partition_fields":["service","env"],"spike_action":"no_action","spike_threshold":3.5,"type":"spike_protection"}]}],"processors":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"default_bucket","display_name":"Spike protection","enabled":true,"id":"spike-protection-processor","include":"service:my-service","minimal_threshold":1073741824,"minimal_threshold_overrides":[{"fields":[{"name":"service","value":"checkout"},{"name":"env","value":"prod"}],"minimal_threshold":{"bytes":2147483648,"type":"threshold"}},{"fields":[{"name":"service","value":"audit"}],"minimal_threshold":{"type":"always_keep"}}],"name":"full rule","partition_fields":["service","env"],"spike_action":"no_action","spike_threshold":3.5,"type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 465.749625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e3c0b88c-d782-11f1-9db6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"e3c0b88c-d782-11f1-9db6-da7ad0900002","type":"pipelines","attributes":{"name":"spike protection processor test","config":{"destinations":[{"id":"destination-1","inputs":["spike-protection-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"default_bucket","display_name":"Spike protection","enabled":true,"id":"spike-protection-processor","include":"service:my-service","minimal_threshold":1073741824,"minimal_threshold_overrides":[{"fields":[{"name":"service","value":"checkout"},{"name":"env","value":"prod"}],"minimal_threshold":{"bytes":2147483648,"type":"threshold"}},{"fields":[{"name":"service","value":"audit"}],"minimal_threshold":{"type":"always_keep"}}],"name":"full rule","partition_fields":["service","env"],"spike_action":"no_action","spike_threshold":3.5,"type":"spike_protection"}]}],"processors":[{"enabled":true,"id":"spike-protection-group-1","include":"*","inputs":["source-1"],"processors":[{"action_when_missing_partitions":"default_bucket","display_name":"Spike protection","enabled":true,"id":"spike-protection-processor","include":"service:my-service","minimal_threshold":1073741824,"minimal_threshold_overrides":[{"fields":[{"name":"service","value":"checkout"},{"name":"env","value":"prod"}],"minimal_threshold":{"bytes":2147483648,"type":"threshold"}},{"fields":[{"name":"service","value":"audit"}],"minimal_threshold":{"type":"always_keep"}}],"name":"full rule","partition_fields":["service","env"],"spike_action":"no_action","spike_threshold":3.5,"type":"spike_protection"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 333.785542ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e3c0b88c-d782-11f1-9db6-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 533.042791ms

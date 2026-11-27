@@ -6,9 +6,15 @@ paths:
   /widgets:
     post:
       operationId: CreateWidget
-      x-datadog-tf-generator:
-        artifact_kind: widget
-        artifact_name: widget
       responses:
         '201':
           description: created
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    widget:
+      datasource_singular:
+        artifact_name: widget
+        artifact_kind: widget
+        group:
+          read: CreateWidget

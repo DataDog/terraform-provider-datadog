@@ -61,6 +61,12 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 		s.Deprecated = f.Deprecated
 	}
 
+	if f.IgnoreChanges {
+		s.DiffSuppressFunc = func(_, _, _ string, _ *schema.ResourceData) bool {
+			return true
+		}
+	}
+
 	if f.Default != nil {
 		switch v := f.Default.(type) {
 		case string:
@@ -84,6 +90,10 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 			s.ValidateDiagFunc = validation.ToDiagFunc(
 				validation.StringInSlice(f.ValidValues, false),
 			)
+		} else if f.NotEmpty {
+			// ValidateFunc (not ValidateDiagFunc) so the diagnostic names the full
+			// flatmap path, matching the legacy datadog_dashboard error text.
+			s.ValidateFunc = validation.StringIsNotEmpty
 		}
 
 	case TypeBool:

@@ -104,6 +104,54 @@ resource "datadog_team_connection" "foo" {
 	})
 }
 
+func TestAccTeamConnectionServiceNow(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTeamConnectionDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: fmt.Sprintf(`
+resource "datadog_team" "conn_team" {
+	description = "Team for connection test"
+	handle      = "%s"
+	name        = "%s"
+}
+
+resource "datadog_team_connection" "foo" {
+	team {
+		id   = datadog_team.conn_team.id
+		type = "team"
+	}
+	connected_team {
+		id   = "tf-test-instance/%s"
+		type = "servicenow_team"
+	}
+	source = "servicenow"
+}
+`, uniq, uniq, uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTeamConnectionExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrSet("datadog_team_connection.foo", "id"),
+					resource.TestCheckResourceAttrPair("datadog_team_connection.foo", "team.id", "datadog_team.conn_team", "id"),
+					resource.TestCheckResourceAttr("datadog_team_connection.foo", "team.type", "team"),
+					resource.TestCheckResourceAttr("datadog_team_connection.foo", "connected_team.id", fmt.Sprintf("tf-test-instance/%s", uniq)),
+					resource.TestCheckResourceAttr("datadog_team_connection.foo", "connected_team.type", "servicenow_team"),
+					resource.TestCheckResourceAttr("datadog_team_connection.foo", "source", "servicenow"),
+				),
+			},
+			{
+				ResourceName:      "datadog_team_connection.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogTeamConnectionExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		r, ok := s.RootModule().Resources["datadog_team_connection.foo"]

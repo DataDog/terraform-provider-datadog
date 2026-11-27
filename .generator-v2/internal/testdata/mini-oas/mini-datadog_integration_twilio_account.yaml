@@ -46,7 +46,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Twilio Integration
   description: 'Manage your Datadog Twilio integration accounts and account resources directly
 
@@ -258,15 +257,6 @@ paths:
       summary: Get a Twilio integration account
       tags:
       - Twilio Integration
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_twilio_account
-        tf_description: Provides a Datadog Twilio integration account resource.
-        group:
-          create: CreateTwilioIntegrationAccount
-          read: GetTwilioIntegrationAccount
-          update: UpdateTwilioIntegrationAccount
-          delete: DeleteTwilioIntegrationAccount
     patch:
       x-permission:
         operator: OR
@@ -907,3 +897,25 @@ components:
       name: DD-APPLICATION-KEY
       type: apiKey
       x-env-name: DD_APP_KEY
+tags:
+- name: Twilio Integration
+  description: 'Manage your Datadog Twilio integration accounts and account resources directly
+
+    through the Datadog API. See the
+
+    [Twilio integration page](https://docs.datadoghq.com/integrations/twilio/) for
+
+    more information.'
+  externalDocs:
+    description: Twilio integration.
+    url: https://docs.datadoghq.com/integrations/twilio/
+  x-datadog-tf-generator:
+    integration_twilio_account:
+      resource:
+        artifact_name: integration_twilio_account
+        tf_description: Provides a Datadog Twilio integration account resource.
+        group:
+          create: CreateTwilioIntegrationAccount
+          read: GetTwilioIntegrationAccount
+          update: UpdateTwilioIntegrationAccount
+          delete: DeleteTwilioIntegrationAccount

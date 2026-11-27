@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -15,9 +16,16 @@ import (
 )
 
 func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
-	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	// Tag policies are org-wide and a tag key accepts one policy only. A unique
+	// key per run prevents conflicts with policies left by interrupted runs.
+	// testAccProviders creates a second clock that rewrites the .freeze file,
+	// which makes sub-second clock values differ in replay. This helper uses one
+	// clock, so a nanosecond suffix is unique per process and stable in replay.
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, t.Name())
 	accProvider := testAccProvider(t, accProviders)
+	suffix := strconv.FormatInt(clockFromContext(ctx).Now().UnixNano(), 10)
+	tagKey := "tagkey" + suffix
+	tagKeyUpdated := "tagkeyupd" + suffix
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -25,12 +33,12 @@ func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKey"),
-				Check:  createTestCheckFunc(accProvider, "tagKey"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", tagKey),
+				Check:  createTestCheckFunc(accProvider, tagKey),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKeyUpdated"),
-				Check:  createTestCheckFunc(accProvider, "tagKeyUpdated"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", tagKeyUpdated),
+				Check:  createTestCheckFunc(accProvider, tagKeyUpdated),
 			},
 		},
 	})

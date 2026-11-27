@@ -128,6 +128,10 @@ type FieldSpec struct {
 	// Deprecated: non-empty string = deprecation message
 	Deprecated string
 
+	// NotEmpty: reject the empty string for a required TypeString field.
+	// Generates validation.StringIsNotEmpty automatically.
+	NotEmpty bool
+
 	// ValidValues: valid string values for enum fields.
 	// Generates validators.ValidateEnumValue automatically.
 	// Use instead of SDK-based enum validators.
@@ -148,6 +152,18 @@ type FieldSpec struct {
 	// BuildEngineJSON skips it. Use for fields like dashboard_lists
 	// that are managed as side effects, not serialized to the API.
 	SchemaOnly bool
+
+	// IgnoreChanges: suppress all diffs on this field. Use with SchemaOnly for
+	// legacy no-op fields that are accepted in config but never sent to or
+	// returned by the API, so refreshed state never matches the config.
+	IgnoreChanges bool
+
+	// NullOnClear: if true, emit explicit JSON null when the block value in the
+	// HCL data map is nil (cleared). This is distinct from OmitEmpty — OmitEmpty
+	// skips the field entirely; NullOnClear emits {"field": null} so that an API
+	// that distinguishes absent from null receives the explicit clear signal.
+	// Only meaningful on TypeBlock fields.
+	NullOnClear bool
 
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
@@ -341,6 +357,12 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 		}
 		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
 		if jsonVal == nil {
+			// The API omits optional fields that were never set. SDKv2 would
+			// read them back as false, but the UI renders a missing field
+			// using its default (e.g. has_padding = true), so match that.
+			if b, ok := f.Default.(bool); ok && b && f.Type == TypeBool {
+				result[f.HCLKey] = true
+			}
 			continue
 		}
 
@@ -361,6 +383,15 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int64:
 				result[f.HCLKey] = int(v)
+			case json.Number:
+				// Some decoders (e.g. the datadog client's UseNumber on
+				// additionalProperties) hand us json.Number; without this the
+				// value silently flattens to its zero value.
+				if n, err := v.Int64(); err == nil {
+					result[f.HCLKey] = int(n)
+				} else if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = int(fl)
+				}
 			}
 
 		case TypeFloat:
@@ -369,6 +400,10 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int:
 				result[f.HCLKey] = float64(v)
+			case json.Number:
+				if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = fl
+				}
 			}
 
 		case TypeJSON:
@@ -1667,7 +1702,9 @@ func getBoolFromMap(data map[string]interface{}, key string) bool {
 }
 
 // getIntFromMap returns an int value from a SDKv2 data map.
-// SDKv2 stores TypeInt as int.
+// SDKv2 stores TypeInt as int; API JSON decodes numbers as float64, and some
+// decoders (json.Number) or sources may hand us other numeric representations,
+// so accept the full range defensively.
 func getIntFromMap(data map[string]interface{}, key string) int {
 	if data == nil {
 		return 0
@@ -1676,10 +1713,25 @@ func getIntFromMap(data map[string]interface{}, key string) int {
 		switch iv := v.(type) {
 		case int:
 			return iv
-		case float64:
+		case int32:
 			return int(iv)
 		case int64:
 			return int(iv)
+		case float32:
+			return int(iv)
+		case float64:
+			return int(iv)
+		case json.Number:
+			if n, err := iv.Int64(); err == nil {
+				return int(n)
+			}
+			if f, err := iv.Float64(); err == nil {
+				return int(f)
+			}
+		case string:
+			if n, err := strconv.Atoi(iv); err == nil {
+				return n
+			}
 		}
 	}
 	return 0
@@ -1897,6 +1949,11 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 			setAtJSONPath(result, f.effectiveJSONPath(), ints)
 
 		case TypeBlock:
+			rawVal := data[f.HCLKey]
+			if rawVal == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			child := getBlockFromMap(data, f.HCLKey)
 			if child == nil {
 				continue
@@ -1956,6 +2013,10 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 			}
 
 		case TypeOneOf:
+			if data[f.HCLKey] == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			outer := getBlockFromMap(data, f.HCLKey)
 			if outer == nil {
 				if f.OmitEmpty {
@@ -2499,9 +2560,9 @@ func buildQueryTableTextFormatsJSONFromMap(reqMap map[string]interface{}, req ma
 				if v := getStringFromMap(replaceMap, "type"); v != "" {
 					replace["type"] = v
 				}
-				if v := getStringFromMap(replaceMap, "with"); v != "" {
-					replace["with"] = v
-				}
+				// `with` is required by both replace variants and may be
+				// empty (e.g. to strip a substring), so always send it.
+				replace["with"] = getStringFromMap(replaceMap, "with")
 				if v := getStringFromMap(replaceMap, "substring"); v != "" {
 					replace["substring"] = v
 				}
@@ -2654,6 +2715,34 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildCon
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
 func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
+	// ---- Toplist legacy display discriminator ----
+	// datadog_dashboard historically represented the toplist display oneOf as
+	// display { type = "flat"|"stacked" }. Keep accepting that form while the
+	// canonical v2 form uses display { flat {} } / display { stacked {} }.
+	if spec.JSONType == "toplist" {
+		if styleMap := getBlockFromMap(defMap, "style"); styleMap != nil {
+			if displayMap := getBlockFromMap(styleMap, "display"); displayMap != nil {
+				if legacyType := getStringFromMap(displayMap, "type"); legacyType != "" {
+					styleJSON, _ := defJSON["style"].(map[string]interface{})
+					if styleJSON == nil {
+						styleJSON = map[string]interface{}{}
+						defJSON["style"] = styleJSON
+					}
+					// The legacy scalar is authoritative when configured. Do not retain
+					// fields from a computed canonical variant left in refreshed state.
+					display := map[string]interface{}{"type": legacyType}
+					// The legacy datadog_dashboard implementation always sent
+					// legend=automatic alongside a stacked display. Keep emitting it so
+					// legacy configs produce byte-identical API payloads.
+					if legacyType == "stacked" {
+						display["legend"] = "automatic"
+					}
+					styleJSON["display"] = display
+				}
+			}
+		}
+	}
+
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")

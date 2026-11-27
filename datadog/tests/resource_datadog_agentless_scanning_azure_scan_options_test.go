@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -15,8 +16,8 @@ import (
 
 func TestAccDatadogAgentlessScanningAzureScanOptions_Basic(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	subscriptionID := "12345678-1234-1234-1234-123456789012" // Test Azure subscription ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	subscriptionID := uniqueAzureSubscriptionID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -58,8 +59,8 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_InvalidSubscriptionID(t *te
 
 func TestAccDatadogAgentlessScanningAzureScanOptions_Update(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	subscriptionID := "12345678-1234-1234-1234-123456789012" // Test Azure subscription ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	subscriptionID := uniqueAzureSubscriptionID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -92,8 +93,8 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Update(t *testing.T) {
 
 func TestAccDatadogAgentlessScanningAzureScanOptions_Import(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	subscriptionID := "12345678-1234-1234-1234-123456789012" // Test Azure subscription ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	subscriptionID := uniqueAzureSubscriptionID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -110,6 +111,13 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Import(t *testing.T) {
 			},
 		},
 	})
+}
+
+// uniqueAzureSubscriptionID returns a UUID derived from uniqueEntityName. The API keys scan
+// options only by subscription ID and Create is an upsert, so parallel tests (and concurrent
+// CI jobs in the same org) that share one ID overwrite and delete each other's object.
+func uniqueAzureSubscriptionID(ctx context.Context, t *testing.T) string {
+	return uuid.NewSHA1(uuid.NameSpaceOID, []byte(uniqueEntityName(ctx, t))).String()
 }
 
 func testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID string, complianceHost, function, vulnContainers, vulnHost bool) string {

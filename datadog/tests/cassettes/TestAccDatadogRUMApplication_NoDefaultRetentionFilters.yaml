@@ -1,0 +1,202 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"create_default_retention_filters":false,"name":"tf-TestAccDatadogRUMApplication_NoDefaultRetentionFilters-local-1793808978","type":"browser"},"type":"rum_application_create"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 992
+        uncompressed: false
+        body: '{"data":{"id":"b140d2e7-3561-400e-bef4-f8bd258a753b","type":"rum_application","attributes":{"api_key_id":2292322,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"b140d2e7-3561-400e-bef4-f8bd258a753b","client_token":"pub9f966beb91e7df2d50479438576f104f","created_at":1793808981955,"created_by_handle":"carlos.delgado@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-TestAccDatadogRUMApplication_NoDefaultRetentionFilters-local-1793808978","ootb_metrics_installed":false,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1793808981955},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1793808981955}},"short_name":"tf_testaccdatadogrumapplication__1201","tags":[],"type":"browser","updated_at":1793808981955,"updated_by_handle":"carlos.delgado@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 710.769875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/b140d2e7-3561-400e-bef4-f8bd258a753b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 992
+        uncompressed: false
+        body: '{"data":{"id":"b140d2e7-3561-400e-bef4-f8bd258a753b","type":"rum_application","attributes":{"api_key_id":2292322,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"b140d2e7-3561-400e-bef4-f8bd258a753b","client_token":"pub9f966beb91e7df2d50479438576f104f","created_at":1793808981955,"created_by_handle":"carlos.delgado@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-TestAccDatadogRUMApplication_NoDefaultRetentionFilters-local-1793808978","ootb_metrics_installed":false,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1793808981955},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1793808981955}},"short_name":"tf_testaccdatadogrumapplication__1201","tags":[],"type":"browser","updated_at":1793808981955,"updated_by_handle":"carlos.delgado@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.566375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/b140d2e7-3561-400e-bef4-f8bd258a753b/retention_filters
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 11
+        uncompressed: false
+        body: '{"data":[]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 141.930084ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/b140d2e7-3561-400e-bef4-f8bd258a753b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 992
+        uncompressed: false
+        body: '{"data":{"id":"b140d2e7-3561-400e-bef4-f8bd258a753b","type":"rum_application","attributes":{"api_key_id":2292322,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"b140d2e7-3561-400e-bef4-f8bd258a753b","client_token":"pub9f966beb91e7df2d50479438576f104f","created_at":1793808981955,"created_by_handle":"carlos.delgado@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-TestAccDatadogRUMApplication_NoDefaultRetentionFilters-local-1793808978","ootb_metrics_installed":false,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1793808981955},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1793808981955}},"short_name":"tf_testaccdatadogrumapplication__1201","tags":[],"type":"browser","updated_at":1793808981955,"updated_by_handle":"carlos.delgado@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 144.4915ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/applications/b140d2e7-3561-400e-bef4-f8bd258a753b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 408.756ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"6ae18142-192f-4582-9633-95121c2a01d7","type":"rum_application","attributes":{"api_key_id":79920,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"6ae18142-192f-4582-9633-95121c2a01d7","created_at":1646148352095,"created_by_handle":"frog@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":true,"name":"S8-integration-tests","ootb_metrics_installed":true,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1646148352095},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1646148352095}},"short_name":"s8_integration_tests","tags":[],"type":"browser","updated_at":1790843293001,"updated_by_handle":"Datadog"}},{"id":"ce9843b0-7a45-453c-a831-55dd15f85141","type":"rum_application","attributes":{"api_key_id":82597,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"ce9843b0-7a45-453c-a831-55dd15f85141","created_at":1648568515456,"created_by_handle":"frog@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":true,"name":"Synthetic Tests Default Application","ootb_metrics_installed":true,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1648568515456},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1648568515456}},"short_name":"synthetic_tests_default_applicat","tags":[],"type":"browser","updated_at":1790843293011,"updated_by_handle":"Datadog"}},{"id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5","type":"rum_application","attributes":{"api_key_id":289111,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5","created_at":1721327950211,"created_by_handle":"anika.maskara@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"%s2","ootb_metrics_installed":true,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1721327950211},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1721327950211}},"short_name":"s2","tags":[],"type":"browser","updated_at":1790843293017,"updated_by_handle":"Datadog"}},{"id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0","type":"rum_application","attributes":{"api_key_id":494724,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0","created_at":1750736321451,"created_by_handle":"frog@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"updated_name_for_my_existing_rum_application","ootb_metrics_installed":true,"org_id":321813,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1750736321451},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1750736321451}},"short_name":"test_rum_f0773756afef952b_175073","tags":[],"type":"browser","updated_at":1790843293023,"updated_by_handle":"Datadog"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 662.594667ms

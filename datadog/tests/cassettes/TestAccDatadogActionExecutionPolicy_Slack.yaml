@@ -1,0 +1,202 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 415
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action_pattern":{"action_fqns":["com.datadoghq.slack.send_simple_message"],"integration":"INTEGRATION_SLACK"},"effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Slack-local-1793390356","scope":{"slack":{"rules":[{"channel_name_selectors":["incident-*","ops"]}]}},"targets":[{"agent_tags":["slack_workspace_id:T0123456789"],"name":"test-workspace"}]},"type":"execution_policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 646
+        uncompressed: false
+        body: '{"data":{"id":"8f83f26b-4c89-48d1-a0d2-32bd9210e497","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SLACK","action_fqns":["com.datadoghq.slack.send_simple_message"]},"created_at":"2026-10-30T19:59:18Z","created_by":"a759d8d2-30e7-11f0-8294-9221378ad862","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Slack-local-1793390356","scope":{"slack":{"rules":[{"channel_name_selectors":["incident-*","ops"]}]}},"targets":[{"agent_tags":["slack_workspace_id:T0123456789"],"name":"test-workspace"}],"updated_at":"2026-10-30T19:59:18Z","updated_by":"a759d8d2-30e7-11f0-8294-9221378ad862","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 88.316966ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/8f83f26b-4c89-48d1-a0d2-32bd9210e497
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 646
+        uncompressed: false
+        body: '{"data":{"id":"8f83f26b-4c89-48d1-a0d2-32bd9210e497","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SLACK","action_fqns":["com.datadoghq.slack.send_simple_message"]},"created_at":"2026-10-30T19:59:18Z","created_by":"a759d8d2-30e7-11f0-8294-9221378ad862","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Slack-local-1793390356","scope":{"slack":{"rules":[{"channel_name_selectors":["incident-*","ops"]}]}},"targets":[{"agent_tags":["slack_workspace_id:T0123456789"],"name":"test-workspace"}],"updated_at":"2026-10-30T19:59:18Z","updated_by":"a759d8d2-30e7-11f0-8294-9221378ad862","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 92.227404ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/8f83f26b-4c89-48d1-a0d2-32bd9210e497
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 646
+        uncompressed: false
+        body: '{"data":{"id":"8f83f26b-4c89-48d1-a0d2-32bd9210e497","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SLACK","action_fqns":["com.datadoghq.slack.send_simple_message"]},"created_at":"2026-10-30T19:59:18Z","created_by":"a759d8d2-30e7-11f0-8294-9221378ad862","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Slack-local-1793390356","scope":{"slack":{"rules":[{"channel_name_selectors":["incident-*","ops"]}]}},"targets":[{"agent_tags":["slack_workspace_id:T0123456789"],"name":"test-workspace"}],"updated_at":"2026-10-30T19:59:18Z","updated_by":"a759d8d2-30e7-11f0-8294-9221378ad862","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 22.778965ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/8f83f26b-4c89-48d1-a0d2-32bd9210e497
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 646
+        uncompressed: false
+        body: '{"data":{"id":"8f83f26b-4c89-48d1-a0d2-32bd9210e497","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SLACK","action_fqns":["com.datadoghq.slack.send_simple_message"]},"created_at":"2026-10-30T19:59:18Z","created_by":"a759d8d2-30e7-11f0-8294-9221378ad862","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Slack-local-1793390356","scope":{"slack":{"rules":[{"channel_name_selectors":["incident-*","ops"]}]}},"targets":[{"agent_tags":["slack_workspace_id:T0123456789"],"name":"test-workspace"}],"updated_at":"2026-10-30T19:59:18Z","updated_by":"a759d8d2-30e7-11f0-8294-9221378ad862","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 27.71613ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/8f83f26b-4c89-48d1-a0d2-32bd9210e497
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 73.157836ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/8f83f26b-4c89-48d1-a0d2-32bd9210e497
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting execution policy"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 21.648954ms

@@ -10,11 +10,6 @@ paths:
   /siblings:
     get:
       operationId: GetSiblings
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: siblings
-        group:
-          read: GetSiblings
       responses:
         '200':
           content:
@@ -104,3 +99,11 @@ components:
         value:
           type: string
           description: The UrlParam value.
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    siblings:
+      datasource_singular:
+        artifact_name: siblings
+        group:
+          read: GetSiblings

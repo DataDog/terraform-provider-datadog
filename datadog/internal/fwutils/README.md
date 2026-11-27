@@ -29,6 +29,13 @@ Attributes: fwutils.MergeAttributes(
 )
 ```
 
+For a create-only secret, set `WriteOnlySecretConfig.RequiresReplace` to `true`.
+This adds replacement modifiers to the plaintext fallback and version trigger;
+the write-only value itself is never stored or compared. Read the secret in
+Create and omit it from Update. tfgen sets this option from request-schema
+provenance; see its [secret lifecycle rules](../../../.generator-v2/docs/reference/scope.md#schema-shapes).
+The default is `false`, preserving existing callers' update behavior.
+
 ### Secrets in Nested Blocks
 
 The three attributes live at the resource root by default. Set `ParentBlocks` to scope them under static nested blocks, so that both the generated validators and the handler lookups target the right paths:

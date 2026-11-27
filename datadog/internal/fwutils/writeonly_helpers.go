@@ -9,6 +9,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -66,6 +68,9 @@ type WriteOnlySecretConfig struct {
 	// of the plaintext/write-only pair must be set. Legacy mode ignores it and
 	// always requires exactly one.
 	Required bool
+	// RequiresReplace makes a plaintext change or write-only version change
+	// replace the resource. The write-only value itself is never stored or compared.
+	RequiresReplace bool
 }
 
 func (secretConfig WriteOnlySecretConfig) attrPath(attributeName string) frameworkPath.Path {
@@ -108,6 +113,9 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Validators: []validator.String{
 				stringvalidator.LengthAtLeast(1),
 			},
+		}
+		if config.RequiresReplace {
+			trigger.PlanModifiers = []planmodifier.String{stringplanmodifier.RequiresReplace()}
 		}
 		if config.Required {
 			writeOnly.Required = true
@@ -177,6 +185,13 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 		},
 	}
 
+	if config.RequiresReplace {
+		for _, name := range []string{config.OriginalAttr, config.TriggerAttr} {
+			attribute := attrs[name].(schema.StringAttribute)
+			attribute.PlanModifiers = append(attribute.PlanModifiers, stringplanmodifier.RequiresReplace())
+			attrs[name] = attribute
+		}
+	}
 	return attrs
 }
 

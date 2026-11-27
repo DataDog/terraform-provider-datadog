@@ -51,7 +51,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
 - `cloud_run_revision_filters` (Set of String, Deprecated) List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags. Only Cloud Run revision resources that apply to specified filters are imported into Datadog.
 - `host_filters` (Set of String, Deprecated) List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog.
-- `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
+- `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` or `is_org_folder_resource_collection_enabled` to also be enabled.
 - `is_global_location_enabled` (Boolean) When enabled, Datadog collects metrics where location is explicitly stated as 'global' or where location information cannot be deduced from GCP.
 - `is_org_folder_resource_collection_enabled` (Boolean) When enabled, Datadog scans for organization and folder-level resources under the organization the Service Account lives in.
 - `is_per_project_quota_enabled` (Boolean) When enabled, Datadog includes the `X-Goog-User-Project` header to attribute Google Cloud billing and quota usage to the monitored project instead of the default service account project.

@@ -16,20 +16,20 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogApmRetentionFilterDataSource{}
 )
 
-type datadogApmRetentionFilterDataSourceModel struct {
-	ID      types.String                          `tfsdk:"id"`
-	Enabled types.Bool                            `tfsdk:"enabled"`
-	Filter  *datadogApmRetentionFilterFilterModel `tfsdk:"filter"`
-	Name    types.String                          `tfsdk:"name"`
+type datadogApmRetentionFilter_Model struct {
+	ID      types.String                           `tfsdk:"id"`
+	Enabled types.Bool                             `tfsdk:"enabled"`
+	Filter  *datadogApmRetentionFilter_FilterModel `tfsdk:"filter"`
+	Name    types.String                           `tfsdk:"name"`
 }
 
-type datadogApmRetentionFilterFilterModel struct {
-	Metadata *datadogApmRetentionFilterFilterMetadataModel `tfsdk:"metadata"`
-	Query    types.String                                  `tfsdk:"query"`
-	Tags     types.List                                    `tfsdk:"tags"`
+type datadogApmRetentionFilter_FilterModel struct {
+	Metadata *datadogApmRetentionFilter_FilterMetadataModel `tfsdk:"metadata"`
+	Query    types.String                                   `tfsdk:"query"`
+	Tags     types.List                                     `tfsdk:"tags"`
 }
 
-type datadogApmRetentionFilterFilterMetadataModel struct {
+type datadogApmRetentionFilter_FilterMetadataModel struct {
 	CreatedBy types.String `tfsdk:"created_by"`
 }
 
@@ -102,7 +102,7 @@ func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ dataso
 }
 
 func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogApmRetentionFilterDataSourceModel
+	var state datadogApmRetentionFilter_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -132,7 +132,7 @@ func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, state *datadogApmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) diag.Diagnostics {
+func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, state *datadogApmRetentionFilter_Model, resp *datadogV2.RetentionFilterResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
@@ -145,12 +145,12 @@ func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, s
 		state.Name = types.StringValue(*name)
 	}
 	if filter, ok := attributes.GetFilterOk(); ok && filter != nil {
-		filterModel := &datadogApmRetentionFilterFilterModel{}
+		filterModel := &datadogApmRetentionFilter_FilterModel{}
 		if query, ok := filter.GetQueryOk(); ok && query != nil {
 			filterModel.Query = types.StringValue(*query)
 		}
 		if metadata, ok := filter.GetMetadataOk(); ok && metadata != nil {
-			metadataModel := &datadogApmRetentionFilterFilterMetadataModel{}
+			metadataModel := &datadogApmRetentionFilter_FilterMetadataModel{}
 			if createdBy, ok := metadata.GetCreatedByOk(); ok && createdBy != nil {
 				metadataModel.CreatedBy = types.StringValue(*createdBy)
 			}

@@ -24,11 +24,6 @@ paths:
       operationId: GetWidget
       tags:
         - Widgets
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: widget
-        group:
-          read: GetWidget
       parameters:
         - name: widget_id
           in: path
@@ -47,14 +42,6 @@ paths:
       operationId: CreateWidget
       tags:
         - Widgets
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: widget_create
-        group:
-          # read is required by the tracking-field contract (a group must name a
-          # read or a search); only the create half matters to this fixture.
-          create: CreateWidget
-          read: GetWidget
       requestBody:
         required: true
         content:
@@ -73,11 +60,6 @@ paths:
       operationId: GetWidgetUnnamed
       tags:
         - Widgets
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: widget_unnamed
-        group:
-          read: GetWidgetUnnamed
       parameters:
         - name: widget_id
           in: path
@@ -96,11 +78,6 @@ paths:
       operationId: GetRoot
       tags:
         - Widgets
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: root
-        group:
-          read: GetRoot
       responses:
         '200':
           description: OK
@@ -208,3 +185,30 @@ components:
             oneOf:
               - type: string
               - type: boolean
+tags:
+- name: Widgets
+  x-datadog-tf-generator:
+    widget:
+      datasource_singular:
+        artifact_name: widget
+        group:
+          read: GetWidget
+    widget_create:
+      resource:
+        artifact_name: widget_create
+        group:
+          # read is required by the tracking-field contract (a group must name a
+          # read or a search); only the create half matters to this fixture.
+          create: CreateWidget
+          read: GetWidget
+          delete: CreateWidget
+    widget_unnamed:
+      datasource_singular:
+        artifact_name: widget_unnamed
+        group:
+          read: GetWidgetUnnamed
+    root:
+      datasource_singular:
+        artifact_name: root
+        group:
+          read: GetRoot

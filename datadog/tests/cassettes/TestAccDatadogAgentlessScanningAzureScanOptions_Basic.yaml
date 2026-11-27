@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35
         method: GET
       response:
         proto: HTTP/1.1
@@ -27,13 +27,13 @@ interactions:
         trailer: {}
         content_length: 122
         uncompressed: false
-        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription 12345678-1234-1234-1234-123456789012"}]}'
+        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 446.720708ms
+        duration: 105.133376ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -46,7 +46,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options"}}
+            {"data":{"attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35","type":"azure_scan_options"}}
         form: {}
         headers:
             Accept:
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 151.706375ms
+        duration: 118.844506ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.055958ms
+        duration: 105.679448ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.057917ms
+        duration: 107.189939ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -168,7 +168,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.589458ms
+        duration: 120.710025ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35
         method: GET
       response:
         proto: HTTP/1.1
@@ -195,10 +195,10 @@ interactions:
         trailer: {}
         content_length: 122
         uncompressed: false
-        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription 12345678-1234-1234-1234-123456789012"}]}'
+        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription ca0ce59c-4362-54e4-bb2c-fbc8b6fe5e35"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 125.138625ms
+        duration: 107.525193ms

@@ -2,6 +2,17 @@
 
 For setup, building, and contribution guidelines, read [DEVELOPMENT.md](./DEVELOPMENT.md) first.
 
+## Contributor skills
+
+Shared, agent-agnostic skills live in `.agents/skills/<skill-name>/SKILL.md`.
+Read the relevant skill before starting its workflow.
+
+When adding a resource or data source, use
+[add-datadog-resource](.agents/skills/add-datadog-resource/SKILL.md) first. It
+directs Datadog organization members to the generator skills in
+`ddoghq/datadog-api-spec` and external contributors to manual implementation
+using current Terraform Plugin Framework guidance.
+
 ## Critical Rules
 
 ### NEVER Use Raw Go Commands for Testing
@@ -78,6 +89,15 @@ HCL↔JSON serialization, schema registration, and docs generation.
 - `datadog_dashboard` / `datadog_powerpack` — **Original** SDKv2 resources (maintained for backward compatibility)
 - `datadog_dashboard_v2` / `datadog_powerpack_v2` — **FieldSpec engine** resources (all new development)
 
+### Legacy `datadog_dashboard` (`datadog/resource_datadog_dashboard.go`)
+
+For top-level dashboard fields that round-trip through the V1 API (including values carried in `AdditionalProperties` when typed client models lag the API), updates must touch **both**:
+
+- **`buildDatadogDashboard`** — Terraform config (`schema.ResourceData`) → `datadogV1.Dashboard` JSON for create/update.
+- **`updateDashboardState`** — GET response → Terraform state (`d.Set`).
+
+If only the build path is updated, acceptance tests and refresh can fail because state no longer matches the API.
+
 ### Package layout
 
 | File | Contents |
@@ -94,5 +114,6 @@ HCL↔JSON serialization, schema registration, and docs generation.
 - Reusable field groups in `field_groups.go` are named after their OpenAPI schema counterparts (e.g. `logQueryDefinitionFields` → `LogQueryDefinition`).
 - HCL uses **singular** block names; JSON uses **plural** keys. Set `JSONKey` to bridge the gap.
 - `OmitEmpty: true` for optional fields; cassette recordings are the ground truth.
+  Exception: the cassette matcher treats an absent key as equal to `false` or `0`, so it cannot verify bool and number fields. If the legacy `datadog_dashboard` builder always sends the value, use `OmitEmpty: false` (bools), `PreserveZero: true` (numbers where `0` is meaningful) or the legacy `Default`, and cover it in `TestDashboardV2MatchesLegacyPayloadForZeroValues`.
 - `TypeOneOf` handles discriminated `oneOf` unions — see `widgetNumberFormatFields.unit` for an example.
 - Widget specs registered in `allWidgetSpecs` get schema and state converters generated automatically — no changes to `fwprovider/resource_datadog_dashboard_v2.go` needed.

@@ -6,11 +6,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogRolePermissionsDatasourceBasic(t *testing.T) {
-	t.Parallel()
+	// Not parallel: the permissions cache reset must not race with other role tests.
+	t.Cleanup(datadog.ResetPermissionsCache())
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 

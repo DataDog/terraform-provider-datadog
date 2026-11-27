@@ -1,0 +1,370 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 388
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","description":"Checkout flow","journey_rum":{"rum_steps":[{"nodes":[{"query":"@view.name:/checkout"}],"type":"start"},{"nodes":[{"query":"@view.name:/checkout/complete"}],"type":"stop"}]},"name":"tf-TestAccRumOperation-local-1792410244","tags":["team:rum"]},"type":"operations"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 732
+        uncompressed: false
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperation-local-1792410244","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 756.97075ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 732
+        uncompressed: false
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperation-local-1792410244","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.91ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 732
+        uncompressed: false
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperation-local-1792410244","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 143.338542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 732
+        uncompressed: false
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperation-local-1792410244","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 116.705208ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 732
+        uncompressed: false
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperation-local-1792410244","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 120.57325ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 556
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"","display_name":"Checkout","journey_rum":{"rum_steps":[{"nodes":[{"query":"@view.name:/checkout"}],"type":"start"},{"nodes":[{"query":"@view.name:/checkout/complete"}],"type":"stop"},{"composite":{"kind":"in_order","max_window_ms":60000,"predicates":[{"query":"@type:action @action.name:pay"},{"query":"@type:error @error.message:*declined*"}]},"type":"error"}]},"name":"tf-TestAccRumOperation-local-1792410244","tags":[]},"id":"mce-5rw-5eh","type":"operations"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"display_name":"Checkout","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]},{"type":"error","composite":{"composite_rule_id":"74c39601-baf5-4010-81c5-ea07392b032a","config_version":"757d2a2e5b386767fd85725c52728b5889fad9f1daabc0ce19f7ec8f7db87b17","kind":"in_order","predicates":[{"query":"@type:action @action.name:pay"},{"query":"@type:error @error.message:*declined*"}],"max_window_ms":60000}}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":[],"updated_at":"2026-10-19T11:44:09.17927Z","updated_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 249.32475ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"display_name":"Checkout","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]},{"type":"error","composite":{"composite_rule_id":"74c39601-baf5-4010-81c5-ea07392b032a","config_version":"757d2a2e5b386767fd85725c52728b5889fad9f1daabc0ce19f7ec8f7db87b17","kind":"in_order","predicates":[{"query":"@type:action @action.name:pay"},{"query":"@type:error @error.message:*declined*"}],"max_window_ms":60000}}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":[],"updated_at":"2026-10-19T11:44:09.17927Z","updated_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 112.070292ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"display_name":"Checkout","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]},{"type":"error","composite":{"composite_rule_id":"74c39601-baf5-4010-81c5-ea07392b032a","config_version":"757d2a2e5b386767fd85725c52728b5889fad9f1daabc0ce19f7ec8f7db87b17","kind":"in_order","predicates":[{"query":"@type:action @action.name:pay"},{"query":"@type:error @error.message:*declined*"}],"max_window_ms":60000}}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":[],"updated_at":"2026-10-19T11:44:09.17927Z","updated_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 118.867ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"mce-5rw-5eh","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"","created_at":"2026-10-19T11:44:06.533298Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"display_name":"Checkout","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"f7q-bve-unv","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"4qe-dd4-ep9","query":"@view.name:/checkout/complete"}]},{"type":"error","composite":{"composite_rule_id":"74c39601-baf5-4010-81c5-ea07392b032a","config_version":"757d2a2e5b386767fd85725c52728b5889fad9f1daabc0ce19f7ec8f7db87b17","kind":"in_order","predicates":[{"query":"@type:action @action.name:pay"},{"query":"@type:error @error.message:*declined*"}],"max_window_ms":60000}}]},"name":"tf-TestAccRumOperation-local-1792410244","org_id":321813,"tags":[],"updated_at":"2026-10-19T11:44:09.17927Z","updated_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 114.952291ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 1.437095541s
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/mce-5rw-5eh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 44
+        uncompressed: false
+        body: '{"errors":[{"title":"Operation not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 106.271292ms

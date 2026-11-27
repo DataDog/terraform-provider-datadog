@@ -159,6 +159,63 @@ func (a *ThingsApi) CreateThing(ctx context.Context, body PinnedThingCreateReque
 	}
 }
 
+func TestBindCorroboratesResponseBody(t *testing.T) {
+	inventory := loadFixtureInventory(t, `package datadogV2
+type ThingsApi struct{}
+func (a *ThingsApi) DeleteThing(ctx context.Context) (*_nethttp.Response, error) { return nil, nil }
+func (a *ThingsApi) GetThing(ctx context.Context) (ThingResponse, *_nethttp.Response, error) { return ThingResponse{}, nil, nil }
+func (a *ThingsApi) GetNamedThing(ctx context.Context) (body ThingResponse, response *_nethttp.Response, err error) { return }
+`)
+	body := &model.Schema{Kind: model.SchemaKindObject}
+	tests := []struct {
+		name        string
+		op          *model.Operation
+		wantMessage string
+	}{
+		{name: "named return values match", op: &model.Operation{OperationId: "GetNamedThing", ResponseSchema: body, ResponseRefName: "ThingResponse"}},
+		{name: "bodyless matches", op: &model.Operation{OperationId: "DeleteThing"}},
+		{name: "named body matches", op: &model.Operation{OperationId: "GetThing", ResponseSchema: body, ResponseRefName: "ThingResponse"}},
+		{name: "unnamed body matches arity", op: &model.Operation{OperationId: "GetThing", ResponseSchema: body}},
+		{
+			name:        "derived body, pinned bodyless",
+			op:          &model.Operation{OperationId: "DeleteThing", ResponseSchema: body},
+			wantMessage: "response body derived true, pinned false",
+		},
+		{
+			name:        "derived bodyless, pinned body",
+			op:          &model.Operation{OperationId: "GetThing"},
+			wantMessage: "response body derived false, pinned true",
+		},
+		{
+			name:        "response type differs",
+			op:          &model.Operation{OperationId: "GetThing", ResponseSchema: body, ResponseRefName: "OtherResponse"},
+			wantMessage: `response type derived "OtherResponse", pinned "ThingResponse"`,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			originalSchema, originalRef := test.op.ResponseSchema, test.op.ResponseRefName
+			diagnostics, err := Bind(test.op, inventory)
+			if test.op.ResponseSchema != originalSchema || test.op.ResponseRefName != originalRef {
+				t.Fatal("SDK corroboration changed the OpenAPI response binding")
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if test.wantMessage == "" {
+				if len(diagnostics) != 0 {
+					t.Fatalf("matching response diagnostics = %#v", diagnostics)
+				}
+				return
+			}
+			if len(diagnostics) != 1 || diagnostics[0].Severity != model.SeverityWarning ||
+				!strings.Contains(diagnostics[0].Message, test.wantMessage) {
+				t.Fatalf("diagnostics = %#v, want one warning containing %q", diagnostics, test.wantMessage)
+			}
+		})
+	}
+}
+
 func TestBindWarnsAndKeepsDerivedBindingOnPinnedMismatch(t *testing.T) {
 	inventory := loadFixtureInventory(t, `package datadogV2
 type ThingsApi struct{}

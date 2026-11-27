@@ -10,7 +10,7 @@ ddoc:
 **Who this is for:** you own a Datadog v2 API endpoint and want it available in the
 Terraform provider without writing the provider code yourself.
 
-You annotate an operation in `datadog-api-spec`. Generation produces the provider
+You declare a Terraform family on an API tag in `datadog-api-spec`. Generation produces the provider
 code, an example, and an acceptance-test scaffold. A provider maintainer, possibly
 you, then finishes the test and merges it.
 
@@ -32,45 +32,27 @@ namespaces. `artifact_name` must be unique *within* its kind.
 
 ## The annotation, minimally
 
-Two extensions go on the operation. `x-datadog-generators` routes the spec change to
-the Terraform generator; `x-datadog-tf-generator` describes the artifact.
+Declare the family once on its owning API tag. Each group value is an exact
+`operationId`; the transformer uses those references to dispatch Terraform.
 
 ```yaml
-paths:
-  /api/v2/incidents/config/types:
-    post:
-      operationId: CreateIncidentType
-
-      x-datadog-generators:
-        generators:
-          terraform: true
-
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: incident_type
-        tf_description: Provides a Datadog incident type resource.
-        group:
-          create: CreateIncidentType
-          read:   GetIncidentType
-          update: UpdateIncidentType
-          delete: DeleteIncidentType
+tags:
+  - name: Incidents
+    x-datadog-tf-generator:
+      incident_type:
+        resource:
+          tf_description: Provides a Datadog incident type resource.
+          group:
+            create: CreateIncidentType
+            read: GetIncidentType
+            update: UpdateIncidentType
+            delete: DeleteIncidentType
 ```
 
-Every field is documented, with its exact validation rules, in
-[reference/annotation.md](../reference/annotation.md), generated from the schema the
-generator validates against, so it cannot describe a field that does not exist.
-
-### Annotate the primary operation only
-
-One operation owns the artifact and carries both extensions. Operations referenced
-through `group` do not repeat them, they are named by `operationId` and found.
-
-- Resource → annotate the **create** operation.
-- Singular data source, by-ID → annotate the **by-ID read**.
-- Singular data source, filter lookup → annotate the **list** operation.
-- Plural data source → annotate the **list** operation.
-
-Every value under `group` is an exact `operationId`.
+Use `resource`, `datasource_singular`, or `datasource_list` blocks. A family may
+contain all three. Resources require create, read and delete; update is optional.
+Singular data sources require read or search; list data sources require read.
+See [the annotation reference](../reference/annotation.md) for all accepted fields.
 
 ## Replacing something hand-written
 
@@ -98,19 +80,10 @@ reviewers rather than inferred from an absence.
 
 ## Marking a field sensitive
 
-`sensitive` goes on the **Schema Object**, not the operation annotation:
-
-```yaml
-some_secret:
-  type: string
-  x-datadog-tf-generator:
-    sensitive: true
-```
-
-Usually you do not need it: `writeOnly: true` and `x-secret: true` already default a
-field to sensitive. Read the secrets section of
-[reference/scope.md](../reference/scope.md) before relying on either. Redaction and
-keeping values out of state are different things.
+Use `x-secret: true` on a Schema Object for display redaction, or `writeOnly: true`
+for write-only handling. Both mark the field sensitive. Legacy
+`x-datadog-tf-generator.sensitive` overrides are no longer read. See
+[secret handling](../reference/scope.md#secrets-and-sensitivity) for state behavior.
 
 ## Check before you open the pull request
 

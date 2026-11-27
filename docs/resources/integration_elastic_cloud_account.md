@@ -41,13 +41,14 @@ Optional:
 
 Required:
 
-- `password_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret password or private key. This write-only value is not stored in Terraform state.
-- `password_wo_version` (String) Version trigger for password_wo rotation. String length must be at least 1.
 - `username` (String) Non-secret username or public identifier for the credential pair.
 
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `basic`. Defaults to `"basic"`.
+- `password` (String, Sensitive) Secret password or private key. Exactly one of `password` or `password_wo` must be set. Prefer `password_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret password or private key. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `password_wo_version` (String) Version trigger for password_wo rotation. String length must be at least 1.
 
 
 

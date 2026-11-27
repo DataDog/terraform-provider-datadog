@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"connections":[{"id":"11111111-1111-1111-1111-111111111111","name":"A connection that will be overridden"}],"deployment":{"app_version_id":"00000000-0000-0000-0000-000000000000","id":"11111111-1111-1111-1111-111111111111"},"description":"Created using the Datadog provider in Terraform.","favorite":false,"id":"11111111-2222-3333-4444-555555555555","name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"events":[],"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"connections":[{"id":"11111111-1111-1111-1111-111111111111","name":"A connection that will be overridden"}],"deployment":{"app_version_id":"00000000-0000-0000-0000-000000000000","id":"11111111-1111-1111-1111-111111111111"},"description":"Created using the Datadog provider in Terraform.","favorite":false,"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","queries":[{"events":[],"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions"}}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 352.654083ms
+        duration: 573.110226ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c/deployment
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d/deployment
         method: POST
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 299
+        content_length: 592
         uncompressed: false
-        body: '{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}}'
+        body: '{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 316.008541ms
+        duration: 333.73633ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.751978Z","updated_at":"2025-03-26T21:35:53.751978Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"isHighCodeApp":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","protectionLevel":"direct_publish","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment"},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"671e6604-9cda-4acb-81f6-ca939518e449","updated_since_deployment":false,"created_at":"2026-10-22T11:55:03.199695Z","updated_at":"2026-10-22T11:55:03.199695Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 88.849667ms
+        duration: 271.574101ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.751978Z","updated_at":"2025-03-26T21:35:53.751978Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"isHighCodeApp":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","protectionLevel":"direct_publish","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment"},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"671e6604-9cda-4acb-81f6-ca939518e449","updated_since_deployment":false,"created_at":"2026-10-22T11:55:03.199695Z","updated_at":"2026-10-22T11:55:03.199695Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 91.837917ms
+        duration: 233.607818ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -162,13 +162,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.751978Z","updated_at":"2025-03-26T21:35:53.751978Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"isHighCodeApp":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","protectionLevel":"direct_publish","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment"},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"671e6604-9cda-4acb-81f6-ca939518e449","updated_since_deployment":false,"created_at":"2026-10-22T11:55:03.199695Z","updated_at":"2026-10-22T11:55:03.199695Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 148.561875ms
+        duration: 248.210332ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -195,13 +195,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.751978Z","updated_at":"2025-03-26T21:35:53.751978Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"isHighCodeApp":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","protectionLevel":"direct_publish","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment"},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"671e6604-9cda-4acb-81f6-ca939518e449","updated_since_deployment":false,"created_at":"2026-10-22T11:55:03.199695Z","updated_at":"2026-10-22T11:55:03.199695Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 97.421209ms
+        duration: 277.344283ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -218,7 +218,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -228,13 +228,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1743024950","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.751978Z","updated_at":"2025-03-26T21:35:53.751978Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"4f65e850-4f88-4b06-b6b6-90245bd14bb3","type":"deployment","attributes":{"app_version_id":"39be8c1d-1a4c-40a6-b0c8-fbd1395f4ed5"},"meta":{"created_at":"2025-03-26T21:35:54.086446Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform.","favorite":false,"isHighCodeApp":false,"name":"tf-TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields-local-1792670099","protectionLevel":"direct_publish","queries":[{"id":"22a65cea-b96f-44fa-a1e2-008885d7bd2e","name":"listTeams0","type":"action","properties":{"spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment"},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"671e6604-9cda-4acb-81f6-ca939518e449","updated_since_deployment":false,"created_at":"2026-10-22T11:55:03.199695Z","updated_at":"2026-10-22T11:55:03.199695Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"49bcdde5-fc90-49b8-b988-ee6ba2945b37","type":"deployment","attributes":{"app_version_id":"671e6604-9cda-4acb-81f6-ca939518e449","approved_at":"2026-10-22T11:55:03.616363Z","approving_user_id":1445416,"approving_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","created_at":"2026-10-22T11:55:03.616363Z","creator_user_id":1445416,"creator_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":null,"title":null},"meta":{"created_at":"2026-10-22T11:55:03.616363Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 164.962458ms
+        duration: 288.294651ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -251,7 +251,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -261,13 +261,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"19a97ed7-16da-4fd6-9576-544c7702a00c","type":"appDefinitions"}}'
+        body: '{"data":{"id":"9b3f5edd-3a4a-55c4-824e-fd13f329c55d","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 226.346959ms
+        duration: 334.687174ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/19a97ed7-16da-4fd6-9576-544c7702a00c
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/9b3f5edd-3a4a-55c4-824e-fd13f329c55d
         method: GET
       response:
         proto: HTTP/1.1
@@ -292,12 +292,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 38
+        content_length: 167
         uncompressed: false
-        body: '{"errors":[{"title":"app not found"}]}'
+        body: '{"errors":[{"status":"404","id":"a89a404a-d258-4257-bd20-19f8cc696000","title":"app not found","detail":"app with id 9b3f5edd-3a4a-55c4-824e-fd13f329c55d not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 70.834958ms
+        duration: 135.819444ms

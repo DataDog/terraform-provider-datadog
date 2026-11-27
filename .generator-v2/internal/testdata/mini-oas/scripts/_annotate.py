@@ -11,6 +11,8 @@ For each sample, annotated copies are written from the same slice:
   - gen-test/<plural>.yaml  plural   — the collection GET as read, cardinality plural.
 A slice contributes only the variants its endpoints support.
 """
+from _registry import declare_artifact
+
 import os
 import yaml
 
@@ -63,18 +65,15 @@ def pluralize(name):
 
 def write_annotated(name, artifact_name, anchor, group, description, plural=False):
     """Load the pristine slice, write the extension (group + optional cardinality)
-    onto the anchor operation, and save to gen-test/<artifact_name>.yaml."""
+    onto the owning tag, and save to gen-test/<artifact_name>.yaml."""
     spec = yaml.load(open(os.path.join(MINI_OAS_DIR, f"mini-datadog_{name}.yaml")), Loader=Loader)
     path, method, _ = anchor
     ext = {
-        "artifact_kind": "data_source",
-        "artifact_name": artifact_name,
         "tf_description": description,
         "group": group,
     }
-    if plural:
-        ext["cardinality"] = "plural"
-    spec["paths"][path][method]["x-datadog-tf-generator"] = ext
+    block = "datasource_list" if plural else "datasource_singular"
+    declare_artifact(spec, spec["paths"][path][method], artifact_name, block, ext)
     with open(os.path.join(OUT, f"{artifact_name}.yaml"), "w") as f:
         yaml.dump(spec, f, Dumper=Dumper, sort_keys=False, default_flow_style=False,
                   width=100, allow_unicode=True)

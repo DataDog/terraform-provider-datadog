@@ -3,12 +3,12 @@
 page_title: "datadog_dashboard_v2 Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  [BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
+  datadog_dashboard_v2 is an alias for datadog_dashboard. Both resource names have identical behavior and schema; prefer datadog_dashboard for new configurations.
 ---
 
 # datadog_dashboard_v2 (Resource)
 
-[BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
+`datadog_dashboard_v2` is an alias for `datadog_dashboard`. Both resource names have identical behavior and schema; prefer `datadog_dashboard` for new configurations.
 
 ## Example Usage
 
@@ -92,6 +92,13 @@ resource "datadog_dashboard_v2" "ordered_dashboard" {
     }
   }
 
+  default_timeframe {
+    live {
+      unit  = "week"
+      value = 1
+    }
+  }
+
   template_variable {
     name    = "var_1"
     prefix  = "host"
@@ -149,6 +156,7 @@ resource "datadog_dashboard_v2" "free_dashboard" {
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
 - `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
+- `default_timeframe` (Block List, Max: 1) The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured. (see [below for nested schema](#nestedblock--default_timeframe))
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
@@ -165,6 +173,33 @@ resource "datadog_dashboard_v2" "free_dashboard" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--default_timeframe"></a>
+### Nested Schema for `default_timeframe`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--fixed))
+- `live` (Block List, Max: 1) A live timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--live))
+
+<a id="nestedblock--default_timeframe--fixed"></a>
+### Nested Schema for `default_timeframe.fixed`
+
+Required:
+
+- `from` (Number) Start time in milliseconds since epoch.
+- `to` (Number) End time in milliseconds since epoch.
+
+
+<a id="nestedblock--default_timeframe--live"></a>
+### Nested Schema for `default_timeframe.live`
+
+Required:
+
+- `unit` (String) Unit of the live timeframe span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the live timeframe span.
+
+
 
 <a id="nestedblock--tab"></a>
 ### Nested Schema for `tab`
@@ -17542,6 +17577,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query))
 - `response_format` (String) Widget response format. Valid values are `event_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.columns`
 
@@ -17583,6 +17622,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -17642,6 +17685,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition--time"></a>
@@ -24731,6 +24778,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query))
 - `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query`
 
@@ -24740,7 +24791,7 @@ Required:
 
 Optional:
 
-- `limit` (Number) Maximum number of results to display in the table.
+- `limit` (Number) Maximum number of results to display in the table. Defaults to `100`.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort))
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort"></a>
@@ -24750,6 +24801,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -29059,6 +29114,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display.flat`
@@ -30495,6 +30551,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -38613,6 +38673,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query))
 - `response_format` (String) Widget response format. Valid values are `event_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.list_stream_definition.request.columns`
 
@@ -38654,6 +38718,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -38713,6 +38781,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 <a id="nestedblock--widget--log_stream_definition--time"></a>
@@ -45886,6 +45958,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query))
 - `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.slo_list_definition.request.query`
 
@@ -45895,7 +45971,7 @@ Required:
 
 Optional:
 
-- `limit` (Number) Maximum number of results to display in the table.
+- `limit` (Number) Maximum number of results to display in the table. Defaults to `100`.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query--sort))
 
 <a id="nestedblock--widget--slo_list_definition--request--query--sort"></a>
@@ -45905,6 +45981,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -58462,6 +58542,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display.flat`
@@ -63785,6 +63866,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.toplist_definition.style.display.flat`
@@ -65221,6 +65303,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 

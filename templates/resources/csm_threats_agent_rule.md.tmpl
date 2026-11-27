@@ -1,0 +1,58 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.RenderedProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile "examples/resources/datadog_csm_threats_agent_rule/resource.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+{{ codefile "shell" "examples/resources/datadog_csm_threats_agent_rule/import.sh" }}
+
+## Migrate from `datadog_cloud_workload_security_agent_rule`
+
+The `datadog_cloud_workload_security_agent_rule` resource is deprecated. It can no longer create, update, or delete agent rules. Agent rules managed with it already exist in the `cws_custom` policy, with the same rule IDs. To move each rule to `datadog_csm_threats_agent_rule` without recreating it:
+
+1. Add a `datadog_csm_threats_agent_rule` resource with the same `name`, `expression`, `description`, and `enabled` values, and set `policy_id` to `cws_custom`.
+2. Import the existing rule with an `import` block, or run `terraform import datadog_csm_threats_agent_rule.<name> cws_custom:<rule_id>`.
+3. Remove the old resource from the state with a `removed` block (Terraform 1.7 or later), or run `terraform state rm datadog_cloud_workload_security_agent_rule.<name>`. In the `removed` block, set `destroy = false` so that Terraform does not try to delete the rule.
+4. Run `terraform plan`. The plan must show the import and the removal from state, and no change to the rule.
+
+```terraform
+resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
+  policy_id   = "cws_custom"
+  name        = "my_agent_rule"
+  description = "My agent rule"
+  enabled     = true
+  expression  = "exec.file.name == \"java\""
+}
+
+import {
+  to = datadog_csm_threats_agent_rule.my_agent_rule
+  id = "cws_custom:<rule_id>"
+}
+
+removed {
+  from = datadog_cloud_workload_security_agent_rule.my_agent_rule
+
+  lifecycle {
+    destroy = false
+  }
+}
+```
+
+After the apply, delete the `import` and `removed` blocks.

@@ -46,7 +46,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Elastic Cloud Integration
   description: 'Manage your Datadog Elastic Cloud integration accounts and account resources
 
@@ -126,15 +125,6 @@ paths:
       summary: Create an Elastic Cloud integration account
       tags:
       - Elastic Cloud Integration
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_elastic_cloud
-        tf_description: Provide a Datadog Elastic Cloud integration account resource.
-        group:
-          create: CreateElasticCloudIntegrationAccount
-          read: GetElasticCloudIntegrationAccount
-          update: UpdateElasticCloudIntegrationAccount
-          delete: DeleteElasticCloudIntegrationAccount
     get:
       x-permission:
         operator: OR
@@ -972,3 +962,25 @@ components:
       name: DD-APPLICATION-KEY
       type: apiKey
       x-env-name: DD_APP_KEY
+tags:
+- name: Elastic Cloud Integration
+  description: 'Manage your Datadog Elastic Cloud integration accounts and account resources
+
+    directly through the Datadog API. See the
+
+    [Elastic Cloud integration page](https://docs.datadoghq.com/integrations/elastic-cloud/) for
+
+    more information.'
+  externalDocs:
+    description: Elastic Cloud integration.
+    url: https://docs.datadoghq.com/integrations/elastic-cloud/
+  x-datadog-tf-generator:
+    integration_elastic_cloud:
+      resource:
+        artifact_name: integration_elastic_cloud
+        tf_description: Provide a Datadog Elastic Cloud integration account resource.
+        group:
+          create: CreateElasticCloudIntegrationAccount
+          read: GetElasticCloudIntegrationAccount
+          update: UpdateElasticCloudIntegrationAccount
+          delete: DeleteElasticCloudIntegrationAccount

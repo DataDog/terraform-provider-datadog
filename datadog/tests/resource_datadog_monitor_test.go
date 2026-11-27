@@ -852,6 +852,34 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 	})
 }
 
+// Cost alerts still accept cloud_cost_query with a metrics data source; it must read back as cloud_cost_query.
+func TestAccDatadogMonitor_FormulaFunction_CostMetricsSource(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	config := testAccCheckDatadogCostMonitorMetricsSource(monitorName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.1.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.1.aggregator", "sum"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "0"),
+				),
+			},
+			{Config: config, PlanOnly: true},
+		},
+	})
+}
+
 // TestAccDatadogMonitor_DynamicEmptyVariables exercises the wrapper-module pattern
 // from https://github.com/DataDog/terraform-provider-datadog/issues/3149 where a
 // `dynamic "variables"` block produces a single empty `variables {}` block (no
@@ -1795,6 +1823,36 @@ resource "datadog_monitor" "foo" {
 
   monitor_thresholds {
       critical = 6
+  }
+}
+`, uniq)
+}
+
+func testAccCheckDatadogCostMonitorMetricsSource(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "cost alert"
+  message = "test"
+  query   = "formula(\"query1 + query2\").last(\"30d\").anomaly(direction=\"both\") > 6"
+
+  variables {
+    cloud_cost_query {
+      data_source = "cloud_cost"
+      name        = "query1"
+      query       = "sum:aws.cost.amortized{servicename: ec2} by {account}"
+      aggregator  = "sum"
+    }
+    cloud_cost_query {
+      data_source = "metrics"
+      name        = "query2"
+      query       = "sum:system.cpu.user{*} by {account}"
+      aggregator  = "sum"
+    }
+  }
+
+  monitor_thresholds {
+    critical = 6
   }
 }
 `, uniq)
@@ -3291,6 +3349,131 @@ resource "datadog_monitor" "data_jobs_custom_type" {
 }`, uniq)
 }
 
+// TestAccDatadogMonitor_DataJobs_Aastra tests a job status monitor using the aastra query dialect
+func TestAccDatadogMonitor_DataJobs_Aastra(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resourceName := "datadog_monitor.data_jobs_aastra"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorAastra(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.jobs_query", "search for databricks_job"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.query_dialect", "aastra"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.run_filter", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.monitor_options.0.alert_on_every_failure", "true"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorAastra(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_aastra" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Data jobs alert triggered"
+  query   = "formula(\"failed_runs(run_query)\").by(name,workspace_name,entity_id).last(1d) > 0"
+
+  monitor_thresholds {
+    critical = 0
+  }
+
+  variables {
+    data_jobs_query {
+      name          = "run_query"
+      jobs_query    = "search for databricks_job"
+      job_type      = "databricks.job"
+      query_dialect = "aastra"
+      run_filter    = "env:prod"
+
+      monitor_options {
+        alert_on_every_failure = true
+      }
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataJobs_Duration tests a job duration monitor, whose
+// variable is a data quality query with the duration measure
+func TestAccDatadogMonitor_DataJobs_Duration(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resourceName := "datadog_monitor.data_jobs_duration"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorDuration(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.measure", "duration"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.filter", "search for databricks_job"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.run_filter", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.group_by.#", "3"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.monitor_options.0.detection_type", "anomaly"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.monitor_options.0.consecutive_runs", "2"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorDuration(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_duration" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Data jobs duration alert triggered"
+  query   = "formula(\"job_duration(run_query)\").detection(anomaly).by(name,workspace_name,entity_id) > 0"
+
+  variables {
+    data_quality_query {
+      name           = "run_query"
+      data_source    = "data_quality_metrics"
+      schema_version = "0.0.1"
+      measure        = "duration"
+      filter         = "search for databricks_job"
+      run_filter     = "env:prod"
+      group_by       = ["name", "workspace_name", "entity_id"]
+
+      monitor_options {
+        detection_type   = "anomaly"
+        consecutive_runs = 2
+      }
+    }
+  }
+}`, uniq)
+}
+
 func TestAccDatadogMonitor_Import_OnMissingData_Conflict(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -3346,4 +3529,60 @@ func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProv
 		return "", err
 	}
 	return strconv.FormatInt(created.GetId(), 10), nil
+}
+
+// Requires an org with the `monitors-dynamic-thresholds` feature flag to record/run.
+func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
+				),
+			},
+			{Config: config, PlanOnly: true},
+			{ResourceName: "datadog_monitor.foo", ImportState: true, ImportStateVerify: true, ImportStateVerifyIgnore: []string{"validate"}},
+		},
+	})
+}
+
+// Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
+func testAccCheckDatadogMonitorMetricQueryVariable(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%[1]s"
+  type    = "query alert"
+  message = "hello alerting talks"
+  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold"
+
+  monitor_thresholds {
+    critical_query = "formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"
+  }
+
+  variables {
+    metric_query {
+      data_source = "metrics"
+      name        = "query1"
+      query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
+    }
+    metric_query {
+      data_source = "metrics"
+      name        = "query2"
+      query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
+    }
+  }
+}`, uniq)
 }

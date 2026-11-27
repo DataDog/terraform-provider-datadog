@@ -95,6 +95,7 @@ type ApiInstances struct {
 	rolesApiV2                     *datadogV2.RolesApi
 	rumApiV2                       *datadogV2.RUMApi
 	rumMetricsApiV2                *datadogV2.RumMetricsApi
+	rumOperationsApiV2             *datadogV2.RUMOperationsApi
 	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
@@ -637,6 +638,14 @@ func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RumMetricsApi {
 		i.rumMetricsApiV2 = datadogV2.NewRumMetricsApi(i.HttpClient)
 	}
 	return i.rumMetricsApiV2
+}
+
+// GetRUMOperationsApiV2 get instance of RUMOperationsApi
+func (i *ApiInstances) GetRUMOperationsApiV2() *datadogV2.RUMOperationsApi {
+	if i.rumOperationsApiV2 == nil {
+		i.rumOperationsApiV2 = datadogV2.NewRUMOperationsApi(i.HttpClient)
+	}
+	return i.rumOperationsApiV2
 }
 
 // GetRumRetentionFiltersApiV2 get instance of RumRetentionFiltersApi

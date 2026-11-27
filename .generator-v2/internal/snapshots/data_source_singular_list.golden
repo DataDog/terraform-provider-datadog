@@ -16,7 +16,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogTeamDataSource{}
 )
 
-type datadogTeamDataSourceModel struct {
+type datadogTeam_Model struct {
 	ID             types.String `tfsdk:"id"`
 	Handle         types.String `tfsdk:"handle"`
 	HiddenModules  types.List   `tfsdk:"hidden_modules"`
@@ -74,7 +74,7 @@ func (d *datadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 }
 
 func (d *datadogTeamDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogTeamDataSourceModel
+	var state datadogTeam_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -104,7 +104,7 @@ func (d *datadogTeamDataSource) Read(ctx context.Context, request datasource.Rea
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamDataSource) updateState(ctx context.Context, state *datadogTeamDataSourceModel, resp *datadogV2.TeamResponse) diag.Diagnostics {
+func (d *datadogTeamDataSource) updateState(ctx context.Context, state *datadogTeam_Model, resp *datadogV2.TeamResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {

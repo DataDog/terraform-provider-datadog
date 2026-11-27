@@ -20,6 +20,7 @@ import (
 // asserting the live order matches the configuration at every step. A final step verifies import.
 func TestAccDatadogSecurityFindingsSeverityModifierRulesOrder(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create severity modifier rules.
+	cleanupSeverityModifierRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_severity_modifier_rules_order.order"
@@ -85,6 +86,7 @@ func TestAccDatadogSecurityFindingsSeverityModifierRulesOrder(t *testing.T) {
 // configured order.
 func TestAccDatadogSecurityFindingsSeverityModifierRulesOrder_Drift(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create severity modifier rules.
+	cleanupSeverityModifierRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_severity_modifier_rules_order.order"
@@ -131,6 +133,7 @@ func TestAccDatadogSecurityFindingsSeverityModifierRulesOrder_Drift(t *testing.T
 // apply must fail with that error.
 func TestAccDatadogSecurityFindingsSeverityModifierRulesOrder_OutOfBandRuleAdded(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create severity modifier rules.
+	cleanupSeverityModifierRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_severity_modifier_rules_order.order"

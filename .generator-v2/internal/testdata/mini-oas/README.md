@@ -17,34 +17,30 @@ file is a valid standalone OpenAPI 3.0.0 document (all `$ref`s resolve internall
 ## Scope
 
 V2 data sources only — data sources backed by the V1 API are excluded (no V1 spec
-slice). These slices carry **no** `x-datadog-tf-generator` annotation, so the
-generator skips them as-is; add the extension to opt an operation in.
+slice). The corpus includes unannotated slices and fixtures with tag registries.
+A slice without a tag-level `x-datadog-tf-generator` registry declares no artifacts.
 
 ## Using a slice with the generator
 
-Annotate the read operation, then point `tfgen generate` at the file. The by-id
-GET is the **singular** read:
+For authors exercising the generator, add a family to the owning top-level Tag
+Object. The family below declares both a by-id singular data source (`team`) and
+a list data source (`teams`); retain only blocks whose operations are in the slice.
 
 ```yaml
-# under paths./api/v2/team/{team_id}.get:
-x-datadog-tf-generator:
-  artifact_kind: data_source
-  artifact_name: team
-  group:
-    read: GetTeam
+tags:
+- name: Teams
+  x-datadog-tf-generator:
+    team:
+      datasource_singular:
+        group:
+          read: GetTeam
+      datasource_list:
+        group:
+          read: ListTeams
 ```
 
-The collection GET (no `{param}`) is the **plural** read — add `cardinality: plural`:
-
-```yaml
-# under paths./api/v2/team.get:
-x-datadog-tf-generator:
-  artifact_kind: data_source
-  artifact_name: teams
-  cardinality: plural
-  group:
-    read: ListTeams
-```
+See the [annotation reference](../../../docs/reference/annotation.md) for the
+validated contract. Operation-level annotations are ignored.
 
 ```sh
 tfgen generate --spec internal/testdata/mini-oas/mini-datadog_team.yaml \
@@ -63,7 +59,7 @@ The scripts that produced this corpus live in `scripts/`:
 - `_annotate.py` — writes annotated copies of a representative sample (under
   `scripts/gen-test/`) for an end-to-end `tfgen generate` run. Each slice yields
   the variants its endpoints support: a `<name>.yaml` singular (by-id GET) and/or
-  a `<plural>.yaml` plural (collection GET, `cardinality: plural`). Needs only the
+  a `<plural>.yaml` list (collection GET, `datasource_list` block). Needs only the
   committed slices — not the full v2 spec.
 
 The build scripts read the full v2 spec, which is **not** vendored here. Point at

@@ -1,0 +1,395 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 232
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"name":"A notification rule name","recipients":["slack-foo"]},"type":"monitor-notification-rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:17.636185+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"]},"relationships":{"created_by":{"data":{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5"}}}},"included":[{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5","attributes":{"uuid":"8c875225-6d15-408c-9dcc-dd539cd02fa5","name":"Shane Yuan","handle":"shane.yuan@datadoghq.com","created_at":"2026-10-30T20:27:13.026594+00:00","modified_at":"2026-10-30T20:27:25.236531+00:00","email":"shane.yuan@datadoghq.com","icon":"https://secure.gravatar.com/avatar/188fa6df65bb6c77c82677908094fbdb?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.50725ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:17.636186+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 68.187417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:17.636186+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 74.052958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"name":"A notification rule name","recipients":["slack-foo"],"rule_options":{"is_threaded":true}},"id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","type":"monitor-notification-rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:19.901738+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}},"relationships":{"created_by":{"data":{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5"}}}},"included":[{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5","attributes":{"uuid":"8c875225-6d15-408c-9dcc-dd539cd02fa5","name":"Shane Yuan","handle":"shane.yuan@datadoghq.com","created_at":"2026-10-30T20:27:13.026594+00:00","modified_at":"2026-10-30T20:27:25.236531+00:00","email":"shane.yuan@datadoghq.com","icon":"https://secure.gravatar.com/avatar/188fa6df65bb6c77c82677908094fbdb?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 164.561542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:19.901738+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 75.429833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:19.901738+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 77.628ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:19.901738+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 91.223417ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:19.901738+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 73.148666ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 313
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"name":"A notification rule name","recipients":["slack-foo"],"rule_options":{"is_threaded":false}},"id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","type":"monitor-notification-rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:23.763204+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":false}},"relationships":{"created_by":{"data":{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5"}}}},"included":[{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5","attributes":{"uuid":"8c875225-6d15-408c-9dcc-dd539cd02fa5","name":"Shane Yuan","handle":"shane.yuan@datadoghq.com","created_at":"2026-10-30T20:27:13.026594+00:00","modified_at":"2026-10-30T20:27:25.236531+00:00","email":"shane.yuan@datadoghq.com","icon":"https://secure.gravatar.com/avatar/188fa6df65bb6c77c82677908094fbdb?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.312791ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"859964b1-b610-4b2b-b3c1-6906e0daeb8a","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.622829+00:00","modified_at":"2026-11-05T18:25:23.763205+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Update-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":false}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 68.31925ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/859964b1-b610-4b2b-b3c1-6906e0daeb8a
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 175.514208ms

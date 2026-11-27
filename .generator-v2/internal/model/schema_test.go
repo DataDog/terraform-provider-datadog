@@ -507,6 +507,64 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 		))
 	})
 
+	It("names the attribute path once when a map value type cannot be mapped", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"labels": {
+				Kind:  SchemaKindMap,
+				Items: &Schema{Kind: SchemaKindUnsupported, UnsupportedReason: "no value type"},
+			},
+		}))
+		Expect(tree).To(BeNil())
+		var attrErr *AttributeError
+		Expect(errors.As(err, &attrErr)).To(BeTrue(), "expected *AttributeError, got %T: %v", err, err)
+		Expect(attrErr.Path).To(Equal("response.labels"))
+		Expect(attrErr.ElementPath).To(BeEmpty())
+		Expect(err.Error()).To(Equal(
+			`model: cannot build attribute at "response.labels": map value kind "unsupported" is not representable: no value type`,
+		))
+	})
+
+	DescribeTable("names the failing element while retaining the collection attribute path",
+		func(schema *Schema, suffix, reason string) {
+			tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{"labels": schema}))
+			Expect(tree).To(BeNil())
+			var attrErr *AttributeError
+			Expect(errors.As(err, &attrErr)).To(BeTrue())
+			Expect(attrErr.Path).To(Equal("response.labels"))
+			Expect(attrErr.ElementPath).To(Equal("response.labels" + suffix))
+			Expect(err.Error()).To(Equal(`model: cannot build attribute at "response.labels": element at "response.labels` + suffix + `": ` + reason))
+			// The mapping failure remains reachable through the complete unwrap chain.
+			cause := error(attrErr)
+			for errors.Unwrap(cause) != nil {
+				cause = errors.Unwrap(cause)
+			}
+			Expect(cause.Error()).To(Equal("model: " + reason))
+		},
+		Entry("map of map", mapSchema(mapSchema(&Schema{Kind: SchemaKindUnsupported, UnsupportedReason: "no value type"})), "{}{}",
+			`collection element kind "unsupported" has no framework element type: no value type`),
+		Entry("list of map", arrSchema(mapSchema(&Schema{Kind: SchemaKindUnsupported})), "[]{}",
+			`collection element kind "unsupported" has no framework element type`),
+		Entry("map of list", mapSchema(arrSchema(&Schema{Kind: SchemaKindUnsupported})), "{}[]",
+			`collection element kind "unsupported" has no framework element type`),
+		Entry("deeper mixed collections", arrSchema(mapSchema(arrSchema(mapSchema(&Schema{Kind: SchemaKindUnsupported})))), "[]{}[]{}",
+			`collection element kind "unsupported" has no framework element type`),
+		Entry("nil nested item", mapSchema(arrSchema(nil)), "{}[]",
+			`collection has nil element, no element type to map`),
+		Entry("invalid nested primitive", arrSchema(mapSchema(primSchema("decimal"))), "[]{}",
+			`primitive element type "decimal" has no framework element type`),
+	)
+
+	It("preserves a single-level list diagnostic", func() {
+		_, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"labels": arrSchema(&Schema{Kind: SchemaKindUnsupported, UnsupportedReason: "no value type"}),
+		}))
+		var attrErr *AttributeError
+		Expect(errors.As(err, &attrErr)).To(BeTrue())
+		Expect(attrErr.Path).To(Equal("response.labels"))
+		Expect(attrErr.ElementPath).To(BeEmpty())
+		Expect(err.Error()).To(Equal(`model: cannot build attribute at "response.labels": array element kind "unsupported" is not representable: no value type`))
+	})
+
 	It("builds a recursively typed non-object root", func() {
 		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
 		Expect(err).NotTo(HaveOccurred())

@@ -13,6 +13,9 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -97,6 +100,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 			"id": schema.StringAttribute{
 				Computed:    true,
 				Description: "The ID of the ruleset.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
 				Required:    true,
@@ -106,7 +112,12 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 				Computed:    true,
 				Description: "Whether the ruleset is enabled.",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
+			// position and version have no plan modifiers on purpose: version changes on
+			// every update, and position can shift when another ruleset is deleted.
 			"position": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The position of the ruleset in the pipeline.",
@@ -133,6 +144,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 							ElementType: types.StringType,
 							Computed:    true,
 							Description: "Rule metadata key-value pairs.",
+							PlanModifiers: []planmodifier.Map{
+								preserveRuleMetadataModifier{},
+							},
 						},
 					},
 					Blocks: map[string]schema.Block{
@@ -151,6 +165,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.Bool{
 										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
 									},
+									PlanModifiers: []planmodifier.Bool{
+										ifNotExistsFromIfTagExistsModifier{},
+									},
 								},
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
@@ -159,6 +176,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
+									PlanModifiers: []planmodifier.String{
+										ifTagExistsFromIfNotExistsModifier{fallbackForFalse: ifTagExistsReplace},
 									},
 								},
 								"source_keys": schema.ListAttribute{
@@ -175,6 +195,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Optional:    true,
 									Computed:    true,
 									Description: "Whether the query matching is case insensitive.",
+									PlanModifiers: []planmodifier.Bool{
+										caseInsensitivityModifier{},
+									},
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:           true,
@@ -184,6 +207,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.Bool{
 										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
 									},
+									PlanModifiers: []planmodifier.Bool{
+										ifNotExistsFromIfTagExistsModifier{},
+									},
 								},
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
@@ -192,6 +218,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
+									PlanModifiers: []planmodifier.String{
+										ifTagExistsFromIfNotExistsModifier{fallbackForFalse: ifTagExistsAppend},
 									},
 								},
 								"query": schema.StringAttribute{
@@ -222,6 +251,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Optional:    true,
 									Computed:    true,
 									Description: "Whether the reference table lookup is case insensitive.",
+									PlanModifiers: []planmodifier.Bool{
+										caseInsensitivityModifier{},
+									},
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:           true,
@@ -231,6 +263,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.Bool{
 										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
 									},
+									PlanModifiers: []planmodifier.Bool{
+										ifNotExistsFromIfTagExistsModifier{},
+									},
 								},
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
@@ -239,6 +274,9 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
+									PlanModifiers: []planmodifier.String{
+										ifTagExistsFromIfNotExistsModifier{fallbackForFalse: ifTagExistsAppend},
 									},
 								},
 								"source_keys": schema.ListAttribute{
@@ -379,7 +417,9 @@ func (r *tagPipelineRulesetResource) canonicalizeQuery(raw string) (string, *htt
 
 func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan tagPipelineRulesetModel
+	var config tagPipelineRulesetModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -390,6 +430,7 @@ func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 
+	clearUnconfiguredTagExistsFields(&plan, config)
 	apiReq := buildCreateRulesetRequestFromModel(plan)
 	apiResp, response, err := r.Api.CreateTagPipelinesRuleset(r.Auth, apiReq)
 	if err != nil {
@@ -454,6 +495,7 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
+	clearUnconfiguredTagExistsFields(&plan, config)
 	apiReq := buildUpdateRulesetRequestFromModel(plan)
 	apiResp, response, err := r.Api.UpdateTagPipelinesRuleset(r.Auth, rulesetId, apiReq)
 	if err != nil {
@@ -1086,4 +1128,198 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 		rules = append(rules, rule)
 	}
 	model.Rules = rules
+}
+
+// --- Plan modifiers ---
+//
+// Without these, every Computed attribute goes unknown whenever the ruleset
+// changes, so plans show unchanged rules as "(known after apply)".
+
+const (
+	ifTagExistsAppend     = "append"
+	ifTagExistsReplace    = "replace"
+	ifTagExistsDoNotApply = "do_not_apply"
+)
+
+// ifTagExistsFromIfNotExists mirrors how the API derives if_tag_exists from the
+// deprecated if_not_exists field. fallbackForFalse depends on the rule type:
+// "replace" for mapping rules, "append" for query and reference table rules.
+func ifTagExistsFromIfNotExists(ifNotExists bool, fallbackForFalse string) string {
+	if ifNotExists {
+		return ifTagExistsDoNotApply
+	}
+	return fallbackForFalse
+}
+
+// ifNotExistsFromIfTagExists mirrors how the API derives the deprecated
+// if_not_exists field from if_tag_exists. ok is false for unrecognized values.
+func ifNotExistsFromIfTagExists(ifTagExists string) (value bool, ok bool) {
+	switch ifTagExists {
+	case ifTagExistsDoNotApply:
+		return true, true
+	case ifTagExistsAppend, ifTagExistsReplace:
+		return false, true
+	default:
+		return false, false
+	}
+}
+
+// ifTagExistsFromIfNotExistsModifier plans if_tag_exists from if_not_exists
+// when only if_not_exists is configured. It only acts when state already holds
+// a value, which shows the API returns the field for this rule.
+type ifTagExistsFromIfNotExistsModifier struct {
+	fallbackForFalse string
+}
+
+func (m ifTagExistsFromIfNotExistsModifier) Description(_ context.Context) string {
+	return "Derives if_tag_exists from if_not_exists when only if_not_exists is configured."
+}
+
+func (m ifTagExistsFromIfNotExistsModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m ifTagExistsFromIfNotExistsModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if !resp.PlanValue.IsUnknown() || req.StateValue.IsNull() || req.StateValue.IsUnknown() {
+		return
+	}
+
+	var ifNotExists types.Bool
+	diags := req.Config.GetAttribute(ctx, req.Path.ParentPath().AtName("if_not_exists"), &ifNotExists)
+	if diags.HasError() || ifNotExists.IsNull() || ifNotExists.IsUnknown() {
+		return
+	}
+
+	resp.PlanValue = types.StringValue(ifTagExistsFromIfNotExists(ifNotExists.ValueBool(), m.fallbackForFalse))
+}
+
+// ifNotExistsFromIfTagExistsModifier plans if_not_exists from if_tag_exists
+// when only if_tag_exists is configured. It only acts when state already holds
+// a value, which shows the API returns the field for this rule.
+type ifNotExistsFromIfTagExistsModifier struct{}
+
+func (m ifNotExistsFromIfTagExistsModifier) Description(_ context.Context) string {
+	return "Derives if_not_exists from if_tag_exists when only if_tag_exists is configured."
+}
+
+func (m ifNotExistsFromIfTagExistsModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m ifNotExistsFromIfTagExistsModifier) PlanModifyBool(ctx context.Context, req planmodifier.BoolRequest, resp *planmodifier.BoolResponse) {
+	if !resp.PlanValue.IsUnknown() || req.StateValue.IsNull() || req.StateValue.IsUnknown() {
+		return
+	}
+
+	var ifTagExists types.String
+	diags := req.Config.GetAttribute(ctx, req.Path.ParentPath().AtName("if_tag_exists"), &ifTagExists)
+	if diags.HasError() || ifTagExists.IsNull() || ifTagExists.IsUnknown() {
+		return
+	}
+
+	if value, ok := ifNotExistsFromIfTagExists(ifTagExists.ValueString()); ok {
+		resp.PlanValue = types.BoolValue(value)
+	}
+}
+
+// caseInsensitivityModifier plans false when case_insensitivity is not
+// configured, which is what the API stores and what the request sends.
+type caseInsensitivityModifier struct{}
+
+func (m caseInsensitivityModifier) Description(_ context.Context) string {
+	return "Defaults case_insensitivity to false when it is not configured."
+}
+
+func (m caseInsensitivityModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m caseInsensitivityModifier) PlanModifyBool(ctx context.Context, req planmodifier.BoolRequest, resp *planmodifier.BoolResponse) {
+	if !resp.PlanValue.IsUnknown() {
+		return
+	}
+
+	// Leave blocks that are absent from the configuration alone.
+	var block types.Object
+	diags := req.Config.GetAttribute(ctx, req.Path.ParentPath(), &block)
+	if diags.HasError() || block.IsNull() || block.IsUnknown() {
+		return
+	}
+
+	resp.PlanValue = types.BoolValue(false)
+}
+
+// preserveRuleMetadataModifier keeps a rule's metadata when the rule at the same
+// position keeps its name. Metadata can't be set from Terraform, so the update
+// request sends this value back to avoid wiping metadata set in the UI.
+type preserveRuleMetadataModifier struct{}
+
+func (m preserveRuleMetadataModifier) Description(_ context.Context) string {
+	return "Keeps rule metadata from state when the rule name is unchanged."
+}
+
+func (m preserveRuleMetadataModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m preserveRuleMetadataModifier) PlanModifyMap(ctx context.Context, req planmodifier.MapRequest, resp *planmodifier.MapResponse) {
+	if !resp.PlanValue.IsUnknown() {
+		return
+	}
+
+	resp.PlanValue = types.MapNull(types.StringType)
+	if req.StateValue.IsNull() || req.StateValue.IsUnknown() {
+		return
+	}
+
+	namePath := req.Path.ParentPath().AtName("name")
+	var configName, stateName types.String
+	if diags := req.Config.GetAttribute(ctx, namePath, &configName); diags.HasError() {
+		return
+	}
+	if diags := req.State.GetAttribute(ctx, namePath, &stateName); diags.HasError() {
+		return
+	}
+
+	if configName.Equal(stateName) {
+		resp.PlanValue = req.StateValue
+	}
+}
+
+// clearUnconfiguredTagExistsFields nulls if_tag_exists and if_not_exists in the
+// plan wherever the configuration leaves them unset. The plan modifiers fill in
+// the derived value so plans stay stable, but the API request should only carry
+// the field the user configured.
+func clearUnconfiguredTagExistsFields(plan *tagPipelineRulesetModel, config tagPipelineRulesetModel) {
+	for i := range plan.Rules {
+		if i >= len(config.Rules) {
+			return
+		}
+		planRule, configRule := &plan.Rules[i], config.Rules[i]
+
+		if planRule.Mapping != nil && configRule.Mapping != nil {
+			if configRule.Mapping.IfTagExists.IsNull() {
+				planRule.Mapping.IfTagExists = types.StringNull()
+			}
+			if configRule.Mapping.IfNotExists.IsNull() {
+				planRule.Mapping.IfNotExists = types.BoolNull()
+			}
+		}
+		if planRule.Query != nil && configRule.Query != nil {
+			if configRule.Query.IfTagExists.IsNull() {
+				planRule.Query.IfTagExists = types.StringNull()
+			}
+			if configRule.Query.IfNotExists.IsNull() {
+				planRule.Query.IfNotExists = types.BoolNull()
+			}
+		}
+		if planRule.ReferenceTable != nil && configRule.ReferenceTable != nil {
+			if configRule.ReferenceTable.IfTagExists.IsNull() {
+				planRule.ReferenceTable.IfTagExists = types.StringNull()
+			}
+			if configRule.ReferenceTable.IfNotExists.IsNull() {
+				planRule.ReferenceTable.IfNotExists = types.BoolNull()
+			}
+		}
+	}
 }

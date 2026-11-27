@@ -1,0 +1,435 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 176
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"paused","source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 42.723834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 176
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"paused","source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.592959ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 256
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"organization","value":"tf-test-instance"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"},"type":"team_sync_bulk"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 128.779417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 301
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"organization","value":"tf-test-instance"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 35.969ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 301
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"organization","value":"tf-test-instance"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 35.177125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 301
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"organization","value":"tf-test-instance"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.43125ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 281
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"team","value":"tf-test-instance/0123456789abcdef0123456789abcdef"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"},"type":"team_sync_bulk"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 554.266666ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 326
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"team","value":"tf-test-instance/0123456789abcdef0123456789abcdef"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.100959ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 326
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"team","value":"tf-test-instance/0123456789abcdef0123456789abcdef"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 36.849916ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 326
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"team","value":"tf-test-instance/0123456789abcdef0123456789abcdef"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 36.750875ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 326
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"once","selection_state":[{"external_id":{"type":"team","value":"tf-test-instance/0123456789abcdef0123456789abcdef"},"operation":"include","scope":"subtree"}],"source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 93.844709ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 131
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"frequency":"paused","source":"servicenow","sync_membership":false,"type":"link"},"type":"team_sync_bulk"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 140.216125ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/sync?filter%5Bsource%5D=servicenow
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 176
+        uncompressed: false
+        body: '{"data":[{"id":"ec6db06e-6275-4774-8a67-d3686e07919c","type":"team_sync_bulk","attributes":{"frequency":"paused","source":"servicenow","sync_membership":false,"type":"link"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.574958ms

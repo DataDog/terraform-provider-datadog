@@ -44,7 +44,8 @@ Optional:
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `bearer_token`.
-- `token_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state.
+- `token` (String, Sensitive) Secret token used to authenticate with Databricks. Conflicts with `token_wo`. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `token_wo_version` (String) Version trigger for token_wo rotation. String length must be at least 1.
 
 
@@ -54,13 +55,14 @@ Optional:
 Required:
 
 - `client_id` (String) Client ID of the Databricks service principal.
-- `client_secret_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state.
-- `client_secret_wo_version` (String) Version trigger for client_secret_wo rotation. String length must be at least 1.
 
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `databricks_oauth`. Defaults to `"databricks_oauth"`.
 - `azure_tenant_id` (String) Microsoft Entra ID tenant of the service principal, for Azure Databricks workspaces.
+- `client_secret` (String, Sensitive) Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. Exactly one of `client_secret` or `client_secret_wo` must be set. Prefer `client_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `client_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `client_secret_wo_version` (String) Version trigger for client_secret_wo rotation. String length must be at least 1.
 
 
 <a id="nestedatt--authentication--databricks_integration_account_private_action_runner_auth"></a>
@@ -131,7 +133,8 @@ Optional:
 Optional:
 
 - `dd_api_key_id` (String) ID of the Datadog API key the global init script uses to submit data.
-- `dd_api_key_secret_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state.
+- `dd_api_key_secret` (String, Sensitive) Secret value of the Datadog API key identified by `dd_api_key_id`. Conflicts with `dd_api_key_secret_wo`. Prefer `dd_api_key_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `dd_api_key_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `dd_api_key_secret_wo_version` (String) Version trigger for dd_api_key_secret_wo rotation. String length must be at least 1.
 - `djm_global_init_script_enabled` (Boolean) Whether Datadog installs and manages the Agent on your Databricks clusters through a global init script. The script does not apply to clusters in Standard access mode. When `false`, the Agent is installed manually.
 - `script_gpum_enabled` (Boolean) Whether GPU metrics are collected from your Databricks clusters. The Agent installed by the global init script performs the collection, so this requires the dataflow to be enabled with `djm_global_init_script_enabled` set to `true`.

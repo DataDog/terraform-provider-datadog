@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: Delete response bodies
+  version: 1.0.0
+paths:
+  /api/v2/delete-nobody:
+    delete:
+      operationId: DeleteNoBody
+      responses:
+        '204':
+          description: Delete response
+  /api/v2/delete-named:
+    delete:
+      operationId: DeleteNamed
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletionResponse'
+  /api/v2/delete-inline:
+    delete:
+      operationId: DeleteInline
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /api/v2/delete-array:
+    delete:
+      operationId: DeleteArray
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeletionResponse'
+  /api/v2/delete-allof:
+    delete:
+      operationId: DeleteAllOf
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      status:
+                        type: string
+                  - type: object
+                    properties:
+                      count:
+                        type: integer
+  /api/v2/delete-oneof:
+    delete:
+      operationId: DeleteOneOf
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: string
+                  - type: integer
+  /api/v2/delete-plaintext:
+    delete:
+      operationId: DeletePlainText
+      responses:
+        '200':
+          description: Delete response
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/v2/delete-vendorjson:
+    delete:
+      operationId: DeleteVendorJSON
+      responses:
+        '200':
+          description: Delete response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/DeletionResponse'
+components:
+  schemas:
+    DeletionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+tags:
+  - name: Terraform
+    x-datadog-tf-generator:
+      delete_nobody:
+        resource:
+          group:
+            create: DeleteNoBody
+            read: DeleteNoBody
+            delete: DeleteNoBody
+      delete_named:
+        resource:
+          group:
+            create: DeleteNamed
+            read: DeleteNamed
+            delete: DeleteNamed
+      delete_inline:
+        resource:
+          group:
+            create: DeleteInline
+            read: DeleteInline
+            delete: DeleteInline
+      delete_array:
+        resource:
+          group:
+            create: DeleteArray
+            read: DeleteArray
+            delete: DeleteArray
+      delete_allof:
+        resource:
+          group:
+            create: DeleteAllOf
+            read: DeleteAllOf
+            delete: DeleteAllOf
+      delete_oneof:
+        resource:
+          group:
+            create: DeleteOneOf
+            read: DeleteOneOf
+            delete: DeleteOneOf
+      delete_plaintext:
+        resource:
+          group:
+            create: DeletePlainText
+            read: DeletePlainText
+            delete: DeletePlainText
+      delete_vendorjson:
+        resource:
+          group:
+            create: DeleteVendorJSON
+            read: DeleteVendorJSON
+            delete: DeleteVendorJSON

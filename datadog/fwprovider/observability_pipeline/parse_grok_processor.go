@@ -25,6 +25,7 @@ type ParseGrokProcessorRuleModel struct {
 
 type ParseGrokProcessorIncludeRuleModel struct {
 	Include      types.String    `tfsdk:"include"`
+	Name         types.String    `tfsdk:"name"`
 	MatchRules   []GrokRuleModel `tfsdk:"match_rule"`
 	SupportRules []GrokRuleModel `tfsdk:"support_rule"`
 }
@@ -119,6 +120,10 @@ func ParseGrokProcessorSchema() schema.ListNestedBlock {
 								Required:    true,
 								Description: "A Datadog search query used to determine which logs this Grok rule targets.",
 							},
+							"name": schema.StringAttribute{
+								Optional:    true,
+								Description: "Optional name identifying this Grok rule in worker diagnostics. Names must be unique within the processor.",
+							},
 						},
 						Blocks: map[string]schema.Block{
 							"match_rule":   grokMatchRuleBlock(),
@@ -198,6 +203,7 @@ func ExpandParseGrokProcessor(common BaseProcessorFields, src *ParseGrokProcesso
 	for _, r := range src.IncludeRules {
 		rule := &datadogV2.ObservabilityPipelineParseGrokProcessorIncludeRule{
 			Include:      r.Include.ValueString(),
+			Name:         r.Name.ValueStringPointer(),
 			MatchRules:   expandGrokMatchRules(r.MatchRules),
 			SupportRules: expandGrokSupportRules(r.SupportRules),
 		}
@@ -227,6 +233,7 @@ func FlattenParseGrokProcessor(src *datadogV2.ObservabilityPipelineParseGrokProc
 		} else if r := item.ObservabilityPipelineParseGrokProcessorIncludeRule; r != nil {
 			grok.IncludeRules = append(grok.IncludeRules, ParseGrokProcessorIncludeRuleModel{
 				Include:      types.StringValue(r.GetInclude()),
+				Name:         types.StringPointerValue(r.Name),
 				MatchRules:   flattenGrokMatchRules(r.GetMatchRules()),
 				SupportRules: flattenGrokSupportRules(r.GetSupportRules()),
 			})

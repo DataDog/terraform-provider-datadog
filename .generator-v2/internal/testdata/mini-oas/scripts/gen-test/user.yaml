@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Users
   description: Create, edit, and disable users.
   externalDocs:
@@ -150,12 +149,6 @@ paths:
         limitParam: page[size]
         pageParam: page[number]
         resultsPath: data
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: user
-        tf_description: Use this data source to retrieve information about an existing Datadog user.
-        group:
-          search: ListUsers
 components:
   parameters:
     PageNumber:
@@ -656,3 +649,15 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Users
+  description: Create, edit, and disable users.
+  externalDocs:
+    url: https://docs.datadoghq.com/account_management/users
+  x-datadog-tf-generator:
+    user:
+      datasource_singular:
+        artifact_name: user
+        tf_description: Use this data source to retrieve information about an existing Datadog user.
+        group:
+          search: ListUsers

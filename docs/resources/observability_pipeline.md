@@ -90,7 +90,7 @@ resource "datadog_observability_pipeline" "test" {
 Optional:
 
 - `destination` (Block List) List of destinations. (see [below for nested schema](#nestedblock--config--destination))
-- `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
+- `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`, `traces`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
 - `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
@@ -117,6 +117,7 @@ Optional:
 - `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
+- `datadog_traces` (Block List) The `datadog_traces` destination forwards traces to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_traces))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
@@ -126,7 +127,7 @@ Optional:
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
-- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
+- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics or traces using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
 - `prometheus_remote_write` (Block List) The `prometheus_remote_write` destination sends metrics to a Prometheus Remote Write compatible endpoint. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
@@ -141,9 +142,11 @@ Optional:
 
 Optional:
 
-- `auth` (Block List) (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
+- `auth` (Block List) Authentication settings for the Amazon OpenSearch destination. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
+- `data_stream` (Block List) Configuration options for writing to Amazon OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--data_stream))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch endpoint URL.
 
 <a id="nestedblock--config--destination--amazon_opensearch--auth"></a>
 ### Nested Schema for `config.destination.amazon_opensearch.auth`
@@ -157,7 +160,9 @@ Optional:
 - `assume_role` (String) ARN of the role to assume.
 - `aws_region` (String) AWS region override (if applicable).
 - `external_id` (String) External ID for assumed role.
+- `password_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch password (used when `strategy` is `basic`).
 - `session_name` (String) Session name for assumed role.
+- `username_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch username (used when `strategy` is `basic`).
 
 
 <a id="nestedblock--config--destination--amazon_opensearch--buffer"></a>
@@ -186,6 +191,16 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--amazon_opensearch--data_stream"></a>
+### Nested Schema for `config.destination.amazon_opensearch.data_stream`
+
+Optional:
+
+- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
+- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
+- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
 
 
 
@@ -911,6 +926,7 @@ Required:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes--buffer))
+- `name` (String) A human-readable name for this route.
 
 <a id="nestedblock--config--destination--datadog_logs--routes--buffer"></a>
 ### Nested Schema for `config.destination.datadog_logs.routes.buffer`
@@ -944,6 +960,74 @@ Optional:
 
 <a id="nestedblock--config--destination--datadog_metrics"></a>
 ### Nested Schema for `config.destination.datadog_metrics`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer))
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+
+<a id="nestedblock--config--destination--datadog_traces"></a>
+### Nested Schema for `config.destination.datadog_traces`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer))
+
+<a id="nestedblock--config--destination--datadog_traces--buffer"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_traces--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_traces--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 <a id="nestedblock--config--destination--elasticsearch"></a>
@@ -1549,7 +1633,7 @@ Optional:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer))
-- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.
+- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics or traces to.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--tls))
 
 <a id="nestedblock--config--destination--opentelemetry--buffer"></a>
@@ -2093,6 +2177,7 @@ Optional:
 - `rename_metric_tags` (Block List) The `rename_metric_tags` processor changes the keys of tags on metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
+- `spike_protection` (Block List) The `spike_protection` processor learns the normal log volume and detects spikes, optionally dropping or rerouting the excess events. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection))
 - `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
 - `tag_cardinality_limit` (Block List) The `tag_cardinality_limit` processor caps the number of distinct tag value combinations on metrics, dropping tags or events once the limit is exceeded. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
@@ -2194,6 +2279,10 @@ Required:
 - `include` (String) A Datadog search query used to filter events for this specific remap rule.
 - `name` (String) A descriptive name for this remap rule.
 - `source` (String) The VRL script source code that defines the transformation logic.
+
+Optional:
+
+- `sample` (String) A sample event used to test the VRL script in the pipeline editor.
 
 
 
@@ -2342,6 +2431,7 @@ Optional:
 
 Optional:
 
+- `enabled_metric_aggregation` (Boolean) [Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.
 - `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric))
 
 <a id="nestedblock--config--processor_group--processor--generate_metrics--metric"></a>
@@ -2587,6 +2677,7 @@ Required:
 Optional:
 
 - `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule))
+- `name` (String) Optional name identifying this Grok rule in worker diagnostics. Names must be unique within the processor.
 - `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule))
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule"></a>
@@ -2914,6 +3005,53 @@ Optional:
 
 
 
+<a id="nestedblock--config--processor_group--processor--spike_protection"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection`
+
+Required:
+
+- `name` (String) Name of the spike protection rule.
+- `spike_action` (String) The action to take when a spike is detected. One of `drop`, `no_action`, `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Valid values are `drop`, `no_action`, `overflow_routing`.
+
+Optional:
+
+- `action_when_missing_partitions` (String) The action to take when an event is missing one of the `partition_fields`. One of `ignore`, `default_bucket`. Valid values are `ignore`, `default_bucket`. Defaults to `"ignore"`.
+- `minimal_threshold` (Number) The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate. Defaults to 100 GiB.
+- `minimal_threshold_override` (Block List) A list of per-partition overrides for the minimal threshold, identified by matching field values. Requires `partition_fields` to be set. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override))
+- `partition_fields` (List of String) A list of fields used to segment log traffic. Volume is learned and evaluated independently for each unique combination of these field values. A maximum of five fields is supported.
+- `spike_threshold` (Number) The number of standard deviations above the learned mean volume that must be exceeded before a spike is detected. Defaults to `5`.
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override`
+
+Optional:
+
+- `field` (Block List) The set of field matchers that identifies the partition this override applies to. Every field name listed must also appear in `partition_fields`. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--field))
+- `minimal_threshold` (Block List) The minimal threshold to apply to the matching partition. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--minimal_threshold))
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--field"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override.field`
+
+Required:
+
+- `name` (String) The field name.
+- `value` (String) The field value.
+
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--minimal_threshold"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override.minimal_threshold`
+
+Required:
+
+- `type` (String) The minimal threshold type. One of `threshold`, `always_keep`. `always_keep` exempts the matching partition from spike protection. Valid values are `threshold`, `always_keep`.
+
+Optional:
+
+- `bytes` (Number) The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate for the matching partition. Used only when `type` is `threshold`.
+
+
+
+
 <a id="nestedblock--config--processor_group--processor--split_array"></a>
 ### Nested Schema for `config.processor_group.processor.split_array`
 
@@ -3007,6 +3145,7 @@ Optional:
 
 - `amazon_data_firehose` (Block List) The `amazon_data_firehose` source ingests logs from AWS Data Firehose. (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose))
 - `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication, TLS encryption, and configurable compression. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
+- `crowdstrike_fdr` (Block List) The `crowdstrike_fdr` source ingests CrowdStrike Falcon Data Replicator (FDR) data. It reads file notifications from the CrowdStrike-managed SQS queue for your FDR feed and downloads the referenced objects from the CrowdStrike-managed S3 bucket. (see [below for nested schema](#nestedblock--config--source--crowdstrike_fdr))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--source--datadog_agent))
 - `fluent_bit` (Block List) The `fluent_bit` source ingests logs from Fluent Bit. (see [below for nested schema](#nestedblock--config--source--fluent_bit))
 - `fluentd` (Block List) The `fluentd` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
@@ -3085,6 +3224,38 @@ Optional:
 
 <a id="nestedblock--config--source--amazon_s3--tls"></a>
 ### Nested Schema for `config.source.amazon_s3.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
+<a id="nestedblock--config--source--crowdstrike_fdr"></a>
+### Nested Schema for `config.source.crowdstrike_fdr`
+
+Required:
+
+- `region` (String) AWS region of the FDR feed's SQS queue and S3 bucket.
+
+Optional:
+
+- `access_key_id_key` (String) Name of the environment variable or secret that holds the AWS access key ID that CrowdStrike generated for the FDR feed.
+- `client_concurrency` (Number) Number of concurrent tasks polling the SQS queue. Defaults to the number of Worker threads.
+- `max_number_of_messages` (Number) Maximum number of SQS messages to receive per poll. Each message can reference multiple files. Defaults to 1.
+- `secret_access_key_key` (String) Name of the environment variable or secret that holds the AWS secret access key that CrowdStrike generated for the FDR feed.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--crowdstrike_fdr--tls))
+- `url_key` (String) Name of the environment variable or secret that holds the URL of the FDR feed's SQS queue.
+- `visibility_timeout_secs` (Number) Number of seconds a received SQS message is hidden from other consumers. Set it higher than the time needed to download and process the largest FDR file. Defaults to 300.
+
+<a id="nestedblock--config--source--crowdstrike_fdr--tls"></a>
+### Nested Schema for `config.source.crowdstrike_fdr.tls`
 
 Required:
 

@@ -22,7 +22,7 @@ var _ = Describe("buildResourceLifecycle", func() {
 		}))
 		Expect(art.Lifecycle.Read).To(Equal(&SDKCall{
 			GoPackage: "datadogV2", GoApiStruct: "IncidentsApi", GoMethod: "GetIncidentType",
-			GoResponseType: "IncidentTypeResponse",
+			GoResponseType: "IncidentTypeResponse", HasResponseBody: true,
 		}))
 		Expect(art.Lifecycle.Update).To(Equal(&SDKCall{
 			GoPackage: "datadogV2", GoApiStruct: "IncidentsApi", GoMethod: "UpdateIncidentType",

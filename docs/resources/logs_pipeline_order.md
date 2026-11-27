@@ -3,12 +3,12 @@
 page_title: "datadog_logs_pipeline_order Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+  Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. Each update replaces the entire order, so this resource can overwrite changes made at the same time in the Datadog UI, by automation, or by another Terraform run, even when ignore_unlisted_pipelines is true.
 ---
 
 # datadog_logs_pipeline_order (Resource)
 
-Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. Each update replaces the entire order, so this resource can overwrite changes made at the same time in the Datadog UI, by automation, or by another Terraform run, even when `ignore_unlisted_pipelines` is `true`.
 
 ## Example Usage
 
@@ -29,7 +29,11 @@ resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
 ### Required
 
 - `name` (String) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
-- `pipelines` (List of String) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
+- `pipelines` (List of String) The pipeline IDs in execution order. Include every pipeline in the organization unless `ignore_unlisted_pipelines` is `true`.
+
+### Optional
+
+- `ignore_unlisted_pipelines` (Boolean) When `true`, the resource manages only the relative order of the pipelines listed in `pipelines`. Each listed ID must be unique and match an existing pipeline. Unlisted pipelines keep their current positions, and pipelines added outside Terraform do not cause drift. For example, if the current order is `[A, X, B]` and you configure `[B, A]`, the result is `[B, X, A]`: pipeline `X` stays second but runs before `A` instead of after it. Leave this setting `false` to manage the full order, including which pipelines run first and last. Defaults to `false`.
 
 ### Read-Only
 

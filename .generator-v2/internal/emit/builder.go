@@ -268,7 +268,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		return buildPluralView(a)
 	}
 
-	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: modelNamer{base: dsGoName(a.Name)}}
+	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: dataSourceNamer(a.Name)}
 
 	// Resolve the SDK calls. read backs the by-id lookup, search the list; the
 	// presence of each selects the resolution shape (read-only / search / both).
@@ -325,7 +325,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	goName := dsGoName(a.Name)
-	rootStruct := b.namer.qualify("DataSourceModel")
+	rootStruct := b.namer.root()
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -388,6 +388,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		Cardinality: Singular,
 		TypeName:    a.Name,
 		GoName:      goName,
+		RootModel:   rootStruct,
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
@@ -738,6 +739,15 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 
 	var idAssign *StateAssignment
 	if id != nil {
+		// Resource and singular data-source IDs are always types.String, unlike
+		// ordinary payload attributes and IDs inside plural result items.
+		if id.GoType != "types.String" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{
+				Path:   id.Path,
+				Reason: fmt.Sprintf("response data.id maps to %s; Terraform identity requires types.String; non-string response IDs are unsupported", id.GoType),
+			})
+			return nil
+		}
 		idAssign = &StateAssignment{
 			Var:      "id",
 			GetterOk: rootExpr + ".GetIdOk()",
@@ -781,6 +791,8 @@ type dataSourceBuilder struct {
 	// planModifierPkgs collects the distinct planmodifier subpackages
 	// (e.g. "stringplanmodifier") any attribute's PlanModifiers reference.
 	planModifierPkgs map[string]struct{}
+	// usesCustomPlanModifiers selects the provider's shared modifiers.
+	usesCustomPlanModifiers bool
 	// defaultPkgs collects resource/schema default subpackages referenced by
 	// leaf defaults. Data-source walks leave it empty.
 	defaultPkgs map[string]struct{}
@@ -826,13 +838,18 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 		return nil, ""
 	}
 	names = make([]string, len(a.PlanModifiers))
-	for i, pm := range a.PlanModifiers {
-		names[i] = pm.Name
-	}
 	if b.planModifierPkgs == nil {
 		b.planModifierPkgs = make(map[string]struct{})
 	}
-	b.planModifierPkgs[model.PlanModifierPackage(a.GoType)] = struct{}{}
+	for i, pm := range a.PlanModifiers {
+		names[i] = pm.Name
+		pkg, _, _ := strings.Cut(pm.Name, ".")
+		if pkg == "planmodifiers" {
+			b.usesCustomPlanModifiers = true
+		} else {
+			b.planModifierPkgs[pkg] = struct{}{}
+		}
+	}
 	return names, model.FrameworkTypeName(a.GoType)
 }
 
@@ -930,7 +947,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
 		if a.WriteOnlySecret {
-			secret := buildWriteOnlySecretView(a, b.namer.base)
+			secret := buildWriteOnlySecretView(a, b.namer)
 			attrViews = append(attrViews, AttrView{TFName: tfName, WriteOnlySecret: &secret})
 			// The plaintext companion is stateful, so unlike the write-only
 			// attribute it needs a model field the plan round-trips through.
@@ -1251,12 +1268,9 @@ func hasWriteOnlySecrets(attributes []AttrView) bool {
 	return false
 }
 
-func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) WriteOnlySecretView {
+func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) WriteOnlySecretView {
 	tfName := tfNameOf(attribute.Path)
-	sdkField := model.SdkName(attribute.OpenAPIName)
-	if sdkField == "" {
-		sdkField = model.SdkName(tfName)
-	}
+	names := writeOnlySecretNamesOf(attribute)
 	description := strings.TrimSpace(attribute.WriteOnlyDescription)
 	if description == "" {
 		description = strings.TrimSpace(attribute.Description)
@@ -1265,8 +1279,6 @@ func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) W
 		description += " "
 	}
 	writeOnlyAttr := tfName + "_wo"
-	parentBlocks := writeOnlyParentBlocks(attribute.Path)
-	localStem := writeOnlyLocalStem(parentBlocks, tfName)
 	// The plaintext attribute is the Terraform <1.11 fallback: identical value,
 	// but stored in state, so its description says so rather than repeating the
 	// write-only wording.
@@ -1278,18 +1290,55 @@ func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) W
 		OriginalAttr:     tfName,
 		WriteOnlyAttr:    writeOnlyAttr,
 		TriggerAttr:      tfName + "_wo_version",
-		SDKField:         sdkField,
-		ParentBlocks:     parentBlocks,
+		SDKField:         names.sdkField,
+		ParentBlocks:     names.parentBlocks,
 		RequiredOnCreate: attribute.SecretRequiredOnCreate,
 		RequiredOnUpdate: attribute.SecretRequiredOnUpdate,
+		RequiresReplace:  slices.Contains(attribute.PlanModifiers, model.RequiresReplaceSpec(attribute.GoType)),
 		OriginalDescription: description + exclusivity +
 			" Prefer `" + writeOnlyAttr + "`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.",
 		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state. Requires Terraform 1.11+.",
 		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
-		ConfigVar:            artifactBase + upperFirst(localStem) + "WriteOnlySecretConfig",
-		HandlerVar:           localStem + "WriteOnlySecretHandler",
-		ResultVar:            localStem + "SecretResult",
+		ConfigVar:            namer.qualify(names.localStem + "WriteOnlySecretConfig"),
+		HandlerVar:           names.localStem + "WriteOnlySecretHandler",
+		ResultVar:            names.resultVar(),
 	}
+}
+
+// writeOnlySecretNames holds the names a write-only secret's generated code is
+// built from. Both the full view and request-field building derive from one
+// value, so the request body's result local always matches the one the
+// template declares. Request-field building needs only sdkField and
+// resultVar, not the full view, which also qualifies package-level names
+// through an artifact namer.
+type writeOnlySecretNames struct {
+	// sdkField is the SDK setter's field name.
+	sdkField string
+	// parentBlocks are the enclosing blocks between data.attributes and the
+	// secret.
+	parentBlocks []string
+	// localStem prefixes every function-local the template declares for the
+	// secret.
+	localStem string
+}
+
+func writeOnlySecretNamesOf(attribute *model.Attribute) writeOnlySecretNames {
+	tfName := tfNameOf(attribute.Path)
+	sdkField := model.SdkName(attribute.OpenAPIName)
+	if sdkField == "" {
+		sdkField = model.SdkName(tfName)
+	}
+	parentBlocks := writeOnlyParentBlocks(attribute.Path)
+	return writeOnlySecretNames{
+		sdkField:     sdkField,
+		parentBlocks: parentBlocks,
+		localStem:    writeOnlyLocalStem(parentBlocks, tfName),
+	}
+}
+
+// resultVar is the local the resolved secret value is read from.
+func (n writeOnlySecretNames) resultVar() string {
+	return n.localStem + "SecretResult"
 }
 
 func (b *dataSourceBuilder) collectWriteOnlySecret(secret WriteOnlySecretView) {
@@ -1523,7 +1572,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	// b hosts walk, so list-of-object item fields generate their element structs,
 	// and buildInputViews, so an input's plan-modifier package is registered for
 	// the import block (a plural data source's filters carry none).
-	b := &dataSourceBuilder{namer: modelNamer{base: goName}}
+	b := &dataSourceBuilder{namer: dataSourceNamer(a.Name)}
 
 	inputAttrs, inputFields := b.buildInputViews(inputLeaves)
 	filterParams, filterUUID, filterStrconv := buildFilterParams(call, filterLeaves, &unsupported)
@@ -1548,7 +1597,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	for _, lf := range scalarLeaves {
 		tfName := tfNameOf(lf.attr.Path)
 		itemAttrs = append(itemAttrs, AttrView{
-			TFName: tfName, TFType: lf.attr.TfType, Description: lf.attr.Description, Computed: true,
+			TFName: tfName, TFType: lf.attr.TfType, Description: lf.attr.Description, Computed: true, Sensitive: lf.attr.Sensitive,
 		})
 		itemFields = append(itemFields, ModelFieldView{
 			GoField: goFieldName(tfName), GoType: lf.attr.GoType, TFName: tfName,
@@ -1583,6 +1632,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				TFName:      tfName,
 				Description: n.Description,
 				Computed:    true,
+				Sensitive:   n.Sensitive,
 				IsBlock:     true,
 				ListBlock:   collection,
 				Blocks:      render.blocks,
@@ -1599,7 +1649,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				containerKind = "map"
 			}
 			itemAttrs = append(itemAttrs, AttrView{
-				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true,
+				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: n.GoType, TFName: tfName})
 			itemLists = append(itemLists, ListAssignment{
@@ -1613,7 +1663,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			loopVar, elemVar := base+"Item", base+"Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
-				TFName: tfName, Description: n.Description,
+				TFName: tfName, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 				IsBlock: true, ListBlock: true, Attributes: childAttrs, Blocks: childBlocks,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
@@ -1628,7 +1678,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, objVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
-				TFName: tfName, Description: n.Description,
+				TFName: tfName, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 				IsBlock: true, ListBlock: false, Attributes: childAttrs, Blocks: childBlocks,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "*" + elemStruct, TFName: tfName})
@@ -1660,8 +1710,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// Models: parent, the item struct, then any element structs walked for
 	// list-of-object item fields.
+	rootStruct := b.namer.root()
 	models := []ModelStructView{
-		{Name: b.namer.qualify("DataSourceModel"), Fields: parentFields},
+		{Name: rootStruct, Fields: parentFields},
 		{Name: itemStruct, Fields: itemFields},
 	}
 	models = append(models, b.models...)
@@ -1674,6 +1725,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		Cardinality: Plural,
 		TypeName:    a.Name,
 		GoName:      goName,
+		RootModel:   rootStruct,
 		Description: a.Description,
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
@@ -1695,6 +1747,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			Blocks: []AttrView{{
 				TFName:      a.Name,
 				Description: itemsBlock.Description,
+				Computed:    true,
+				Sensitive:   itemsBlock.Sensitive,
 				IsBlock:     true,
 				ListBlock:   true,
 				Attributes:  itemAttrs,
@@ -1827,22 +1881,60 @@ func lowerFirst(s string) string {
 }
 
 // dsGoName is the lowerCamel identifier base for a generated data source, e.g.
-// "datadogTeam". The Datadog prefix is unconditional, so <dsGoName>DataSource,
-// <dsGoName>DataSourceModel and New<title dsGoName>DataSource all line up.
+// "datadogTeam". The Datadog prefix is unconditional, so <dsGoName>DataSource
+// and New<title dsGoName>DataSource line up.
 func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
 }
 
-// checkResponseTypeMatches fails a resource whose role response type disagrees
-// with Read's: Create, Read and Update share one generated updateState method,
-// which cannot map two different SDK response types.
-func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
-	if roleType == readType {
-		return nil
+// resourceUsesSharedResponseData requires named response bodies for Create and
+// any supported Update. Distinct response envelopes must share Read's named data
+// object; mapping that value avoids depending on wrapper fields or their pointer
+// requiredness.
+func resourceUsesSharedResponseData(artifact string, lifecycle *model.LifecycleBindings) (bool, error) {
+	read := lifecycle.Read
+	roles := []struct {
+		name string
+		call *model.SDKCall
+	}{{"Create", lifecycle.Create}, {"Update", lifecycle.Update}}
+	sharedData := false
+	for _, role := range roles {
+		call := role.call
+		if call == nil {
+			continue
+		}
+		if !call.HasResponseBody {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s returns no response body — updateState requires one", artifact, role.name)
+		}
+		if call.GoResponseType == "" {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s has no named response type — updateState needs one", artifact, role.name)
+		}
+		if call.GoResponseType != read.GoResponseType {
+			sharedData = true
+		}
 	}
-	return fmt.Errorf(
-		"emit: resource %q: %s response type %q differs from Read's %q — a single updateState cannot map both",
-		artifact, role, roleType, readType)
+	if !sharedData {
+		return false, nil
+	}
+	if read.GoResponseDataType == "" {
+		return false, fmt.Errorf(
+			"emit: resource %q: Read response type %q has no named data object — distinct response wrappers require one",
+			artifact, read.GoResponseType)
+	}
+	for _, role := range roles {
+		call := role.call
+		if call == nil {
+			continue
+		}
+		if call.GoResponseDataType != read.GoResponseDataType || call.GoPackage != read.GoPackage {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s response type %q does not share Read's named data object %q",
+				artifact, role.name, call.GoResponseType, read.GoResponseDataType)
+		}
+	}
+	return true, nil
 }
 
 // BuildResourceView assembles the render-ready view for a resource artifact.
@@ -1862,13 +1954,15 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	if lc == nil || lc.Create == nil || lc.Read == nil || lc.Delete == nil {
 		return ResourceView{}, fmt.Errorf("emit: resource %q is missing a required lifecycle binding (Create/Read/Delete)", a.Name)
 	}
-	if err := checkResponseTypeMatches(a.Name, "Create", lc.Create.GoResponseType, lc.Read.GoResponseType); err != nil {
-		return ResourceView{}, err
+	// updateState takes a *<Read response type>; with none, a bodyless Create or
+	// Update would also match the empty name and render uncompilable calls.
+	if lc.Read.GoResponseType == "" {
+		return ResourceView{}, fmt.Errorf(
+			"emit: resource %q: Read has no named response type — updateState needs one", a.Name)
 	}
-	if lc.Update != nil {
-		if err := checkResponseTypeMatches(a.Name, "Update", lc.Update.GoResponseType, lc.Read.GoResponseType); err != nil {
-			return ResourceView{}, err
-		}
+	sharedResponseData, err := resourceUsesSharedResponseData(a.Name, lc)
+	if err != nil {
+		return ResourceView{}, err
 	}
 	if unsupported := validateWriteOnlySecrets(a.Schema.Attributes); len(unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: unsupported}
@@ -1876,7 +1970,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 
 	primary := lc.Read
 	goName := dsGoName(a.Name)
-	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
+	b := &dataSourceBuilder{receiver: "attributes", namer: resourceNamer(a.Name)}
 
 	// Split the path parameters back out: they are not part of the JSON:API
 	// envelope, so flattenEnvelope would drop them as stray siblings. Keyed on
@@ -1890,12 +1984,19 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		topLevel = append(topLevel, attr)
 	}
 
-	env := b.flattenEnvelope(topLevel, lc.IdStrategy, "resp.Data", pathInputs...)
+	responseRoot, responseParam, responseType := "resp.Data", "resp", "*"+primary.GoPackage+"."+primary.GoResponseType
+	stateResponseExpr := "&resp"
+	if sharedResponseData {
+		responseRoot, responseParam = "data", "data"
+		responseType = primary.GoPackage + "." + primary.GoResponseDataType
+		stateResponseExpr = "resp.GetData()"
+	}
+	env := b.flattenEnvelope(topLevel, lc.IdStrategy, responseRoot, pathInputs...)
 	if len(b.unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	rootStruct := b.namer.qualify("ResourceModel")
+	rootStruct := b.namer.root()
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
@@ -1914,6 +2015,25 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	// Resolved before the gate below, so a level with no SDK component or an
 	// untypable body id fails rather than rendering an empty or ill-typed body.
 	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, createFields, &b.unsupported)
+
+	callerAssignedID := lc.Create.RequestDeclaresID && !lc.Create.RequestIDReadOnly
+	if callerAssignedID {
+		var reason string
+		// A nil envelope already has an actionable construction diagnostic.
+		switch {
+		case !lc.Create.RequestIDRequired:
+			reason = "optional create data.id is unsupported: the generator cannot infer whether identity is caller-assigned or server-assigned; omit this artifact until optional identity semantics are supported"
+		case createEnvelope != nil:
+			reason = setRequestBodyID(createEnvelope, lc.Create, createArgs, "state.Name")
+		}
+		if reason != "" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{Path: "sdk." + lc.Create.GoMethod + ".data.id", Reason: reason})
+		}
+		if createEnvelope != nil && createEnvelope.IDPrep != nil {
+			u, str, _ := parseCallImports(createEnvelope.IDPrep.ParseCall)
+			createUUID, createStrconv = createUUID || u, createStrconv || str
+		}
+	}
 
 	updateView := CRUDCallView{}
 	var updateUUID, updateStrconv bool
@@ -1941,7 +2061,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// Keyed on whether the body itself declares an id, and of what type —
 		// not on env.idAssign, which describes only the response side.
 		if envelope := updateView.Envelope; envelope != nil {
-			if reason := setUpdateBodyID(envelope, lc.Update, updateArgs); reason != "" {
+			if reason := setRequestBodyID(envelope, lc.Update, updateArgs, "state.ID"); reason != "" {
 				b.unsupported = append(b.unsupported, UnsupportedNode{
 					Path:   "sdk." + lc.Update.GoMethod + ".data.id",
 					Reason: reason,
@@ -1977,16 +2097,65 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
 	}
 
+	if callerAssignedID {
+		hasResponseID := false
+		for _, attr := range topLevel {
+			if tfNameOf(attr.Path) == "data" {
+				for _, child := range attr.Children {
+					hasResponseID = hasResponseID || (tfNameOf(child.Path) == "id" && child.InResponse)
+				}
+			}
+		}
+		if !hasResponseID {
+			return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.data.id", Reason: "caller-assigned identity requires a response data.id for canonical API identity"}}}
+		}
+		for _, field := range models[0].Fields {
+			if field.TFName == "name" {
+				return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.name", Reason: "caller-assigned identity reserves name; an existing attribute or path parameter collides with it"}}}
+			}
+		}
+		nameModifier := "stringplanmodifier.RequiresReplace"
+		nameDescription := "Caller-assigned name sent as the create ID. Changing this value replaces the resource. After import, configure the canonical API ID as the name to avoid replacement."
+		if !lc.UpdateUnsupported {
+			nameModifier = goName + "NameRequiresReplace"
+			nameDescription = "Caller-assigned name sent as the create ID. After import, the first apply adopts the configured name through an update using the canonical API ID, without replacing the resource. Once the name is stored in state, changing it replaces the resource."
+		}
+		models[0].Fields = append(models[0].Fields, ModelFieldView{GoField: "Name", GoType: "types.String", TFName: "name"})
+		recordAttrs = append([]AttrView{{
+			TFName: "name", TFType: "schema.StringAttribute",
+			Description: nameDescription,
+			Required:    true, PlanModifierType: "String",
+			PlanModifiers: []string{nameModifier},
+			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
+		}}, recordAttrs...)
+		if b.planModifierPkgs == nil {
+			b.planModifierPkgs = make(map[string]struct{})
+		}
+		b.planModifierPkgs["stringplanmodifier"] = struct{}{}
+		b.usesStringValidators = true
+	}
+
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
 	defaultPkgs := sortedKeys(b.defaultPkgs)
 
+	var initialize *CreateInitializationView
+	if lc.Update != nil {
+		initialize = buildCreateInitialization(env.leaves, lc.Create.RequestAttributesSchema, lc.Update.RequestAttributesSchema, updateView, b.writeOnlySecrets, &b.unsupported)
+		if len(b.unsupported) > 0 {
+			return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+		}
+	}
+
 	return ResourceView{
-		TypeName:    a.Name,
-		GoName:      goName,
-		Description: a.Description,
-		SDKPackage:  primary.GoPackage,
-		APIStruct:   primary.GoApiStruct,
-		APIAccessor: defaultAPIAccessor(primary),
+		CallerAssignedID:  callerAssignedID,
+		TypeName:          a.Name,
+		GoName:            goName,
+		RootModel:         rootStruct,
+		Description:       a.Description,
+		SDKPackage:        primary.GoPackage,
+		APIStruct:         primary.GoApiStruct,
+		APIAccessor:       defaultAPIAccessor(primary),
+		StateResponseExpr: stateResponseExpr,
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
@@ -1997,9 +2166,10 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
 		},
 		Update:            updateView,
+		Initialize:        initialize,
 		UpdateUnsupported: lc.UpdateUnsupported,
 		Delete: CRUDCallView{
-			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
+			Method: lc.Delete.GoMethod, HasResponseBody: lc.Delete.HasResponseBody, Arguments: deleteArgs,
 		},
 		Models: models,
 		Schema: SchemaView{
@@ -2009,8 +2179,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			IncludeResourceID:   true,
 		},
 		State: StateView{
-			ParamName:   "resp",
-			ParamType:   "*" + primary.GoPackage + "." + primary.GoResponseType,
+			ParamName:   responseParam,
+			ParamType:   responseType,
 			Preamble:    env.preamble,
 			Assignments: assignments,
 			Lists:       recordLists,
@@ -2019,61 +2189,64 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// side and its exactly-one selection check on the request side. A
 		// request-only union never reaches oneOfRenders, since the state walk
 		// filters by response, hence the second term.
-		UsesFmt:              len(b.oneOfRenders) > 0 || requestImps.fmt,
-		UsesValidators:       b.usesStringValidators || b.usesObjectValidators,
-		UsesStringValidators: b.usesStringValidators,
-		UsesObjectValidators: b.usesObjectValidators,
-		UsesPlanModifiers:    len(planModifierPkgs) > 0,
-		PlanModifierPackages: planModifierPkgs,
-		DefaultPackages:      defaultPkgs,
-		Import:               buildImportView(pathAttrs),
-		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
-		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
-		UsesTime:             requestImps.time,
-		WriteOnlySecrets:     b.writeOnlySecrets,
-		UsesWriteOnly:        len(b.writeOnlySecrets) > 0,
-		Dropped:              b.dropped,
+		UsesFmt:                 len(b.oneOfRenders) > 0 || requestImps.fmt,
+		UsesValidators:          b.usesStringValidators || b.usesObjectValidators,
+		UsesStringValidators:    b.usesStringValidators,
+		UsesObjectValidators:    b.usesObjectValidators,
+		UsesPlanModifiers:       len(planModifierPkgs) > 0 || b.usesCustomPlanModifiers,
+		UsesCustomPlanModifiers: b.usesCustomPlanModifiers,
+		PlanModifierPackages:    planModifierPkgs,
+		DefaultPackages:         defaultPkgs,
+		Import:                  buildImportView(pathAttrs),
+		UsesUUID:                createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
+		UsesStrconv:             createStrconv || readStrconv || updateStrconv || deleteStrconv,
+		UsesTime:                requestImps.time,
+		WriteOnlySecrets:        b.writeOnlySecrets,
+		UsesWriteOnly:           len(b.writeOnlySecrets) > 0,
+		Dropped:                 b.dropped,
 	}, nil
 }
 
-// setUpdateBodyID fills in how a JSON:API update body sets its data.id: the
+// setRequestBodyID fills in how a JSON:API create or update body sets its data.id: the
 // expression, plus the argument view declaring a parsed local when the value
 // must be recovered from the string Terraform holds. The type comes from the
 // body's own data.id, never from the path parameter naming the same record
 // (rum_replay_playlist pairs an int64 path id with a string data.id); the path
 // argument's local is reused only when the types agree, found by name, since a
 // sub-resource's path names a parent first and index 0 is not the record id.
-func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView) (reason string) {
+func setRequestBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView, source string) (reason string) {
 	// A body declaring no id has nothing to set, and no generated setter.
 	if !call.RequestDeclaresID {
 		return ""
 	}
 	goType := call.RequestIDGoType
 	if goType == "" {
-		return "the update body's data.id carries a format the SDK generator itself cannot type, so there is no expression to set it from"
+		return "the request body's data.id has an unsupported type or enum; enums require a named string schema component"
 	}
 
 	// Reuse the path argument's local when the type matches, so the string is
 	// parsed once. By name, never by position.
 	for _, arg := range args {
-		if arg.TFName == "id" && arg.GoType == goType {
+		if source == "state.ID" && arg.TFName == "id" && arg.GoType == goType {
 			envelope.IDExpr = arg.Expression
 			return ""
 		}
 	}
 
 	// Otherwise the body parses under a name of its own, since a path argument
-	// of another type may already hold parsedIDVar here. hasEnum is always
-	// false: RequestIDGoType reads type and format only, so an enum-typed
-	// data.id arrives spelled "string".
+	// of another type may already hold parsedIDVar here.
 	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression(
-		call.GoPackage, "state.ID", requestIDVar, goType, false)
+		call.GoPackage, source, requestIDVar, goType, call.RequestIDEnum)
 	if unsupportedReason != "" {
 		return unsupportedReason
 	}
 	envelope.IDExpr = expr
 	if parsedVar != "" {
-		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: "id"}
+		tfName := "id"
+		if source == "state.Name" {
+			tfName = "name"
+		}
+		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfName}
 	}
 	return ""
 }
@@ -2102,7 +2275,7 @@ func buildImportView(pathAttrs []AttrView) ImportView {
 const (
 	requestDataVar       = "bodyData"
 	requestAttributesVar = "bodyAttributes"
-	// requestIDVar holds the update body's data.id when it must be parsed
+	// requestIDVar holds the request body's data.id when it must be parsed
 	// independently of the path argument, whose local is parsedIDVar.
 	requestIDVar = "parsedBodyId"
 	// parsedIDVar is the local idArgumentExpression declares for an id-aliased
@@ -2233,11 +2406,11 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
 		if a.WriteOnlySecret {
-			secret := buildWriteOnlySecretView(a, "")
+			names := writeOnlySecretNamesOf(a)
 			fields = append(fields, RequestFieldView{
-				GoField:         secret.SDKField,
+				GoField:         names.sdkField,
 				Target:          target,
-				WriteOnlyResult: secret.ResultVar,
+				WriteOnlyResult: names.resultVar(),
 			})
 			continue
 		}
@@ -2406,15 +2579,17 @@ func computedNullExpr(attribute *model.Attribute) string {
 // level, and reports whether that body declares it at all. The lookup is by
 // a.OpenAPIName, since SnakeCase cannot be inverted from the Terraform path;
 // the node returned is the level whose properties line up with a.Children, so a
-// collection is reached through Items. declared is false only when the role
-// demonstrably describes an object here and omits a. Every other shape — a nil
-// role, a level unreadable as an object, an attribute with no OpenAPI name —
-// means "unknown" and keeps the attribute rather than dropping it silently.
+// collection is reached through Items. A present role must declare a writable
+// property: an explicit empty object accepts no fields. A nil role or an
+// attribute with no OpenAPI name means "unknown" and retains the attribute.
 func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, declared bool) {
-	if role == nil || len(role.Properties) == 0 || a.OpenAPIName == "" {
+	if role == nil || a.OpenAPIName == "" {
 		return nil, true
 	}
 	child, declared = role.Properties[a.OpenAPIName]
+	if child != nil && child.ReadOnly {
+		return nil, false
+	}
 	if child != nil && child.Items != nil {
 		child = child.Items
 	}

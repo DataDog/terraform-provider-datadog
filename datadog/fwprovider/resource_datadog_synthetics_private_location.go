@@ -190,19 +190,14 @@ func (r *syntheticsPrivateLocationResource) Create(ctx context.Context, request 
 
 	confStr := string(conf)
 	apiKey := state.ApiKey.ValueString()
-	fmt.Println("before if api key")
 	if apiKey != "" {
-		fmt.Println("api key is not empty")
 		// Remove the closing brace, append the new field, and add the brace back
 		if len(confStr) > 1 && confStr[len(confStr)-1] == '}' {
-			fmt.Println("confStr is not empty")
 			// If config is just "{}", avoid the comma
 			if confStr == "{}" {
 				confStr = fmt.Sprintf(`{"datadogApiKey":"%s"}`, apiKey)
-				fmt.Println("confStr is empty, new value is ", confStr)
 			} else {
 				confStr = confStr[:len(confStr)-1] + fmt.Sprintf(`,"datadogApiKey":"%s"}`, apiKey)
-				fmt.Println("confStr is not empty, new value is ", confStr)
 			}
 		}
 	}
@@ -238,6 +233,17 @@ func (r *syntheticsPrivateLocationResource) Update(ctx context.Context, request 
 		return
 	}
 	r.updateState(ctx, &state, &resp)
+
+	// The API only returns config during creation. Preserve a known planned
+	// value, including null after import; changing null to an empty string
+	// would violate Terraform's apply consistency checks. If the plan is still
+	// unknown, restore the prior value (which may also be null).
+	if state.Config.IsUnknown() {
+		response.Diagnostics.Append(request.State.GetAttribute(ctx, frameworkPath.Root("config"), &state.Config)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)

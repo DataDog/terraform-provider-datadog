@@ -79,7 +79,8 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
-	OpentelemetryMetricsDestination   []*observability_pipeline.OpentelemetryMetricsDestinationModel   `tfsdk:"opentelemetry"`
+	OpentelemetryDestination          []*observability_pipeline.OpentelemetryDestinationModel          `tfsdk:"opentelemetry"`
+	DatadogTracesDestination          []*observability_pipeline.DatadogTracesDestinationModel          `tfsdk:"datadog_traces"`
 	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
@@ -89,7 +90,7 @@ type destinationModel struct {
 }
 
 type datadogMetricsDestinationModel struct {
-	// No additional fields needed - only id and inputs (defined in destinationModel)
+	Buffer []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type httpClientDestinationModel struct {
@@ -130,6 +131,7 @@ type sourceModel struct {
 	OpentelemetrySource         []*observability_pipeline.OpentelemetrySourceModel         `tfsdk:"opentelemetry"`
 	WebsocketSource             []*observability_pipeline.WebsocketSourceModel             `tfsdk:"websocket"`
 	PrometheusRemoteWriteSource []*observability_pipeline.PrometheusRemoteWriteSourceModel `tfsdk:"prometheus_remote_write"`
+	CrowdStrikeFdrSource        []*observability_pipeline.CrowdStrikeFdrSourceModel        `tfsdk:"crowdstrike_fdr"`
 }
 
 type logstashSourceModel struct {
@@ -208,12 +210,13 @@ type processorModel struct {
 	ParseXMLProcessor              []*parseXMLProcessorModel                                     `tfsdk:"parse_xml"`
 	SplitArrayProcessor            []*splitArrayProcessorModel                                   `tfsdk:"split_array"`
 	MetricTagsProcessor            []*metricTagsProcessorModel                                   `tfsdk:"metric_tags"`
-	GenerateMetricsV2Processor     []*generateMetricsProcessorModel                              `tfsdk:"generate_metrics"`
+	GenerateMetricsV2Processor     []*generateMetricsV2ProcessorModel                            `tfsdk:"generate_metrics"`
 	AddMetricTagsProcessor         []*observability_pipeline.AddMetricTagsProcessorModel         `tfsdk:"add_metric_tags"`
 	AggregateProcessor             []*observability_pipeline.AggregateProcessorModel             `tfsdk:"aggregate"`
 	RenameMetricTagsProcessor      []*observability_pipeline.RenameMetricTagsProcessorModel      `tfsdk:"rename_metric_tags"`
 	TagCardinalityLimitProcessor   []*observability_pipeline.TagCardinalityLimitProcessorModel   `tfsdk:"tag_cardinality_limit"`
 	MetricEnrichmentTableProcessor []*observability_pipeline.MetricEnrichmentTableProcessorModel `tfsdk:"metric_enrichment_table"`
+	SpikeProtectionProcessor       []*observability_pipeline.SpikeProtectionProcessorModel       `tfsdk:"spike_protection"`
 }
 
 type metricTagsProcessorModel struct {
@@ -400,9 +403,11 @@ type fieldValue struct {
 }
 
 type amazonOpenSearchDestinationModel struct {
-	BulkIndex types.String                                `tfsdk:"bulk_index"`
-	Auth      []amazonOpenSearchAuthModel                 `tfsdk:"auth"`
-	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	BulkIndex      types.String                                `tfsdk:"bulk_index"`
+	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
+	Auth           []amazonOpenSearchAuthModel                 `tfsdk:"auth"`
+	DataStream     []opensearchDestinationDataStreamModel      `tfsdk:"data_stream"`
+	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type amazonOpenSearchAuthModel struct {
@@ -411,6 +416,8 @@ type amazonOpenSearchAuthModel struct {
 	AssumeRole  types.String `tfsdk:"assume_role"`
 	ExternalId  types.String `tfsdk:"external_id"`
 	SessionName types.String `tfsdk:"session_name"`
+	UsernameKey types.String `tfsdk:"username_key"`
+	PasswordKey types.String `tfsdk:"password_key"`
 }
 
 type opensearchDestinationModel struct {
@@ -472,6 +479,7 @@ type datadogLogsDestinationModel struct {
 
 type datadogLogsDestinationRouteModel struct {
 	RouteId   types.String                                `tfsdk:"route_id"`
+	Name      types.String                                `tfsdk:"name"`
 	Include   types.String                                `tfsdk:"include"`
 	Site      types.String                                `tfsdk:"site"`
 	ApiKeyKey types.String                                `tfsdk:"api_key_key"`
@@ -535,6 +543,11 @@ type validTokenFieldToAddModel struct {
 
 type generateMetricsProcessorModel struct {
 	Metrics []generatedMetricModel `tfsdk:"metric"`
+}
+
+type generateMetricsV2ProcessorModel struct {
+	EnabledMetricAggregation types.Bool             `tfsdk:"enabled_metric_aggregation"`
+	Metrics                  []generatedMetricModel `tfsdk:"metric"`
 }
 
 type generatedMetricModel struct {
@@ -822,7 +835,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 							Computed:    true,
 							Description: "The type of data being ingested. Defaults to `logs` if not specified.",
 							Validators: []validator.String{
-								stringvalidator.OneOf("logs", "metrics"),
+								stringvalidator.OneOf("logs", "metrics", "traces"),
 							},
 						},
 						"use_legacy_search_syntax": schema.BoolAttribute{
@@ -1244,6 +1257,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"opentelemetry":           observability_pipeline.OpentelemetrySourceSchema(),
 									"websocket":               observability_pipeline.WebsocketSourceSchema(),
 									"prometheus_remote_write": observability_pipeline.PrometheusRemoteWriteSourceSchema(),
+									"crowdstrike_fdr":         observability_pipeline.CrowdStrikeFdrSourceSchema(),
 								},
 							},
 						},
@@ -1770,7 +1784,6 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
 														Blocks: map[string]schema.Block{
 															"metric": schema.ListNestedBlock{
 																Description: "Configuration for generating individual metrics.",
@@ -2130,6 +2143,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"aggregate":               observability_pipeline.AggregateProcessorSchema(),
 												"rename_metric_tags":      observability_pipeline.RenameMetricTagsProcessorSchema(),
 												"tag_cardinality_limit":   observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"spike_protection":        observability_pipeline.SpikeProtectionProcessorSchema(),
 												"metric_enrichment_table": observability_pipeline.MetricEnrichmentTableProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
 													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
@@ -2185,7 +2199,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
+														Attributes: map[string]schema.Attribute{
+															"enabled_metric_aggregation": schema.BoolAttribute{
+																Optional:    true,
+																Description: "[Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.",
+															},
+														},
 														Blocks: map[string]schema.Block{
 															"metric": schema.ListNestedBlock{
 																Description: "Configuration for generating individual metrics.",
@@ -2269,6 +2288,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Required:    true,
 																Description: "Unique identifier for this route within the destination.",
 															},
+															"name": schema.StringAttribute{
+																Optional:    true,
+																Description: "A human-readable name for this route.",
+															},
 															"include": schema.StringAttribute{
 																Required:    true,
 																Description: "A Datadog search query that determines which logs are forwarded using this route.",
@@ -2294,8 +2317,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"datadog_metrics": schema.ListNestedBlock{
-										Description:  "The `datadog_metrics` destination forwards metrics to Datadog.",
-										NestedObject: schema.NestedBlockObject{},
+										Description: "The `datadog_metrics` destination forwards metrics to Datadog.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
+											},
+										},
 									},
 									"http_client": schema.ListNestedBlock{
 										Description: "The `http_client` destination sends data to an HTTP endpoint.",
@@ -2703,9 +2730,14 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "The index or datastream to write logs to.",
 												},
+												"endpoint_url_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the Amazon OpenSearch endpoint URL.",
+												},
 											},
 											Blocks: map[string]schema.Block{
 												"auth": schema.ListNestedBlock{
+													Description: "Authentication settings for the Amazon OpenSearch destination.",
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
 															"strategy": schema.StringAttribute{
@@ -2728,11 +2760,41 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Optional:    true,
 																Description: "Session name for assumed role.",
 															},
+															"username_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the Amazon OpenSearch username (used when `strategy` is `basic`).",
+															},
+															"password_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the Amazon OpenSearch password (used when `strategy` is `basic`).",
+															},
 														},
 													},
 													Validators: []validator.List{
-														listvalidator.IsRequired(),
 														listvalidator.SizeAtMost(1),
+													},
+												},
+												"data_stream": schema.ListNestedBlock{
+													Description: "Configuration options for writing to Amazon OpenSearch Data Streams instead of a fixed index.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"dtype": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream type for your logs. This determines how logs are categorized within the data stream.",
+															},
+															"dataset": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream dataset for your logs. This groups logs by their source or application.",
+															},
+															"namespace": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream namespace for your logs. This separates logs into different environments or domains.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
 												"buffer": observability_pipeline.BufferOptionsSchema(),
@@ -2874,7 +2936,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
-									"opentelemetry":             observability_pipeline.OpentelemetryMetricsDestinationSchema(),
+									"opentelemetry":             observability_pipeline.OpentelemetryDestinationSchema(),
+									"datadog_traces":            observability_pipeline.DatadogTracesDestinationSchema(),
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
@@ -3146,6 +3209,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, p := range sourceBlock.PrometheusRemoteWriteSource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandPrometheusRemoteWriteSource(p, sourceId))
 		}
+		for _, c := range sourceBlock.CrowdStrikeFdrSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandCrowdStrikeFdrSource(c, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3236,8 +3302,11 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.SplunkHecMetricsDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
-		for _, d := range dest.OpentelemetryMetricsDestination {
-			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		for _, d := range dest.OpentelemetryDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.DatadogTracesDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandDatadogTracesDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.ClickhouseDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
@@ -3360,6 +3429,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if p := observability_pipeline.FlattenPrometheusRemoteWriteSource(src.ObservabilityPipelinePrometheusRemoteWriteSource); p != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelinePrometheusRemoteWriteSource.GetId())
 			sourceBlock.PrometheusRemoteWriteSource = append(sourceBlock.PrometheusRemoteWriteSource, p)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if c := observability_pipeline.FlattenCrowdStrikeFdrSource(src.ObservabilityPipelineCrowdStrikeFdrSource); c != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineCrowdStrikeFdrSource.GetId())
+			sourceBlock.CrowdStrikeFdrSource = append(sourceBlock.CrowdStrikeFdrSource, c)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3500,10 +3573,15 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if otelMetrics := observability_pipeline.FlattenOpentelemetryMetricsDestination(d.ObservabilityPipelineOpentelemetryMetricsDestination); otelMetrics != nil {
-			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryMetricsDestination.GetId())
-			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryMetricsDestination.GetInputs())
-			destBlock.OpentelemetryMetricsDestination = append(destBlock.OpentelemetryMetricsDestination, otelMetrics)
+		} else if otel := observability_pipeline.FlattenOpentelemetryDestination(d.ObservabilityPipelineOpentelemetryDestination); otel != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryDestination.GetInputs())
+			destBlock.OpentelemetryDestination = append(destBlock.OpentelemetryDestination, otel)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if ddTraces := observability_pipeline.FlattenDatadogTracesDestination(d.ObservabilityPipelineDatadogTracesDestination); ddTraces != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineDatadogTracesDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineDatadogTracesDestination.GetInputs())
+			destBlock.DatadogTracesDestination = append(destBlock.DatadogTracesDestination, ddTraces)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())
@@ -3744,6 +3822,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenTagCardinalityLimitProcessor(ctx, p.ObservabilityPipelineTagCardinalityLimitProcessor)
 		} else if p.ObservabilityPipelineMetricEnrichmentTableProcessor != nil {
 			procModel = flattenMetricEnrichmentTableProcessor(ctx, p.ObservabilityPipelineMetricEnrichmentTableProcessor)
+		} else if p.ObservabilityPipelineSpikeProtectionProcessor != nil {
+			procModel = flattenSpikeProtectionProcessor(ctx, p.ObservabilityPipelineSpikeProtectionProcessor)
 		}
 
 		if procModel != nil {
@@ -3894,6 +3974,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.MetricEnrichmentTableProcessor {
 		items = append(items, observability_pipeline.ExpandMetricEnrichmentTableProcessor(common, p))
+	}
+	for _, p := range processor.SpikeProtectionProcessor {
+		items = append(items, observability_pipeline.ExpandSpikeProtectionProcessor(common, p))
 	}
 
 	return items
@@ -4569,6 +4652,17 @@ func flattenTagCardinalityLimitProcessor(ctx context.Context, src *datadogV2.Obs
 	model := createProcessorModel(src)
 	if f := observability_pipeline.FlattenTagCardinalityLimitProcessor(src); f != nil {
 		model.TagCardinalityLimitProcessor = append(model.TagCardinalityLimitProcessor, f)
+	}
+	return model
+}
+
+func flattenSpikeProtectionProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSpikeProtectionProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenSpikeProtectionProcessor(src); f != nil {
+		model.SpikeProtectionProcessor = append(model.SpikeProtectionProcessor, f)
 	}
 	return model
 }
@@ -5349,7 +5443,12 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 		return nil
 	}
 	model := createProcessorModel(src)
-	genMetrics := &generateMetricsProcessorModel{}
+	genMetrics := &generateMetricsV2ProcessorModel{
+		EnabledMetricAggregation: types.BoolNull(),
+	}
+	if enabled, ok := src.GetEnabledMetricAggregationOk(); ok {
+		genMetrics.EnabledMetricAggregation = types.BoolValue(*enabled)
+	}
 	for _, metric := range src.GetMetrics() {
 		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
 		m := generatedMetricModel{
@@ -5376,9 +5475,12 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 	return model
 }
 
-func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsV2ProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
 	common.ApplyTo(proc)
+	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
+		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
+	}
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
 	for _, m := range src.Metrics {
@@ -5427,6 +5529,10 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 			routeModel := datadogLogsDestinationRouteModel{}
 
 			routeModel.RouteId = types.StringValue(route.GetRouteId())
+			routeModel.Name = types.StringNull()
+			if value, ok := route.GetNameOk(); ok {
+				routeModel.Name = types.StringValue(*value)
+			}
 			routeModel.Include = types.StringValue(route.GetInclude())
 			routeModel.Site = types.StringValue(route.GetSite())
 			routeModel.ApiKeyKey = types.StringValue(route.GetApiKeyKey())
@@ -5456,6 +5562,9 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 		for _, route := range src.Routes {
 			apiRoute := datadogV2.ObservabilityPipelineDatadogLogsDestinationRoute{}
 			apiRoute.SetRouteId(route.RouteId.ValueString())
+			if !route.Name.IsNull() && !route.Name.IsUnknown() {
+				apiRoute.SetName(route.Name.ValueString())
+			}
 			apiRoute.SetInclude(route.Include.ValueString())
 			apiRoute.SetSite(route.Site.ValueString())
 			apiRoute.SetApiKeyKey(route.ApiKeyKey.ValueString())
@@ -5481,7 +5590,16 @@ func flattenDatadogMetricsDestination(ctx context.Context, src *datadogV2.Observ
 	if src == nil {
 		return nil
 	}
-	return &datadogMetricsDestinationModel{}
+	out := &datadogMetricsDestinationModel{}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return out
 }
 
 func expandDatadogMetricsDestination(ctx context.Context, dest *destinationModel, src *datadogMetricsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -5490,6 +5608,14 @@ func expandDatadogMetricsDestination(ctx context.Context, dest *destinationModel
 	var inputs []string
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	d.SetInputs(inputs)
+
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineDatadogMetricsDestination: d,
 	}
@@ -7257,6 +7383,24 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
+	if !src.EndpointUrlKey.IsNull() {
+		amazonopensearch.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
+
+	if len(src.DataStream) > 0 {
+		ds := datadogV2.NewObservabilityPipelineOpenSearchDestinationDataStream()
+		if !src.DataStream[0].Dtype.IsNull() {
+			ds.SetDtype(src.DataStream[0].Dtype.ValueString())
+		}
+		if !src.DataStream[0].Dataset.IsNull() {
+			ds.SetDataset(src.DataStream[0].Dataset.ValueString())
+		}
+		if !src.DataStream[0].Namespace.IsNull() {
+			ds.SetNamespace(src.DataStream[0].Namespace.ValueString())
+		}
+		amazonopensearch.SetDataStream(*ds)
+	}
+
 	if len(src.Auth) > 0 {
 		authSrc := src.Auth[0]
 		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
@@ -7273,6 +7417,12 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		}
 		if !authSrc.SessionName.IsNull() {
 			auth.SessionName = authSrc.SessionName.ValueStringPointer()
+		}
+		if !authSrc.UsernameKey.IsNull() {
+			auth.UsernameKey = authSrc.UsernameKey.ValueStringPointer()
+		}
+		if !authSrc.PasswordKey.IsNull() {
+			auth.PasswordKey = authSrc.PasswordKey.ValueStringPointer()
 		}
 		amazonopensearch.SetAuth(auth)
 	}
@@ -7300,15 +7450,32 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 		model.BulkIndex = types.StringValue(*v)
 	}
 
-	model.Auth = []amazonOpenSearchAuthModel{
-		{
-			Strategy:    types.StringValue(string(src.Auth.Strategy)),
-			AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		},
+	if v, ok := src.GetEndpointUrlKeyOk(); ok {
+		model.EndpointUrlKey = types.StringValue(*v)
 	}
+
+	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {
+		model.DataStream = []opensearchDestinationDataStreamModel{{
+			Dtype:     types.StringPointerValue(ds.Dtype),
+			Dataset:   types.StringPointerValue(ds.Dataset),
+			Namespace: types.StringPointerValue(ds.Namespace),
+		}}
+	}
+
+	if auth, ok := src.GetAuthOk(); ok && auth != nil {
+		model.Auth = []amazonOpenSearchAuthModel{
+			{
+				Strategy:    types.StringValue(string(auth.Strategy)),
+				AwsRegion:   types.StringPointerValue(auth.AwsRegion),
+				AssumeRole:  types.StringPointerValue(auth.AssumeRole),
+				ExternalId:  types.StringPointerValue(auth.ExternalId),
+				SessionName: types.StringPointerValue(auth.SessionName),
+				UsernameKey: types.StringPointerValue(auth.UsernameKey),
+				PasswordKey: types.StringPointerValue(auth.PasswordKey),
+			},
+		}
+	}
+
 	if buffer, ok := src.GetBufferOk(); ok {
 		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
 		if outBuffer != nil {

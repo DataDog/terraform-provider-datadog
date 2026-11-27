@@ -12,11 +12,6 @@ paths:
       operationId: GetTree
       tags:
       - Trees
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: tree
-        group:
-          read: GetTree
       parameters:
       - name: id
         in: path
@@ -35,11 +30,6 @@ paths:
       operationId: GetLeaf
       tags:
       - Trees
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: leaf
-        group:
-          read: GetLeaf
       parameters:
       - name: id
         in: path
@@ -96,3 +86,16 @@ components:
       properties:
         name:
           type: string
+tags:
+- name: Trees
+  x-datadog-tf-generator:
+    tree:
+      datasource_singular:
+        artifact_name: tree
+        group:
+          read: GetTree
+    leaf:
+      datasource_singular:
+        artifact_name: leaf
+        group:
+          read: GetLeaf

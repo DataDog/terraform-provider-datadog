@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -230,29 +229,10 @@ func (r *awsWifIdentityMappingResource) Read(ctx context.Context, request resour
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-// A newly created mapping can intermittently return 404 even after a successful
-// GET. Retry before treating it as deleted so a refresh cannot orphan it.
 func (r *awsWifIdentityMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
-	var result datadogV2.AWSCloudAuthPersonaMappingResponse
-	var httpResponse *http.Response
-	// RetryContext can return on cancellation while its callback is still running.
-	var resultMu sync.Mutex
-	err := retry.RetryContext(ctx, awsWifIdentityMappingVisibilityTimeout, func() *retry.RetryError {
-		readResponse, readHTTPResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
-		resultMu.Lock()
-		result, httpResponse = readResponse, readHTTPResponse
-		resultMu.Unlock()
-		if err == nil {
-			return nil
-		}
-		if readHTTPResponse != nil && readHTTPResponse.StatusCode == http.StatusNotFound {
-			return retry.RetryableError(err)
-		}
-		return retry.NonRetryableError(err)
+	return readCloudAuthMappingWithRetry(ctx, awsWifIdentityMappingVisibilityTimeout, func() (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
+		return r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
 	})
-	resultMu.Lock()
-	defer resultMu.Unlock()
-	return result, httpResponse, err
 }
 
 func (r *awsWifIdentityMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {

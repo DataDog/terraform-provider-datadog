@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 	"sort"
@@ -34,6 +35,36 @@ type UnsupportedKindError struct {
 func (e *UnsupportedKindError) Error() string {
 	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable%s",
 		e.Path, e.Kind, reasonText(e.Reason))
+}
+
+// AttributeError reports a representable node whose framework or element type
+// cannot be mapped, naming the attribute path. Err is the mapping failure; its
+// own "model: " prefix is dropped so the message carries the package once.
+type AttributeError struct {
+	Path string
+	// ElementPath identifies the failing value in a nested collection. Empty for
+	// single-level failures, whose diagnostic format is unchanged.
+	ElementPath string
+	Err         error
+}
+
+func (e *AttributeError) Error() string {
+	reason := strings.TrimPrefix(e.Err.Error(), "model: ")
+	if e.ElementPath != "" {
+		reason = fmt.Sprintf("element at %q: %s", e.ElementPath, reason)
+	}
+	return fmt.Sprintf("model: cannot build attribute at %q: %s", e.Path, reason)
+}
+
+func (e *AttributeError) Unwrap() error { return e.Err }
+
+func collectionAttributeError(path, marker string, err error) *AttributeError {
+	result := &AttributeError{Path: path, Err: err}
+	var nested *elementTypeError
+	if errors.As(err, &nested) {
+		result.ElementPath = path + marker + nested.path
+	}
+	return result
 }
 
 // OneOfProjectionError reports a union that cannot be projected into a Terraform
@@ -176,7 +207,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 
 	tfType, goType, err := FrameworkType(s)
 	if err != nil {
-		return nil, err
+		return nil, &AttributeError{Path: path, Err: err}
 	}
 
 	attr := &Attribute{
@@ -237,7 +268,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, err
+				return nil, collectionAttributeError(path, "[]", err)
 			}
 		}
 
@@ -260,7 +291,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, err
+				return nil, collectionAttributeError(path, "{}", err)
 			}
 		}
 	}
@@ -592,20 +623,19 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 			a.Computed = true
 		}
 		a.InResponse = p.InResponse
-		a.PlanModifiers = b.resourcePlanModifiers(a, p.InRequest)
+		a.PlanModifiers = b.resourcePlanModifiers(a, s, p)
 	}
 	return nil
 }
 
 // resourcePlanModifiers derives a's plan modifiers, typed from a.GoType:
 // UseStateForUnknown() when a is both Optional and Computed, RequiresReplace()
-// when requestSettable and updateUnsupported. A Computed-only attribute gets
+// for a create-only input or when updates are unsupported. A Computed-only attribute gets
 // neither, since the server may change such a value during apply.
-// requestSettable is the caller's Provenance.InRequest — the fact itself rather
-// than a re-derivation from a.Required/a.Optional.
-func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) []PlanModifierSpec {
+// Role provenance distinguishes a create-only input from a mutable field.
+func (b *treeBuilder) resourcePlanModifiers(a *Attribute, s *Schema, provenance *SchemaProvenance) []PlanModifierSpec {
 	useStateForUnknown := a.Optional && a.Computed
-	requiresReplace := b.updateUnsupported && requestSettable
+	requiresReplace := provenance.InRequest && (b.updateUnsupported || provenance.CreateOnly)
 	if !useStateForUnknown && !requiresReplace {
 		return nil
 	}
@@ -614,7 +644,17 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) 
 		modifiers = append(modifiers, PlanModifierSpec{Name: PlanModifierPackage(a.GoType) + ".UseStateForUnknown"})
 	}
 	if requiresReplace {
-		modifiers = append(modifiers, RequiresReplaceSpec(a.GoType))
+		modifier := RequiresReplaceSpec(a.GoType)
+		// Descendants get their own replacement modifiers. Compare only the
+		// parent's structure so computed children becoming unknown do not make
+		// an unchanged immutable object replace a resource on a mutable update.
+		switch {
+		case s.Kind == SchemaKindObject || s.Kind == SchemaKindOneOf:
+			modifier.Name = "planmodifiers.RequiresReplaceObjectStructure"
+		case s.Kind == SchemaKindArray && s.Items != nil && (s.Items.Kind == SchemaKindObject || s.Items.Kind == SchemaKindOneOf):
+			modifier.Name = "planmodifiers.RequiresReplaceListStructure"
+		}
+		modifiers = append(modifiers, modifier)
 	}
 	return modifiers
 }

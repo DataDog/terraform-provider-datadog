@@ -69,12 +69,12 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 
 func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.MetricMetadata) {
 	return d.Get("metric").(string), &datadogV1.MetricMetadata{
-		Type:           datadog.PtrString(d.Get("type").(string)),
-		Description:    datadog.PtrString(d.Get("description").(string)),
-		ShortName:      datadog.PtrString(d.Get("short_name").(string)),
-		Unit:           datadog.PtrString(d.Get("unit").(string)),
-		PerUnit:        datadog.PtrString(d.Get("per_unit").(string)),
-		StatsdInterval: datadog.PtrInt64(int64(d.Get("statsd_interval").(int))),
+		Type:           *datadog.NewNullableString(datadog.PtrString(d.Get("type").(string))),
+		Description:    *datadog.NewNullableString(datadog.PtrString(d.Get("description").(string))),
+		ShortName:      *datadog.NewNullableString(datadog.PtrString(d.Get("short_name").(string))),
+		Unit:           *datadog.NewNullableString(datadog.PtrString(d.Get("unit").(string))),
+		PerUnit:        *datadog.NewNullableString(datadog.PtrString(d.Get("per_unit").(string))),
+		StatsdInterval: *datadog.NewNullableInt64(datadog.PtrInt64(int64(d.Get("statsd_interval").(int)))),
 	}
 }
 
@@ -131,7 +131,7 @@ func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.Metri
 	if err := d.Set("per_unit", metadata.GetPerUnit()); err != nil {
 		return diag.FromErr(err)
 	}
-	if v, ok := metadata.GetStatsdIntervalOk(); ok {
+	if v, ok := metadata.GetStatsdIntervalOk(); ok && v != nil {
 		if err := d.Set("statsd_interval", *v); err != nil {
 			return diag.FromErr(err)
 		}

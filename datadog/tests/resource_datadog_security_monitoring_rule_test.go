@@ -508,6 +508,9 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("API no longer allows creating signal_correlation rules (403); replay-only to keep read/update coverage of existing rules")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
@@ -528,6 +531,105 @@ func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestAccDatadogSecurityMonitoringRule_SecuritySignalsDataSource(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := providers.frameworkProvider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringSecuritySignalsConfig(ruleName, ruleName, "host", "first > 0 && second > 0"),
+				Check:  testAccCheckDatadogSecurityMonitoringSecuritySignalsCheck(accProvider, ruleName, "host", "first > 0 && second > 0"),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringSecuritySignalsConfig(ruleName, ruleName+" - updated", "service", "first > 1 && second > 0"),
+				Check:  testAccCheckDatadogSecurityMonitoringSecuritySignalsCheck(accProvider, ruleName+" - updated", "service", "first > 1 && second > 0"),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSecurityMonitoringSecuritySignalsConfig(baseName string, name string, groupBy string, condition string) string {
+	return fmt.Sprintf(`
+%s
+%s
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s"
+	message = "acceptance rule triggered"
+	enabled = false
+	// Queries reference rule IDs that are unknown at plan time.
+	validate = false
+
+	query {
+		name = "first"
+		data_source = "security_signals"
+		query = "@workflow.rule.id:${datadog_security_monitoring_rule.acceptance_test_0.id}"
+		aggregation = "count"
+		group_by_fields = ["%s"]
+	}
+
+	query {
+		name = "second"
+		data_source = "security_signals"
+		query = "@workflow.rule.id:${datadog_security_monitoring_rule.acceptance_test_1.id}"
+		aggregation = "count"
+		group_by_fields = ["%s"]
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "%s"
+	}
+
+	options {
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	type = "log_detection"
+
+	tags = ["alert:red"]
+}
+`, testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(baseName+"_rule_0", "0"),
+		testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(baseName+"_rule_1", "1"),
+		name, groupBy, groupBy, condition)
+}
+
+func testAccCheckDatadogSecurityMonitoringSecuritySignalsCheck(accProvider *fwprovider.FrameworkProvider, ruleName string, groupBy string, condition string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "type", "log_detection"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.#", "2"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.data_source", "security_signals"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.group_by_fields.0", groupBy),
+		testCheckSecuritySignalsQueryRuleId(0),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.1.data_source", "security_signals"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.1.group_by_fields.0", groupBy),
+		testCheckSecuritySignalsQueryRuleId(1),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "case.0.condition", condition),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "signal_query.#", "0"),
+	)
+}
+
+func testCheckSecuritySignalsQueryRuleId(idx int) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		ref, ok := s.RootModule().Resources[fmt.Sprintf("%s_%d", tfSecurityRuleName, idx)]
+		if !ok {
+			return fmt.Errorf("referenced rule %d not found in state", idx)
+		}
+		return resource.TestCheckResourceAttr(tfSecurityRuleName, fmt.Sprintf("query.%d.query", idx), "@workflow.rule.id:"+ref.Primary.ID)(s)
+	}
 }
 
 func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {

@@ -6,12 +6,6 @@ paths:
   /defaults:
     post:
       operationId: CreateDefaults
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: defaults
-        group:
-          create: CreateDefaults
-          read: CreateDefaults
       requestBody:
         content:
           application/json:
@@ -113,3 +107,13 @@ components:
         - basic
         - token
       default: basic
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    defaults:
+      resource:
+        artifact_name: defaults
+        group:
+          create: CreateDefaults
+          read: CreateDefaults
+          delete: CreateDefaults

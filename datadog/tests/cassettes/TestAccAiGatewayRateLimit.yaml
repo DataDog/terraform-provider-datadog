@@ -1,0 +1,370 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 204
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"input_tokens_per_minute":50000,"mode":"ALERT","name":"tf-TestAccAiGatewayRateLimit-local-1795020942","requests_per_minute":100,"tags":{"provider":"openai"}},"type":"rate-limits"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":true,"input_tokens_per_minute":50000,"is_template":false,"mode":"ALERT","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":100,"revision":1,"scope_restricted":false,"tags":{"provider":"openai"},"template_split_dims":[],"updated_at":"2026-11-18T16:55:45.321258Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 406.441875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":true,"input_tokens_per_minute":50000,"is_template":false,"mode":"ALERT","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":100,"revision":1,"scope_restricted":false,"tags":{"provider":"openai"},"template_split_dims":[],"updated_at":"2026-11-18T16:55:45.321258Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 324.114959ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":true,"input_tokens_per_minute":50000,"is_template":false,"mode":"ALERT","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":100,"revision":1,"scope_restricted":false,"tags":{"provider":"openai"},"template_split_dims":[],"updated_at":"2026-11-18T16:55:45.321258Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 24.554958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":true,"input_tokens_per_minute":50000,"is_template":false,"mode":"ALERT","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":100,"revision":1,"scope_restricted":false,"tags":{"provider":"openai"},"template_split_dims":[],"updated_at":"2026-11-18T16:55:45.321258Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 24.563792ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 298
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"input_tokens_per_minute":0,"mode":"ENFORCE","name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":0,"requests_per_minute":200,"tags":{},"team_id":"","user_id":""},"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 590
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":false,"input_tokens_per_minute":null,"is_template":false,"mode":"ENFORCE","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":200,"revision":2,"scope_restricted":false,"tags":{},"template_split_dims":[],"updated_at":"2026-11-18T16:55:47.368329Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 65.383042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 590
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":false,"input_tokens_per_minute":null,"is_template":false,"mode":"ENFORCE","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":200,"revision":2,"scope_restricted":false,"tags":{},"template_split_dims":[],"updated_at":"2026-11-18T16:55:47.368329Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 22.112ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 590
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":false,"input_tokens_per_minute":null,"is_template":false,"mode":"ENFORCE","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":200,"revision":2,"scope_restricted":false,"tags":{},"template_split_dims":[],"updated_at":"2026-11-18T16:55:47.368329Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 24.331791ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 590
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":false,"input_tokens_per_minute":null,"is_template":false,"mode":"ENFORCE","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":200,"revision":2,"scope_restricted":false,"tags":{},"template_split_dims":[],"updated_at":"2026-11-18T16:55:47.368329Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 22.021542ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 590
+        uncompressed: false
+        body: '{"data":{"id":"cea185f7-9c28-43af-a564-efdf76aef85b","type":"rate-limits","attributes":{"cost_microcents_per_minute":null,"created_at":"2026-11-18T16:55:45.321258Z","created_by":"frog@datadoghq.com","enabled":false,"input_tokens_per_minute":null,"is_template":false,"mode":"ENFORCE","monitor_id":346634229,"name":"tf-TestAccAiGatewayRateLimit-local-1795020942","output_tokens_per_minute":null,"requests_per_minute":200,"revision":2,"scope_restricted":false,"tags":{},"template_split_dims":[],"updated_at":"2026-11-18T16:55:47.368329Z","updated_by":"frog@datadoghq.com","window_limits":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 28.503041ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 59.570916ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rate-limits/cea185f7-9c28-43af-a564-efdf76aef85b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 25.449958ms

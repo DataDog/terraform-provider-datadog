@@ -23,15 +23,23 @@ const (
 // Every field is derived from a *model.Artifact, which is what lets one set of
 // recursive partials serve both the singular and plural shapes.
 type DataSourceView struct {
+	// OwnerTag is the x-datadog-tf-generator tag that declared the artifact,
+	// recorded in the source so a scoped --reconcile can attribute the file
+	// once its annotation is gone. Empty omits the marker.
+	OwnerTag string
+
 	// Cardinality picks the singular or plural template.
 	Cardinality Cardinality
 
 	// TypeName is the Terraform type suffix written to response.TypeName
 	TypeName string
 	// GoName is the lowerCamel identifier base, e.g. "incidentType". It builds
-	// the Go type names <GoName>DataSource and <GoName>DataSourceModel and,
-	// title-cased, the New<GoName>DataSource constructor.
+	// the Go type name <GoName>DataSource and, title-cased, the
+	// New<GoName>DataSource constructor.
 	GoName string
+	// RootModel is the Go struct the data source's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel string
 	// Description is the schema-level data-source description.
 	Description string
 
@@ -250,6 +258,7 @@ type WriteOnlySecretView struct {
 	ParentBlocks         []string
 	RequiredOnCreate     bool
 	RequiredOnUpdate     bool
+	RequiresReplace      bool
 	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
@@ -329,8 +338,8 @@ type AttrView struct {
 
 // ModelStructView is one Go struct in the generated file's data model.
 type ModelStructView struct {
-	// Name is the Go struct type name, e.g. "incidentTypeDataSourceModel" or
-	// "TeamModel".
+	// Name is the Go struct type name, e.g. "datadogIncidentType_Model" or
+	// "datadogIncidentType_FieldsModel".
 	Name string
 	// Fields are emitted in declaration order; a field's leading Comment groups
 	// it in the output (e.g. "Query Parameters", "Results").
@@ -536,8 +545,13 @@ type OneOfVariantAssignment struct {
 
 // ResourceView is the render-ready data context for the resource template.
 type ResourceView struct {
-	TypeName    string
-	GoName      string
+	// CallerAssignedID separates the create name from computed API identity.
+	CallerAssignedID bool
+	TypeName         string
+	GoName           string
+	// RootModel is the Go struct the resource's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel   string
 	Description string
 
 	SDKPackage     string
@@ -551,6 +565,10 @@ type ResourceView struct {
 	Read   CRUDCallView
 	Update CRUDCallView
 	Delete CRUDCallView
+	// Initialize applies configured update-only fields after Create has saved
+	// the server-assigned identity. Nil when both request shapes accept the
+	// same configurable fields.
+	Initialize *CreateInitializationView
 
 	// Import describes how ImportState recovers the resource's identity: the
 	// part count, the expected format string and the id's own position are
@@ -564,14 +582,18 @@ type ResourceView struct {
 	Models []ModelStructView
 	Schema SchemaView
 	State  StateView
+	// StateResponseExpr is the argument passed to updateState by Create, Read
+	// and Update: either &resp or the shared data object resp.GetData().
+	StateResponseExpr string
 
-	UsesFmt              bool
-	UsesValidators       bool
-	UsesStringValidators bool
-	UsesObjectValidators bool
-	UsesPlanModifiers    bool
-	PlanModifierPackages []string
-	DefaultPackages      []string
+	UsesFmt                 bool
+	UsesValidators          bool
+	UsesStringValidators    bool
+	UsesObjectValidators    bool
+	UsesPlanModifiers       bool
+	UsesCustomPlanModifiers bool
+	PlanModifierPackages    []string
+	DefaultPackages         []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
 	// path argument that must be recovered by parsing (see SDKArgumentView).
 	// UsesUUID is also true when a request field needs a uuid.Parse (see
@@ -594,12 +616,14 @@ type ResourceView struct {
 }
 
 // CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
-// Read and Delete, which send no body; GoResponseType is empty for Delete,
-// whose 204 response carries none.
+// Read and Delete, which send no request body. GoResponseType names a response
+// component when available. HasResponseBody is used only by Delete to select
+// the SDK assignment arity, including for unnamed responses.
 type CRUDCallView struct {
-	Method         string
-	GoRequestType  string
-	GoResponseType string
+	Method          string
+	GoRequestType   string
+	GoResponseType  string
+	HasResponseBody bool
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView

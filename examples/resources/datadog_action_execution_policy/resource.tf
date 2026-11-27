@@ -73,6 +73,30 @@ resource "datadog_action_execution_policy" "deny_dangerous_script" {
   }
 }
 
+# Slack: allow posting messages to incident channels in one Slack workspace.
+resource "datadog_action_execution_policy" "slack_incident_channels" {
+  name   = "slack-incident-channels"
+  effect = "allow"
+
+  action_pattern {
+    integration = "INTEGRATION_SLACK"
+    action_fqns = ["com.datadoghq.slack.send_simple_message"]
+  }
+
+  scope {
+    slack {
+      rule {
+        channel_name_selectors = ["incident-*"]
+      }
+    }
+  }
+
+  target {
+    name       = "main-workspace"
+    agent_tags = ["slack_workspace_id:T0123456789"]
+  }
+}
+
 # Access to a policy is managed separately via datadog_restriction_policy,
 # keyed by "execution-policy:<id>".
 resource "datadog_restriction_policy" "kubernetes_prod_perms" {

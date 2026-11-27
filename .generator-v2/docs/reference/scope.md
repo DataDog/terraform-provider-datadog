@@ -37,6 +37,12 @@ one who discovers the rough edges, and budget time for the acceptance test.
   provider**. OpenAPI-derived binding is authoritative and generation can succeed
   before the SDK catches up, but the provider will not compile. SDK update and
   provider build are separate gates.
+- Resource Create, Read, and Update may return different response wrappers when
+  their JSON:API `data` members reference the same named object component. The
+  generated state mapper accepts that shared SDK data type. Different, inline,
+  or non-object data shapes across distinct wrappers remain unsupported.
+- Create, Read, and any supported Update require named response bodies to
+  populate resource state. Bodyless responses are supported only for Delete.
 
 ## Terraform identity
 
@@ -44,7 +50,40 @@ Only `data.id` is supported for data-source identity. The annotation schema acce
 all four `id_strategy` values, and the parser carries them, but emission rejects the
 others with `id_strategy %q is not yet supported (only data.id)`.
 
+Resource and singular data-source IDs are Terraform strings. Response `data.id`
+fields that map to integer, floating-point, or boolean values fail generation;
+ordinary numeric attributes and IDs inside plural result items retain their own
+types. Existing string, named string-enum, and UUID response mappings are retained.
+Request-body ID conversion is separate from this response restriction; it does
+not relax the existing schema-merge checks between lifecycle operations.
+
 ## Schema shapes
+
+Resource fields writable in Create but absent or `readOnly: true` in the Update
+request require replacement when changed. This is inferred from request properties;
+no field annotation is needed. Mutable siblings continue to update in place,
+and response-only fields remain computed. The rule also applies to nested
+objects and collections. Without an Update operation, all configurable inputs
+require replacement.
+
+For immutable nested objects and object lists, parent modifiers check presence
+and list structure while writable descendants check their own values. Computed
+descendants becoming unknown during planning do not force replacement when a
+mutable sibling changes.
+
+For a create-only write-only secret, replacement is triggered by changing the
+plaintext fallback or the write-only version attribute. The write-only value
+itself is never stored or compared. Update-only write-only secrets remain
+unsupported because Create cannot configure them.
+
+Known, non-null configured top-level fields accepted only by Update are initialized
+through an Update call after Create. Response-backed fields skip initialization
+only when the Create response returns the configured value. An omitted response
+field still requires initialization; request-only controls are sent when configured.
+If initialization fails, the created resource ID is
+retained in state so it can be refreshed or destroyed.
+Update-only descendants inside a shared Create/Update object or collection
+remain unsupported and fail generation with their schema path.
 
 **Supported:**
 
@@ -84,8 +123,8 @@ failure prevented the spec from loading at all.
   accepting an unset one, so a `Required` `<attr>_wo` can be satisfied from
   neither side: omitting it fails the required-argument check and setting it
   fails the version check.
-- `x-secret: true` or `writeOnly: true` default an attribute to Terraform-sensitive.
-  An explicit `sensitive: false` on the same schema node overrides that inference.
+- `x-secret: true` or `writeOnly: true` marks an attribute Terraform-sensitive.
+  Legacy `x-datadog-tf-generator.sensitive` overrides are ignored.
 - Sensitive and `x-secret` redact from display; they do **not** keep values out of
   Terraform state. Only write-only handling does that.
 
@@ -123,6 +162,37 @@ Two of these are listed because earlier documentation described them as working.
 
 - Generated acceptance tests are scaffolds requiring human completion. This is
   currently the main cost of adopting a generated artifact.
+- Array `minItems` is not emitted as a Terraform list-length validator. For
+  example, a required `queries` list can still pass `terraform validate` when
+  empty even if the API requires at least one query. Check API constraints as
+  part of acceptance testing; requiredness alone does not enforce list length.
 - Artifact processing in the delivery pipeline is sequential.
 - Retirement is fail-closed: a file without the tfgen marker, or one with a recorded
   cassette, is never deleted automatically.
+
+## Caller-assigned resource identity
+
+When the create request requires a writable JSON:API `data.id`, tfgen exposes
+required nonempty `name` with replacement-on-change semantics. Create sends that
+value as `data.id`; computed `id` comes from the API response. Read, update
+(including its body ID), and delete use the API ID, including when it differs
+from the configured name. Refresh preserves the configured name. Import accepts
+the API ID. With an update API, import leaves `name` unset; the first apply
+adopts the configured name through an update using the canonical ID, without
+recreating the resource. Later name changes require replacement. Without an
+update API, refresh initializes an absent name from the API ID; configure that
+canonical name to avoid replacement.
+
+The generator reserves `name` for this input and rejects collisions with an
+existing top-level attribute or path parameter. A response `data.id` is required.
+Named enums backed by a Go string use the SDK's validating constructor before
+sending the request. Anonymous enums and enums whose format maps to another Go
+type (including numeric and UUID enums) fail generation. Scalar conversions are
+shared with update-body handling.
+
+An absent or read-only create ID retains computed-only identity. Optional writable
+create IDs fail generation because assignment semantics cannot be inferred.
+Preserve the authoritative API schema instead of bypassing these diagnostics.
+Lifecycle acceptance coverage is still required before adopting a generated
+resource. The HTTP fixture tests canonical-ID routing, not the live API's
+normalization rules. See the [identity decision](../decisions/0005-separate-create-name-from-api-id.md).

@@ -20,6 +20,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/pupauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -92,6 +94,11 @@ func Provider() *schema.Provider {
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
 			},
+			"use_pup": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. Requires org_uuid, and every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.",
+			},
 			"workload_identity_token_tag": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -116,30 +123,30 @@ func Provider() *schema.Provider {
 			"cloud_provider_region": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS.",
+				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS. When omitted for AWS, the region is loaded from the AWS SDK default configuration chain.",
 			},
 			"org_uuid": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS WIF and for `use_pup`. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS access key ID; used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS access key ID used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. When explicit credentials are omitted, the AWS SDK default credential chain is used.",
 			},
 			"aws_secret_access_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS secret access key; used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS secret access key used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. It must be provided together with `aws_access_key_id`. Omit both fields to use the AWS SDK default credential chain.",
 			},
 			"aws_session_token": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+				Description: "An optional AWS session token used with explicit temporary credentials for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable.",
 			},
 			"http_client_retry_enabled": {
 				Type:         schema.TypeString,
@@ -237,9 +244,9 @@ func Provider() *schema.Provider {
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
-			"datadog_dashboard":                            resourceDatadogDashboard(),
+			"datadog_dashboard":                            resourceDatadogDashboardV2(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
-			"datadog_dashboard_v2":                         resourceDatadogDashboardV2(),
+			"datadog_dashboard_v2":                         resourceDatadogDashboardV2Alias(),
 			"datadog_powerpack_v2":                         resourceDatadogPowerpackV2(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
@@ -443,9 +450,28 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		validate, _ = strconv.ParseBool(v)
 	}
 
-	if validate && workloadIdentityConfig == nil {
+	// The environment applies only when use_pup is unset, so use_pup = false wins.
+	// GetOkExists is the only way to tell an explicit false from unset.
+	usePupValue, usePupSet := d.GetOkExists("use_pup") //nolint:staticcheck // see above
+	usePup, _ := usePupValue.(bool)
+	if !usePupSet {
+		if v, err := utils.GetMultiEnvVar(utils.UsePupEnvVars...); err == nil {
+			usePup, _ = strconv.ParseBool(v)
+		}
+	}
+	// pup is the credential of last resort, used only when nothing else is configured.
+	var pupConfig *datadog.DelegatedTokenConfig
+	if usePup && workloadIdentityConfig == nil && cloudProviderType == "" && bearerToken == "" && apiKey == "" && appKey == "" {
+		// Required, so a pup session switched to another organization stops the run.
+		if orgUUID == "" {
+			return nil, diag.Errorf("%s", "org_uuid is required when the provider authenticates with pup, so every token is checked against the intended organization")
+		}
+		pupConfig = pupauth.GetDelegatedTokenConfig(orgUUID)
+	}
+
+	if validate && workloadIdentityConfig == nil && pupConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials"))
+			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, use_pup, AWS WIF, or Terraform Dynamic Provider Credentials"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -469,6 +495,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	communityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
+	datadogHTTPClient := utils.NewHTTPClient()
 	auth := context.Background()
 	// Explicit provider authentication wins; otherwise prefer Terraform workload identity over environment credentials.
 	switch {
@@ -483,6 +510,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		)
 		switch cloudProviderType {
 		case "aws":
+			if err := cloudauth.ValidateAWSCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken); err != nil {
+				return nil, diag.FromErr(err)
+			}
 			auth = context.WithValue(
 				auth,
 				datadog.ContextAWSVariables,
@@ -512,6 +542,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				},
 			},
 		)
+	case pupConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	}
 
 	config := datadog.NewConfiguration()
@@ -573,8 +605,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
+	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
 	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -609,18 +641,25 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		})
 	}
 
-	config.HTTPClient = utils.NewHTTPClient()
+	config.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		config.DelegatedTokenConfig = workloadIdentityConfig
+	} else if pupConfig != nil {
+		config.DelegatedTokenConfig = pupConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
+			provider, err := cloudauth.NewAWSProvider(cloudauth.AWSConfig{
+				Region:     cloudProviderRegion,
+				HTTPClient: datadogHTTPClient,
+			})
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
 			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-				OrgUUID: orgUUID,
-				ProviderAuth: &datadog.AWSAuth{
-					AwsRegion: cloudProviderRegion,
-				},
-				Provider: "aws",
+				OrgUUID:      orgUUID,
+				ProviderAuth: provider,
+				Provider:     datadog.ProviderAWS,
 			}
 		}
 	}

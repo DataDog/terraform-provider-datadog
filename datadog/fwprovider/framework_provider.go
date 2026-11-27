@@ -25,7 +25,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/pupauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -44,10 +46,14 @@ func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
+	NewAiGatewayDataCaptureOverrideResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
+	NewAiGatewayBudgetResource,
+	NewAiGatewayGovernanceResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
+	NewUsageQuotaResource,
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
@@ -63,6 +69,9 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
 	NewAwsWifIdentityMappingResource,
+	NewAwsWifIntakeMappingResource,
+	NewGithubOidcIntakeMappingResource,
+	NewGithubOidcIdentityMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -79,6 +88,13 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewAiGatewayRateLimitResource,
+	NewAiGatewayModelGroupResource,
+	NewAiGatewayProviderResource,
+	NewAiGatewayPolicyResource,
+	NewAiGatewayRoutingRuleResource,
+	NewRumOperationResource,
+	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
 	NewSamlIdpMetadataResource,
@@ -174,6 +190,7 @@ var Resources = []func() resource.Resource{
 	NewStatusPageResource,
 	NewStatusPageComponentResource,
 	NewStatusPageDegradationTemplateResource,
+	NewStatusPageEmailAccessPolicyResource,
 	NewStatusPageMaintenanceTemplateResource,
 }
 
@@ -208,6 +225,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogOrgGroupPoliciesDataSource,
 	NewDatadogOrgGroupPolicyOverridesDataSource,
 	NewHostsDataSource,
+	NewDatadogIntegrationSlackChannelsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
 	NewRumRetentionFiltersDataSource,
@@ -273,6 +291,7 @@ type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
 	BearerToken                      types.String `tfsdk:"bearer_token"`
+	UsePup                           types.Bool   `tfsdk:"use_pup"`
 	WorkloadIdentityTokenTag         types.String `tfsdk:"workload_identity_token_tag"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
@@ -357,6 +376,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
 			},
+			"use_pup": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. Requires org_uuid, and every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.",
+			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
 				Description: "Selects the HCP Terraform workload identity token tag for this provider configuration, for example DATADOG_ORG_A selects TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG_ORG_A. When set, that token must be present and have a valid Datadog audience; no other token or environment authentication is used as fallback. Explicit API/application keys, bearer_token, or cloud_provider_type take precedence. When unset or empty, automatically tries the DATADOG tag and then the untagged token. Tags may contain only letters, numbers, and underscores; TYPE is reserved.",
@@ -375,26 +398,26 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"cloud_provider_region": schema.StringAttribute{
 				Optional:    true,
-				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS.",
+				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS. When omitted for AWS, the region is loaded from the AWS SDK default configuration chain.",
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS WIF and for `use_pup`. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS access key ID; used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS access key ID used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. When explicit credentials are omitted, the AWS SDK default credential chain is used.",
 			},
 			"aws_secret_access_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS secret access key; used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS secret access key used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. It must be provided together with `aws_access_key_id`. Omit both fields to use the AWS SDK default credential chain.",
 			},
 			"aws_session_token": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+				Description: "An optional AWS session token used with explicit temporary credentials for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -510,6 +533,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
 		if err == nil {
 			config.BearerToken = types.StringValue(bearerToken)
+		}
+	}
+
+	if config.UsePup.IsNull() {
+		if v, err := utils.GetMultiEnvVar(utils.UsePupEnvVars...); err == nil {
+			usePup, _ := strconv.ParseBool(v)
+			config.UsePup = types.BoolValue(usePup)
 		}
 	}
 
@@ -687,10 +717,21 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
+	// pup is the credential of last resort, used only when nothing else is configured.
+	var pupConfig *datadog.DelegatedTokenConfig
+	if config.UsePup.ValueBool() && workloadIdentityConfig == nil && cloudProviderType == "" && bearerToken == "" &&
+		config.ApiKey.ValueString() == "" && config.AppKey.ValueString() == "" {
+		// Required, so a pup session switched to another organization stops the run.
+		if orgUUID == "" {
+			diags.AddError("org_uuid is required when the provider authenticates with pup, so every token is checked against the intended organization", "")
+			return diags
+		}
+		pupConfig = pupauth.GetDelegatedTokenConfig(orgUUID)
+	}
 
-	if validate && workloadIdentityConfig == nil {
+	if validate && workloadIdentityConfig == nil && pupConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, use_pup, AWS WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -714,6 +755,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.CommunityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
+	datadogHTTPClient := utils.NewHTTPClient()
 	auth := context.Background()
 	// Explicit provider authentication wins; otherwise prefer Terraform workload identity over environment credentials.
 	switch {
@@ -728,6 +770,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		)
 		switch cloudProviderType {
 		case "aws":
+			if err := cloudauth.ValidateAWSCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken); err != nil {
+				diags.AddError("Unable to configure AWS delegated authentication", err.Error())
+				return diags
+			}
 			auth = context.WithValue(
 				auth,
 				datadog.ContextAWSVariables,
@@ -758,13 +804,22 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				},
 			},
 		)
+	case pupConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
+	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
@@ -777,6 +832,46 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway rate limits
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
+
+	// Enable AI Gateway model groups
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
+
+	// Enable AI Gateway providers
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
+
+	// Enable AI Gateway policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAiGatewayPolicies", true)
+
+	// Enable AI Gateway routing rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
@@ -801,6 +896,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
 
+	// Enable AI Gateway data capture overrides
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayDataCaptureConfiguration", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayDataCaptureOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayDataCaptureOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayDataCaptureOverride", true)
+
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
@@ -813,6 +914,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable AI Gateway governance
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
 
 	// Enable Custom Forecast
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
@@ -954,6 +1059,18 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
+	// Enable usage quota operations.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+
+	// Enable AI Gateway budgets
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayBudget", true)
+
 	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
@@ -1017,18 +1134,26 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 	}
 
-	ddClientConfig.HTTPClient = utils.NewHTTPClient()
+	ddClientConfig.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		ddClientConfig.DelegatedTokenConfig = workloadIdentityConfig
+	} else if pupConfig != nil {
+		ddClientConfig.DelegatedTokenConfig = pupConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
+			provider, err := cloudauth.NewAWSProvider(cloudauth.AWSConfig{
+				Region:     cloudProviderRegion,
+				HTTPClient: datadogHTTPClient,
+			})
+			if err != nil {
+				diags.AddError("Unable to configure AWS delegated authentication", err.Error())
+				return diags
+			}
 			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-				OrgUUID: orgUUID,
-				ProviderAuth: &datadog.AWSAuth{
-					AwsRegion: cloudProviderRegion,
-				},
-				Provider: "aws",
+				OrgUUID:      orgUUID,
+				ProviderAuth: provider,
+				Provider:     datadog.ProviderAWS,
 			}
 		}
 	}

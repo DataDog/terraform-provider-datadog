@@ -12,6 +12,33 @@ import (
 )
 
 var _ = Describe("BuildResourceView request mapping", func() {
+	It("renders structural replacement helpers and keeps immutable descendant modifiers", func() {
+		op := widgetResourceOperation()
+		delete(operationAttributes(op.ResolvedGroup.Update.RequestSchema).Properties, "settings")
+		create := operationAttributes(op.ResolvedGroup.Create.RequestSchema)
+		read := operationAttributes(op.ResolvedGroup.Read.ResponseSchema)
+		create.Required = append(create.Required, "settings")
+		delete(create.Properties["settings"].Properties, "limits")
+		delete(read.Properties["settings"].Properties, "limits")
+		read.Properties["settings"].Properties["output"] = prim("string", "Server-assigned output.")
+		artifact, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(artifact)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.UsesPlanModifiers).To(BeTrue())
+		Expect(view.UsesCustomPlanModifiers).To(BeTrue())
+		settings := attrByPath(schemaTree(view), "settings")
+		Expect(settings.PlanModifiers).To(ContainElement("planmodifiers.RequiresReplaceObjectStructure"))
+		Expect(settings.PlanModifiers).NotTo(ContainElement("objectplanmodifier.RequiresReplace"))
+		Expect(attrByPath(schemaTree(view), "url").PlanModifiers).To(ContainElement("stringplanmodifier.RequiresReplace"))
+		Expect(attrByPath(schemaTree(view), "output").PlanModifiers).To(BeEmpty())
+		source := string(mustRenderResource(view))
+		Expect(source).To(ContainSubstring(`"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"`))
+		Expect(source).To(ContainSubstring("planmodifiers.RequiresReplaceObjectStructure()"))
+		Expect(source).NotTo(ContainSubstring("objectplanmodifier.RequiresReplace()"))
+		Expect(source).NotTo(ContainSubstring(`"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"`), "a structural-only object modifier must not import the standard package")
+	})
+
 	It("builds nested objects (recursively), an enum, and format leaves, and renders valid Go", func() {
 		art, err := model.BuildArtifact(widgetResourceOperation())
 		Expect(err).NotTo(HaveOccurred())
@@ -417,6 +444,7 @@ func widgetResourceOperation() *model.Operation {
 		ResponseSchema:  body(attrs(nil, "WidgetResponseAttributes", "WidgetSettingsResponse", "WidgetLimitsResponse"), "WidgetResponseData"),
 		SDKBinding:      idBinding(),
 	}
+	create.ResponseSchema = read.ResponseSchema
 	del := &model.Operation{
 		Path: "/api/v2/widgets/{widget_id}", Method: "DELETE",
 		OperationId: "DeleteWidget", Tag: "Widgets",
@@ -426,8 +454,9 @@ func widgetResourceOperation() *model.Operation {
 		Path: "/api/v2/widgets/{widget_id}", Method: "PATCH",
 		OperationId: "UpdateWidget", Tag: "Widgets",
 		RequestRefName: "WidgetUpdateRequest", ResponseRefName: "WidgetResponse",
-		RequestSchema: body(attrs(nil, "WidgetUpdateAttributes", "WidgetSettingsUpdateRequest", "WidgetLimitsRequest"), "WidgetUpdateData"),
-		SDKBinding:    idBinding(),
+		RequestSchema:  body(attrs(nil, "WidgetUpdateAttributes", "WidgetSettingsUpdateRequest", "WidgetLimitsRequest"), "WidgetUpdateData"),
+		ResponseSchema: read.ResponseSchema,
+		SDKBinding:     idBinding(),
 	}
 
 	create.Tracking = &model.TrackingFieldMetadata{

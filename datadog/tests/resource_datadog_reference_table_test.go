@@ -193,6 +193,8 @@ func TestAccReferenceTable_Import(t *testing.T) {
 				ResourceName:      "datadog_reference_table.s3_table",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// The backend bumps updated_at while it processes the S3 file after create.
+				ImportStateVerifyIgnore: []string{"updated_at"},
 			},
 		},
 	})

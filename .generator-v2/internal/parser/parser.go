@@ -10,6 +10,7 @@ import (
 
 	"github.com/pb33f/libopenapi"
 	"github.com/pb33f/libopenapi/datamodel"
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -89,6 +90,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		Source:     path,
 		Components: v3doc.Model.Components,
 		Hash:       specHash(data),
+		Warnings:   legacySchemaWarnings(doc.GetSpecInfo().RootNode, cfg.trackingFieldName),
 	}
 
 	// Cycles found here are not errors: the walker's stack check stops the
@@ -112,22 +114,29 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 					continue
 				}
 				upperMethod := strings.ToUpper(method)
-				tracking, err := DecodeTracking(op, opPath, upperMethod, cfg.trackingFieldName)
-				if err != nil {
-					return nil, err
+				if op.Extensions != nil && op.Extensions.GetOrZero(cfg.trackingFieldName) != nil {
+					spec.Warnings = append(spec.Warnings, fmt.Sprintf(
+						"legacy operation %s at %s %s is ignored; declare artifacts in tags[].%s instead",
+						cfg.trackingFieldName, upperMethod, opPath, cfg.trackingFieldName))
 				}
 				mop := &model.Operation{
 					Path:        opPath,
 					Method:      upperMethod,
 					OperationId: op.OperationId,
 					Tag:         firstTag(op.Tags),
-					Tracking:    tracking,
 					Unstable:    declaresUnstable(op),
 				}
 				spec.Operations = append(spec.Operations, mop)
 				rawOps[mop] = op
 			}
 		}
+	}
+
+	// The tag-scoped registry is read after enumeration because a family
+	// block is anchored on the operation it names, and resolved before the sort
+	// so the synthetic operations it mints sort alongside the real ones.
+	if err := fanOutRegistry(spec, rawOps, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
+		return nil, err
 	}
 
 	sort.Slice(spec.Operations, func(i, j int) bool {
@@ -146,11 +155,77 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// those pointers only exist once every operation is enumerated.
 	ResolveOperationGroups(spec)
 
-	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth, cfg.trackingFieldName); err != nil {
+	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth); err != nil {
 		return nil, err
 	}
 
 	return spec, nil
+}
+
+// fanOutRegistry decodes the tag-scoped family registry and appends one
+// synthetic operation per artifact it declares, each carrying the desugared
+// tracking metadata. Documents without a registry declare no Terraform artifacts.
+//
+// Each artifact is anchored on its primary operation — create for a resource,
+// read (else search) for a singular data source, read for a list — so a
+// diagnostic still names a real endpoint, and the x-unstable gate set stays
+// consistent with the backing endpoint. The anchor is a clone
+// rather than the operation itself because one operation can be primary for
+// more than one artifact: a family's resource and its singular data source
+// both read through the same endpoint. The clone inherits the raw handle so
+// schema normalization can still reach its request and response bodies.
+func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, tags []*base.Tag, extensionName string) error {
+	metas, err := decodeTagRegistries(tags, extensionName)
+	if err != nil {
+		return err
+	}
+	if len(metas) == 0 {
+		return nil
+	}
+	byID := indexOperationsByID(spec.Operations)
+	for _, meta := range metas {
+		role, operationId := primaryOperation(meta)
+		primary := byID[operationId]
+		if primary == nil {
+			spec.Operations = append(spec.Operations, &model.Operation{
+				OperationId: operationId,
+				Tracking:    meta,
+				Synthetic:   true,
+				Tag:         meta.Tag,
+				GenerationError: &RegistryError{Tag: meta.Tag, Family: meta.Family, Block: meta.Block, Cause: fmt.Errorf(
+					"group.%s names operationId %q, which the document does not declare", role, operationId)},
+			})
+			continue
+		}
+		clone := &model.Operation{
+			Path:        primary.Path,
+			Method:      primary.Method,
+			OperationId: primary.OperationId,
+			Tag:         primary.Tag,
+			Tracking:    meta,
+			Unstable:    primary.Unstable,
+			Synthetic:   true,
+		}
+		spec.Operations = append(spec.Operations, clone)
+		rawOps[clone] = rawOps[primary]
+	}
+	return nil
+}
+
+// primaryOperation names the group role an artifact is anchored on, and the
+// operationId filling it. The schema guarantees the role is present: a resource
+// group requires create, a list group requires read, and a singular group
+// requires at least one of read and search.
+func primaryOperation(meta *model.TrackingFieldMetadata) (role model.GroupRole, operationId string) {
+	g := meta.Group
+	switch {
+	case meta.ArtifactKind == model.ArtifactKindResource:
+		return model.GroupRoleCreate, g.Create
+	case meta.Cardinality == model.CardinalityPlural, g.Read != "":
+		return model.GroupRoleRead, g.Read
+	default:
+		return model.GroupRoleSearch, g.Search
+	}
 }
 
 // firstTag returns the operation's first OpenAPI tag, or "" when untagged. The

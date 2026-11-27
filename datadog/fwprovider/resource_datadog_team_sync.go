@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -65,7 +66,7 @@ func (r *teamSyncResource) Metadata(_ context.Context, request resource.Metadata
 
 func (r *teamSyncResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Team Sync resource. This can be used to configure team synchronization from external sources (e.g. GitHub) into Datadog.",
+		Description: "Provides a Datadog Team Sync resource. This can be used to configure team synchronization from external sources (e.g. GitHub or ServiceNow) into Datadog.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"source": schema.StringAttribute{
@@ -75,7 +76,7 @@ func (r *teamSyncResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
-					stringvalidator.OneOf("github"),
+					validators.NewEnumValidator[validator.String](datadogV2.NewTeamSyncAttributesSourceFromValue),
 				},
 			},
 			"type": schema.StringAttribute{
@@ -134,14 +135,14 @@ func (r *teamSyncResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 							Attributes: map[string]schema.Attribute{
 								"type": schema.StringAttribute{
 									Required:    true,
-									Description: "The type of external identifier.",
+									Description: "The type of external identifier. For GitHub, `team` refers to a GitHub team and `organization` refers to a GitHub organization. For ServiceNow, `team` refers to a ServiceNow group and `organization` refers to a ServiceNow instance.",
 									Validators: []validator.String{
 										stringvalidator.OneOf("team", "organization"),
 									},
 								},
 								"value": schema.StringAttribute{
 									Required:    true,
-									Description: "The external identifier value from the source platform (e.g. a GitHub organization ID or team ID).",
+									Description: "The external identifier value from the source platform. For GitHub, this is the string representation of a GitHub organization ID or team ID. For ServiceNow, this is the instance name for `organization`, or `<instance_name>/<sys_id>` of the group for `team`.",
 								},
 							},
 						},
@@ -154,12 +155,13 @@ func (r *teamSyncResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 
 func (r *teamSyncResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	source := request.ID
-	if source != "github" {
-		response.Diagnostics.AddError("invalid import ID", "Import ID must be the source name (e.g. \"github\").")
+	syncSource, err := datadogV2.NewTeamSyncAttributesSourceFromValue(source)
+	if err != nil {
+		response.Diagnostics.AddError("invalid import ID", "Import ID must be the source name (e.g. \"github\" or \"servicenow\").")
 		return
 	}
 
-	resp, _, err := r.Api.GetTeamSync(r.Auth, datadogV2.TeamSyncAttributesSource(source))
+	resp, _, err := r.Api.GetTeamSync(r.Auth, *syncSource)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamSync for import"))
 		return

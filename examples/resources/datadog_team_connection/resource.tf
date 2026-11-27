@@ -15,3 +15,16 @@ resource "datadog_team_connection" "example" {
     type = "github_team"
   }
 }
+
+# Create a connection between a Datadog team and a ServiceNow group
+resource "datadog_team_connection" "servicenow" {
+  team {
+    id   = datadog_team.example.id
+    type = "team"
+  }
+  connected_team {
+    id   = "my-instance/0123456789abcdef0123456789abcdef"
+    type = "servicenow_team"
+  }
+  source = "servicenow"
+}

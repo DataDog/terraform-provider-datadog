@@ -1080,6 +1080,31 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						Schema: eventQueryVariableSchema(),
 					},
 				},
+				"metric_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "A metrics query for use in formulas in metric monitors. For cost monitors, use `cloud_cost_query` instead, which requires an aggregator.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionMetricQueryDataSourceFromValue),
+								Description:      "The data source for metrics queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The metrics query definition.",
+							},
+						},
+					},
+				},
 				"cloud_cost_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -1090,7 +1115,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue, datadogV1.NewMonitorFormulaAndFunctionMetricQueryDataSourceFromValue),
 								Description:      "The data source for cloud cost queries.",
 							},
 							"query": {
@@ -1138,17 +1163,22 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"measure": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.",
+								Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. `data-jobs alert` job duration monitors use `duration`. Additional values may be supported.",
 							},
 							"filter": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Filter expression used to match on data entities. Uses AAstra query syntax.",
+								Description: "Filter expression used to match on data entities. Uses Aastra query syntax.",
 							},
 							"scope": {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Optional scoping expression to further filter metrics.",
+							},
+							"run_filter": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported by `data-jobs alert` job duration monitors.",
 							},
 							"group_by": {
 								Type:        schema.TypeList,
@@ -1196,6 +1226,19 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 											Type:        schema.TypeFloat,
 											Optional:    true,
 											Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.",
+										},
+										// Not validated against the client enum, for the same reason as
+										// model_type_override.
+										"detection_type": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "How a `data-jobs alert` job duration monitor detects a breach. Must match the `.detection()` call in the monitor query. Valid values are `static`, `anomaly`. Required for job duration monitors.",
+										},
+										"consecutive_runs": {
+											Type:             schema.TypeInt,
+											Optional:         true,
+											ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtLeast(1)),
+											Description:      "Number of consecutive runs that must breach before a `data-jobs alert` job duration monitor alerts. Defaults to `1`.",
 										},
 										"source_to_target_config": {
 											Type:        schema.TypeList,
@@ -1314,17 +1357,37 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"jobs_query": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Filter expression used to select the jobs to monitor.",
+								Description: "Filter expression used to select the jobs to monitor. A metric tag filter such as `job_name:smoke*` with the `metric` dialect, or an Aastra entity search such as ``search for databricks_job where `@team:data-eng` `` with the `aastra` dialect.",
 							},
 							"job_type": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+								Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`, `adf.pipeline`. The `aastra` dialect also accepts `airflow.job`, `dbt.model`, `dbt.test`. Custom job types are supported with the `custom.ol.` prefix.",
 							},
 							"query_dialect": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Query dialect for data jobs queries. Currently only `metric` is supported.",
+								Description: "Query dialect for data jobs queries. Valid values are `metric` and `aastra`.",
+							},
+							"run_filter": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported with the `aastra` query dialect.",
+							},
+							"monitor_options": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "Monitor configuration options for data jobs queries.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"alert_on_every_failure": {
+											Type:        schema.TypeBool,
+											Optional:    true,
+											Description: "Alert separately for each failed run instead of on the count of trailing failures. Only supported for `failed_runs` monitors with the `aastra` query dialect, a `> 0` threshold with no warning threshold, an evaluation window of at most two days, and renotification disabled.",
+										},
+									},
+								},
 							},
 						},
 					},
@@ -1522,6 +1585,14 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 							continue
 						}
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(queryMap))
+					}
+				}
+				if query, ok := m["metric_query"]; ok {
+					queries, _ := query.([]interface{})
+					for _, q := range queries {
+						if queryMap, ok := q.(map[string]interface{}); ok {
+							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionMetricQuery(queryMap))
+						}
 					}
 				}
 				if query, ok := m["cloud_cost_query"]; ok {
@@ -1948,17 +2019,32 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	return &definition
 }
 
+func buildMonitorFormulaAndFunctionMetricQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	metricQuery := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(
+		datadogV1.MonitorFormulaAndFunctionMetricQueryDataSource(data["data_source"].(string)), data["name"].(string), data["query"].(string))
+	definition := datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
+	return &definition
+}
+
 func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
+	name, query := data["name"].(string), data["query"].(string)
+	aggregator, _ := data["aggregator"].(string)
 
-	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
-
-	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
-		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
+	// The API no longer models `metrics` as a cost data source; keep existing
+	// `cloud_cost_query { data_source = "metrics" }` configs working by sending the metric type.
+	if data["data_source"].(string) == string(datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS) {
+		metricQuery := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS, name, query)
+		if aggregator != "" {
+			metricQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(aggregator))
+		}
+		definition := datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
+		return &definition
 	}
 
-	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
-
+	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string)), name, query)
+	if aggregator != "" {
+		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(aggregator))
+	}
 	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 	return &definition
 }
@@ -2099,6 +2185,14 @@ func buildDataQualityMonitorOptions(data map[string]interface{}) *datadogV1.Moni
 		opts.SetModelConfiguration(*buildDataQualityModelConfiguration(block))
 		hasAnyOption = true
 	}
+	if v, ok := getOptionalString(data, "detection_type"); ok {
+		opts.SetDetectionType(datadogV1.MonitorFormulaAndFunctionDataQualityDetectionType(v))
+		hasAnyOption = true
+	}
+	if v, ok := data["consecutive_runs"].(int); ok && v > 0 {
+		opts.SetConsecutiveRuns(int64(v))
+		hasAnyOption = true
+	}
 
 	if !hasAnyOption {
 		return nil
@@ -2190,6 +2284,10 @@ func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{})
 		dataQualityQuery.SetScope(v)
 	}
 
+	if v, ok := getOptionalString(data, "run_filter"); ok {
+		dataQualityQuery.SetRunFilter(v)
+	}
+
 	// Group by - handle nil and empty arrays safely
 	if groupBys := getOptionalStringSlice(data, "group_by"); groupBys != nil {
 		dataQualityQuery.SetGroupBy(groupBys)
@@ -2218,12 +2316,38 @@ func buildMonitorFormulaAndFunctionDataJobsQuery(data map[string]interface{}) *d
 	queryDialect := getRequiredString(data, "query_dialect", "data_jobs_query")
 
 	dataJobsQuery := datadogV1.NewMonitorFormulaAndFunctionDataJobsQueryDefinition(jobType, jobsQuery, name, queryDialect)
+	if v, ok := getOptionalString(data, "run_filter"); ok {
+		dataJobsQuery.SetRunFilter(v)
+	}
+	// A declared block always sends its value: SDKv2 cannot tell an explicit
+	// false from an unset bool, and false must survive a read.
+	if block, ok := getSingleNestedBlock(data, "monitor_options"); ok {
+		opts := datadogV1.NewMonitorFormulaAndFunctionDataJobsMonitorOptions()
+		if v, ok := block["alert_on_every_failure"].(bool); ok {
+			opts.SetAlertOnEveryFailure(v)
+		}
+		dataJobsQuery.SetMonitorOptions(*opts)
+	}
 	definition := datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(dataJobsQuery)
 	return &definition
 }
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if diff.NewValueKnown("type") && diff.NewValueKnown("variables") {
+		var dataSources []string
+		cloudCost, _ := diff.Get("variables.0.cloud_cost_query").([]interface{})
+		for _, q := range cloudCost {
+			if m, ok := q.(map[string]interface{}); ok {
+				ds, _ := m["data_source"].(string)
+				dataSources = append(dataSources, ds)
+			}
+		}
+		metricQueries, _ := diff.Get("variables.0.metric_query").([]interface{})
+		if err := validators.ValidateMonitorVariablesForType(diff.Get("type").(string), dataSources, len(metricQueries) > 0); err != nil {
+			return err
+		}
+	}
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
@@ -2834,8 +2958,16 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	var eventQueries []map[string]interface{}
 	var aggAug []map[string]interface{}
 	var aggFiltered []map[string]interface{}
+	var metricQueries []map[string]interface{}
+	var costQueries []map[string]interface{}
 	for _, query := range datadogVariables {
 		switch {
+		case query.MonitorFormulaAndFunctionMetricQueryDefinition != nil:
+			q := query.MonitorFormulaAndFunctionMetricQueryDefinition
+			metricQueries = append(metricQueries, map[string]interface{}{"data_source": string(q.GetDataSource()), "name": q.GetName(), "query": q.GetQuery()})
+		case query.MonitorFormulaAndFunctionCostQueryDefinition != nil:
+			q := query.MonitorFormulaAndFunctionCostQueryDefinition
+			costQueries = append(costQueries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
 		case query.MonitorFormulaAndFunctionEventQueryDefinition != nil:
 			eventQueries = append(eventQueries, terraformEventQueryDefinitionToMap(query.MonitorFormulaAndFunctionEventQueryDefinition))
 		case query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil:
@@ -2853,6 +2985,12 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	if len(aggFiltered) > 0 {
 		root["aggregate_filtered_query"] = aggFiltered
 	}
+	if len(metricQueries) > 0 {
+		root["metric_query"] = metricQueries
+	}
+	if len(costQueries) > 0 {
+		root["cloud_cost_query"] = costQueries
+	}
 	if len(root) == 0 {
 		return nil
 	}
@@ -2866,95 +3004,33 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 }
 
 func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	queries := make([]map[string]interface{}, len(datadogVariables))
-	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
-		terraformCostQueryDefinition := query.MonitorFormulaAndFunctionCostQueryDefinition
-		if terraformCostQueryDefinition != nil {
-			if dataSource, ok := terraformCostQueryDefinition.GetDataSourceOk(); ok {
-				terraformQuery["data_source"] = dataSource
-			}
-			if name, ok := terraformCostQueryDefinition.GetNameOk(); ok {
-				terraformQuery["name"] = name
-			}
-			if queryStr, ok := terraformCostQueryDefinition.GetQueryOk(); ok {
-				terraformQuery["query"] = queryStr
-			}
-			if aggregator, ok := terraformCostQueryDefinition.GetAggregatorOk(); ok {
-				terraformQuery["aggregator"] = aggregator
-			}
-			queries[i] = terraformQuery
+	queries := []map[string]interface{}{}
+	for _, query := range datadogVariables {
+		if q := query.MonitorFormulaAndFunctionCostQueryDefinition; q != nil {
+			queries = append(queries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
+		}
+		// Cost monitors can still return `metrics` variables, which now decode as the metric type.
+		if q := query.MonitorFormulaAndFunctionMetricQueryDefinition; q != nil {
+			queries = append(queries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1)
-	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
+	return []map[string]interface{}{{"cloud_cost_query": queries}}
+}
 
-	log.Printf("[INFO] queries: %+v", terraformVariables)
-	return terraformVariables
+func terraformCostQueryToMap(dataSource, name, query string, aggregator *datadogV1.MonitorFormulaAndFunctionCostAggregator) map[string]interface{} {
+	m := map[string]interface{}{"data_source": dataSource, "name": name, "query": query}
+	if aggregator != nil {
+		m["aggregator"] = string(*aggregator)
+	}
+	return m
 }
 
 func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
 	queries := make([]map[string]interface{}, len(datadogVariables))
 
 	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
-		terraformDataQualityQueryDefinition := query.MonitorFormulaAndFunctionDataQualityQueryDefinition
-		if terraformDataQualityQueryDefinition != nil {
-			if dataSource, ok := terraformDataQualityQueryDefinition.GetDataSourceOk(); ok {
-				terraformQuery["data_source"] = dataSource
-			}
-			if name, ok := terraformDataQualityQueryDefinition.GetNameOk(); ok {
-				terraformQuery["name"] = name
-			}
-			if schemaVersion, ok := terraformDataQualityQueryDefinition.GetSchemaVersionOk(); ok {
-				terraformQuery["schema_version"] = schemaVersion
-			}
-			if measure, ok := terraformDataQualityQueryDefinition.GetMeasureOk(); ok {
-				terraformQuery["measure"] = measure
-			}
-			if filter, ok := terraformDataQualityQueryDefinition.GetFilterOk(); ok {
-				terraformQuery["filter"] = filter
-			}
-			if scope, ok := terraformDataQualityQueryDefinition.GetScopeOk(); ok {
-				terraformQuery["scope"] = scope
-			}
-			if groupBy, ok := terraformDataQualityQueryDefinition.GetGroupByOk(); ok {
-				terraformQuery["group_by"] = groupBy
-			}
-			// Monitor options
-			if monitorOptions, ok := terraformDataQualityQueryDefinition.GetMonitorOptionsOk(); ok {
-				terraformMonitorOptions := map[string]interface{}{}
-				if customSql, ok := monitorOptions.GetCustomSqlOk(); ok {
-					terraformMonitorOptions["custom_sql"] = customSql
-				}
-				if customWhere, ok := monitorOptions.GetCustomWhereOk(); ok {
-					terraformMonitorOptions["custom_where"] = customWhere
-				}
-				if groupByCols, ok := monitorOptions.GetGroupByColumnsOk(); ok {
-					terraformMonitorOptions["group_by_columns"] = groupByCols
-				}
-				if crontabOverride, ok := monitorOptions.GetCrontabOverrideOk(); ok {
-					terraformMonitorOptions["crontab_override"] = crontabOverride
-				}
-				if modelTypeOverride, ok := monitorOptions.GetModelTypeOverrideOk(); ok {
-					terraformMonitorOptions["model_type_override"] = modelTypeOverride
-				}
-				if sensitivity, ok := monitorOptions.GetSensitivityOk(); ok {
-					terraformMonitorOptions["sensitivity"] = sensitivity
-				}
-				if sourceToTarget, ok := monitorOptions.GetSourceToTargetConfigOk(); ok {
-					terraformMonitorOptions["source_to_target_config"] = []map[string]interface{}{
-						buildTerraformDataQualitySourceToTargetConfig(sourceToTarget),
-					}
-				}
-				if modelConfiguration, ok := monitorOptions.GetModelConfigurationOk(); ok {
-					terraformMonitorOptions["model_configuration"] = []map[string]interface{}{
-						buildTerraformDataQualityModelConfiguration(modelConfiguration),
-					}
-				}
-				terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
-			}
-			queries[i] = terraformQuery
+		if def := query.MonitorFormulaAndFunctionDataQualityQueryDefinition; def != nil {
+			queries[i] = buildTerraformDataQualityQuery(def)
 		}
 	}
 	terraformVariables := make([]map[string]interface{}, 1)
@@ -2962,6 +3038,74 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 
 	log.Printf("[INFO] data_quality_query variables: %+v", terraformVariables)
 	return terraformVariables
+}
+
+func buildTerraformDataQualityQuery(def *datadogV1.MonitorFormulaAndFunctionDataQualityQueryDefinition) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if dataSource, ok := def.GetDataSourceOk(); ok {
+		terraformQuery["data_source"] = dataSource
+	}
+	if name, ok := def.GetNameOk(); ok {
+		terraformQuery["name"] = name
+	}
+	if schemaVersion, ok := def.GetSchemaVersionOk(); ok {
+		terraformQuery["schema_version"] = schemaVersion
+	}
+	if measure, ok := def.GetMeasureOk(); ok {
+		terraformQuery["measure"] = measure
+	}
+	if filter, ok := def.GetFilterOk(); ok {
+		terraformQuery["filter"] = filter
+	}
+	if scope, ok := def.GetScopeOk(); ok {
+		terraformQuery["scope"] = scope
+	}
+	if runFilter, ok := def.GetRunFilterOk(); ok {
+		terraformQuery["run_filter"] = runFilter
+	}
+	if groupBy, ok := def.GetGroupByOk(); ok {
+		terraformQuery["group_by"] = groupBy
+	}
+	// Monitor options
+	if monitorOptions, ok := def.GetMonitorOptionsOk(); ok {
+		terraformMonitorOptions := map[string]interface{}{}
+		if customSql, ok := monitorOptions.GetCustomSqlOk(); ok {
+			terraformMonitorOptions["custom_sql"] = customSql
+		}
+		if customWhere, ok := monitorOptions.GetCustomWhereOk(); ok {
+			terraformMonitorOptions["custom_where"] = customWhere
+		}
+		if groupByCols, ok := monitorOptions.GetGroupByColumnsOk(); ok {
+			terraformMonitorOptions["group_by_columns"] = groupByCols
+		}
+		if crontabOverride, ok := monitorOptions.GetCrontabOverrideOk(); ok {
+			terraformMonitorOptions["crontab_override"] = crontabOverride
+		}
+		if modelTypeOverride, ok := monitorOptions.GetModelTypeOverrideOk(); ok {
+			terraformMonitorOptions["model_type_override"] = modelTypeOverride
+		}
+		if sensitivity, ok := monitorOptions.GetSensitivityOk(); ok {
+			terraformMonitorOptions["sensitivity"] = sensitivity
+		}
+		if detectionType, ok := monitorOptions.GetDetectionTypeOk(); ok {
+			terraformMonitorOptions["detection_type"] = detectionType
+		}
+		if consecutiveRuns, ok := monitorOptions.GetConsecutiveRunsOk(); ok {
+			terraformMonitorOptions["consecutive_runs"] = consecutiveRuns
+		}
+		if sourceToTarget, ok := monitorOptions.GetSourceToTargetConfigOk(); ok {
+			terraformMonitorOptions["source_to_target_config"] = []map[string]interface{}{
+				buildTerraformDataQualitySourceToTargetConfig(sourceToTarget),
+			}
+		}
+		if modelConfiguration, ok := monitorOptions.GetModelConfigurationOk(); ok {
+			terraformMonitorOptions["model_configuration"] = []map[string]interface{}{
+				buildTerraformDataQualityModelConfiguration(modelConfiguration),
+			}
+		}
+		terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
+	}
+	return terraformQuery
 }
 
 func buildTerraformDataQualityEntityMetricConfig(cfg *datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig) []map[string]interface{} {
@@ -3024,33 +3168,56 @@ func buildTerraformDataQualityModelConfiguration(cfg *datadogV1.MonitorFormulaAn
 	return terraformConfig
 }
 
+// Job status monitors use a data jobs query, while job duration monitors use a
+// data quality query, so each is read back into its own block.
 func buildTerraformDataJobsMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	queries := make([]map[string]interface{}, len(datadogVariables))
-
-	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
-		def := query.MonitorFormulaAndFunctionDataJobsQueryDefinition
-		if def != nil {
-			if name, ok := def.GetNameOk(); ok {
-				terraformQuery["name"] = name
-			}
-			if jobsQuery, ok := def.GetJobsQueryOk(); ok {
-				terraformQuery["jobs_query"] = jobsQuery
-			}
-			if jobType, ok := def.GetJobTypeOk(); ok {
-				terraformQuery["job_type"] = jobType
-			}
-			if queryDialect, ok := def.GetQueryDialectOk(); ok {
-				terraformQuery["query_dialect"] = queryDialect
-			}
-			queries[i] = terraformQuery
+	var jobsQueries, qualityQueries []map[string]interface{}
+	for _, query := range datadogVariables {
+		if def := query.MonitorFormulaAndFunctionDataJobsQueryDefinition; def != nil {
+			jobsQueries = append(jobsQueries, buildTerraformDataJobsQuery(def))
+		} else if def := query.MonitorFormulaAndFunctionDataQualityQueryDefinition; def != nil {
+			qualityQueries = append(qualityQueries, buildTerraformDataQualityQuery(def))
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1)
-	terraformVariables[0] = map[string]interface{}{"data_jobs_query": queries}
 
-	log.Printf("[INFO] data_jobs_query variables: %+v", terraformVariables)
+	terraformVariable := map[string]interface{}{}
+	if len(jobsQueries) > 0 {
+		terraformVariable["data_jobs_query"] = jobsQueries
+	}
+	if len(qualityQueries) > 0 {
+		terraformVariable["data_quality_query"] = qualityQueries
+	}
+	terraformVariables := []map[string]interface{}{terraformVariable}
+
+	log.Printf("[INFO] data-jobs variables: %+v", terraformVariables)
 	return terraformVariables
+}
+
+func buildTerraformDataJobsQuery(def *datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if name, ok := def.GetNameOk(); ok {
+		terraformQuery["name"] = name
+	}
+	if jobsQuery, ok := def.GetJobsQueryOk(); ok {
+		terraformQuery["jobs_query"] = jobsQuery
+	}
+	if jobType, ok := def.GetJobTypeOk(); ok {
+		terraformQuery["job_type"] = jobType
+	}
+	if queryDialect, ok := def.GetQueryDialectOk(); ok {
+		terraformQuery["query_dialect"] = queryDialect
+	}
+	if runFilter, ok := def.GetRunFilterOk(); ok {
+		terraformQuery["run_filter"] = runFilter
+	}
+	if monitorOptions, ok := def.GetMonitorOptionsOk(); ok {
+		terraformMonitorOptions := map[string]interface{}{}
+		if alertOnEveryFailure, ok := monitorOptions.GetAlertOnEveryFailureOk(); ok {
+			terraformMonitorOptions["alert_on_every_failure"] = alertOnEveryFailure
+		}
+		terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
+	}
+	return terraformQuery
 }
 
 func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

@@ -16,6 +16,8 @@ the one each slice needs (TF_GENERATOR below) to opt its resource in.
 Point at the datadog-api-spec checkout with DATADOG_API_SPEC_REPO (defaults to
 ~/go/src/github.com/DataDog/datadog-api-spec).
 """
+from _registry import declare_artifact
+
 import os
 import sys
 
@@ -68,7 +70,6 @@ SLICES = [
 # operationId -> x-datadog-tf-generator annotation added to the slice.
 TF_GENERATOR = {
     "GetTwilioIntegrationAccount": {
-        "artifact_kind": "resource",
         "artifact_name": "integration_twilio_account",
         "tf_description": "Provides a Datadog Twilio integration account resource.",
         "group": {
@@ -79,7 +80,6 @@ TF_GENERATOR = {
         },
     },
     "CreateElasticCloudIntegrationAccount": {
-        "artifact_kind": "resource",
         "artifact_name": "integration_elastic_cloud",
         "tf_description": "Provide a Datadog Elastic Cloud integration account resource.",
         "group": {
@@ -147,7 +147,9 @@ def main():
 
     for op, annotation in TF_GENERATOR.items():
         path, method = op_index[op]
-        spec["paths"][path][method]["x-datadog-tf-generator"] = annotation
+        fields = dict(annotation)
+        name = fields.pop("artifact_name")
+        declare_artifact(spec, spec["paths"][path][method], name, "resource", fields)
 
     for filename, ops in SLICES:
         missing = [op for op in ops if op not in op_index]

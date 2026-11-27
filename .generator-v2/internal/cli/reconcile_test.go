@@ -287,7 +287,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.writeEndpointTags("team", "zoo")
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, nil, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
@@ -308,7 +308,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.writeArtifact("zoo", true)
 		f.writeCassette(testAccName("zoo") + ".yaml")
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, nil, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
@@ -324,7 +324,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.registerOnly("ghost")
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, nil, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
@@ -339,7 +339,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f := newFixture()
 		f.writeArtifact("team", false)
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, nil, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
@@ -357,7 +357,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.registerOnly("ghost")
 		registryBefore := f.registry()
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, true)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, nil, true)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(2))
@@ -378,7 +378,7 @@ var _ = Describe("reconcileOrphans", func() {
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 		registryBefore := f.registry()
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, nil, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(BeEmpty())

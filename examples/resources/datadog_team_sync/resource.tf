@@ -14,3 +14,17 @@ resource "datadog_team_sync" "example" {
     }
   }
 }
+
+# Configure team synchronization from ServiceNow
+resource "datadog_team_sync" "servicenow" {
+  source    = "servicenow"
+  type      = "link"
+  frequency = "continuously"
+
+  selection_state {
+    external_id {
+      type  = "organization"
+      value = "my-instance"
+    }
+  }
+}

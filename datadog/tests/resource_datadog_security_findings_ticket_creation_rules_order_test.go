@@ -20,6 +20,7 @@ import (
 // the live order matches the configuration at every step. A final step verifies import.
 func TestAccDatadogSecurityFindingsTicketCreationRulesOrder(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create ticket creation rules.
+	cleanupTicketCreationRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_ticket_creation_rules_order.order"
@@ -84,6 +85,7 @@ func TestAccDatadogSecurityFindingsTicketCreationRulesOrder(t *testing.T) {
 // the API and asserts Terraform detects the drift (non-empty plan) and restores the configured order.
 func TestAccDatadogSecurityFindingsTicketCreationRulesOrder_Drift(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create ticket creation rules.
+	cleanupTicketCreationRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_ticket_creation_rules_order.order"
@@ -129,6 +131,7 @@ func TestAccDatadogSecurityFindingsTicketCreationRulesOrder_Drift(t *testing.T) 
 // endpoint rejects any submission that does not include every rule in the org, and the apply must fail.
 func TestAccDatadogSecurityFindingsTicketCreationRulesOrder_OutOfBandRuleAdded(t *testing.T) {
 	// No t.Parallel(): The reorder endpoint is org-global, so this must not run alongside other tests that create ticket creation rules.
+	cleanupTicketCreationRules(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_findings_ticket_creation_rules_order.order"

@@ -182,6 +182,7 @@ Optional:
 - `data_jobs_query` (Block List, Max: 5) The Data Jobs query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_jobs_query))
 - `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+- `metric_query` (Block List) A metrics query for use in formulas in metric monitors. For cost monitors, use `cloud_cost_query` instead, which requires an aggregator. (see [below for nested schema](#nestedblock--variables--metric_query))
 
 <a id="nestedblock--variables--aggregate_augmented_query"></a>
 ### Nested Schema for `variables.aggregate_augmented_query`
@@ -258,7 +259,7 @@ Required:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--search))
 
@@ -350,7 +351,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--search))
 
@@ -461,7 +462,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--search))
 
@@ -554,7 +555,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--search))
 
@@ -674,7 +675,7 @@ Optional:
 Required:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
-- `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`, `datadog_usage`, `metrics`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
@@ -684,10 +685,23 @@ Required:
 
 Required:
 
-- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
-- `jobs_query` (String) Filter expression used to select the jobs to monitor.
+- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`, `adf.pipeline`. The `aastra` dialect also accepts `airflow.job`, `dbt.model`, `dbt.test`. Custom job types are supported with the `custom.ol.` prefix.
+- `jobs_query` (String) Filter expression used to select the jobs to monitor. A metric tag filter such as `job_name:smoke*` with the `metric` dialect, or an Aastra entity search such as ``search for databricks_job where `@team:data-eng` `` with the `aastra` dialect.
 - `name` (String) Name of the query for use in formulas. Must be `run_query`.
-- `query_dialect` (String) Query dialect for data jobs queries. Currently only `metric` is supported.
+- `query_dialect` (String) Query dialect for data jobs queries. Valid values are `metric` and `aastra`.
+
+Optional:
+
+- `monitor_options` (Block List, Max: 1) Monitor configuration options for data jobs queries. (see [below for nested schema](#nestedblock--variables--data_jobs_query--monitor_options))
+- `run_filter` (String) Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported with the `aastra` query dialect.
+
+<a id="nestedblock--variables--data_jobs_query--monitor_options"></a>
+### Nested Schema for `variables.data_jobs_query.monitor_options`
+
+Optional:
+
+- `alert_on_every_failure` (Boolean) Alert separately for each failed run instead of on the count of trailing failures. Only supported for `failed_runs` monitors with the `aastra` query dialect, a `> 0` threshold with no warning threshold, an evaluation window of at most two days, and renotification disabled.
+
 
 
 <a id="nestedblock--variables--data_quality_query"></a>
@@ -696,14 +710,15 @@ Required:
 Required:
 
 - `data_source` (String) The data source for data quality queries. Valid value is `data_quality_metrics`. Valid values are `data_quality_metrics`.
-- `filter` (String) Filter expression used to match on data entities. Uses AAstra query syntax.
-- `measure` (String) The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.
+- `filter` (String) Filter expression used to match on data entities. Uses Aastra query syntax.
+- `measure` (String) The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. `data-jobs alert` job duration monitors use `duration`. Additional values may be supported.
 - `name` (String) The name of the query for use in formulas.
 
 Optional:
 
 - `group_by` (List of String) Optional grouping fields for aggregation.
 - `monitor_options` (Block List, Max: 1) Monitor configuration options for data quality queries. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options))
+- `run_filter` (String) Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported by `data-jobs alert` job duration monitors.
 - `schema_version` (String) Schema version for the data quality query.
 - `scope` (String) Optional scoping expression to further filter metrics.
 
@@ -712,9 +727,11 @@ Optional:
 
 Optional:
 
+- `consecutive_runs` (Number) Number of consecutive runs that must breach before a `data-jobs alert` job duration monitor alerts. Defaults to `1`.
 - `crontab_override` (String) Crontab expression to override the default schedule.
 - `custom_sql` (String) Custom SQL query for the monitor.
 - `custom_where` (String) Custom WHERE clause for the query.
+- `detection_type` (String) How a `data-jobs alert` job duration monitor detects a breach. Must match the `.detection()` call in the monitor query. Valid values are `static`, `anomaly`. Required for job duration monitors.
 - `group_by_columns` (List of String) Columns to group results by.
 - `model_configuration` (Block List, Max: 1) Tuning options for the anomaly detection model used by the monitor. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--model_configuration))
 - `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
@@ -783,7 +800,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 
@@ -838,6 +855,18 @@ Optional:
 
 - `metric` (String) The metric used for sorting group by results.
 - `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--metric_query"></a>
+### Nested Schema for `variables.metric_query`
+
+Required:
+
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
 
 ## Import
 

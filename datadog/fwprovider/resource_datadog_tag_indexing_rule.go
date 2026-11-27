@@ -9,11 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -109,9 +109,9 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 			"rule_order": schema.Int64Attribute{
 				Computed:    true,
 				Description: "Evaluation order within the org. Lower values are evaluated first. Server-assigned on create; use `datadog_tag_indexing_rule_order` to control ordering.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
+				// No UseStateForUnknown: the server renumbers rule_order when another rule in the
+				// org is deleted. A known planned value must equal the apply result, so a deletion
+				// between plan and apply would fail Update with "inconsistent result after apply".
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
@@ -192,25 +192,26 @@ func (r *tagIndexingRuleResource) ImportState(ctx context.Context, request resou
 // fields on dynamic_tags only take effect (and are only accepted by the API) when exclude_tags_mode
 // is true.
 func (r *tagIndexingRuleResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	var config tagIndexingRuleModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	// Read only the attributes this check needs: options can be unknown as a whole (for example when it
+	// comes from a module variable), and the pointer structs in tagIndexingRuleModel cannot hold that.
+	var excludeTagsMode types.Bool
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("exclude_tags_mode"), &excludeTagsMode)...)
+	var dynamicTags types.Object
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("options").AtName("data").AtName("dynamic_tags"), &dynamicTags)...)
+	if response.Diagnostics.HasError() || excludeTagsMode.IsUnknown() || dynamicTags.IsNull() || dynamicTags.IsUnknown() {
+		return
+	}
+
+	var dt tagIndexingRuleDynamicTagsModel
+	response.Diagnostics.Append(dynamicTags.As(ctx, &dt, basetypes.ObjectAsOptions{})...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	if config.Options == nil || config.Options.Data == nil || config.Options.Data.DynamicTags == nil {
-		return
-	}
-
-	if config.ExcludeTagsMode.IsUnknown() {
-		return
-	}
-
-	dt := config.Options.Data.DynamicTags
 	usageFieldSet := (!dt.ExcludeNotQueriedWindowSeconds.IsNull() && !dt.ExcludeNotQueriedWindowSeconds.IsUnknown()) ||
 		(!dt.ExcludeNotUsedInAssets.IsNull() && !dt.ExcludeNotUsedInAssets.IsUnknown())
 
-	if usageFieldSet && !config.ExcludeTagsMode.ValueBool() {
+	if usageFieldSet && !excludeTagsMode.ValueBool() {
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("exclude_tags_mode"),
 			"Invalid dynamic_tags usage configuration",

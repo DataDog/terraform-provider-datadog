@@ -6,35 +6,37 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 154
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"description":"some description","per_unit":"second","short_name":"short name for metric_metadata foo","statsd_interval":1,"type":"gauge","unit":"byte"}
         form: {}
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/foo
-        method: GET
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/metrics/tf_TestAccDatadogMetricMetadataDatasource_local_1794583306
+        method: PUT
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 172
+        uncompressed: false
         body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 396.340083ms
+        duration: 160.532ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,24 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/foo
+        url: https://api.datadoghq.com/api/v1/metrics/tf_TestAccDatadogMetricMetadataDatasource_local_1794583306
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 172
+        uncompressed: false
         body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 153.972458ms
+        duration: 119.767709ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,21 +86,86 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/foo
+        url: https://api.datadoghq.com/api/v1/metrics/tf_TestAccDatadogMetricMetadataDatasource_local_1794583306
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 172
+        uncompressed: false
         body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 141.075667ms
+        duration: 186.815291ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/metrics/tf_TestAccDatadogMetricMetadataDatasource_local_1794583306
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 172
+        uncompressed: false
+        body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.235167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/metrics/tf_TestAccDatadogMetricMetadataDatasource_local_1794583306
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 172
+        uncompressed: false
+        body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 128.701292ms

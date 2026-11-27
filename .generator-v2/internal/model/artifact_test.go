@@ -25,10 +25,11 @@ var _ = Describe("BuildArtifact", func() {
 		Expect(art.SourceFile).To(Equal("datadog/fwprovider/data_source_datadog_incident_type.go"))
 		Expect(art.Lifecycle).NotTo(BeNil())
 		Expect(art.Lifecycle.Read).To(Equal(&SDKCall{
-			GoPackage:      "datadogV2",
-			GoApiStruct:    "IncidentsApi",
-			GoMethod:       "GetIncidentType",
-			GoResponseType: "IncidentTypeResponse",
+			GoPackage:       "datadogV2",
+			GoApiStruct:     "IncidentsApi",
+			GoMethod:        "GetIncidentType",
+			GoResponseType:  "IncidentTypeResponse",
+			HasResponseBody: true,
 		}))
 		Expect(art.Lifecycle.IdStrategy).To(Equal(IdStrategyDataID))
 	})
@@ -202,6 +203,7 @@ var _ = Describe("BuildArtifact singular search", func() {
 				GoApiStruct:        "PowerpacksApi",
 				GoMethod:           "ListPowerpacks",
 				GoResponseType:     "PowerpacksResponse",
+				HasResponseBody:    true,
 				ItemType:           "Powerpack",
 				OptionalParamsType: "ListPowerpacksOptionalParameters",
 				Paginated:          true,

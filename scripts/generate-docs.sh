@@ -10,7 +10,7 @@ exclude_files=(
   "docs/resources/on_call_team_routing_rules.md"
   "docs/resources/on_call_user_notification_channel.md"
   "docs/resources/on_call_user_notification_rule.md"
-  "docs/guides/dashboard_v2_migration.md"
+  "docs/guides/dashboard_resource_names.md"
   "docs/guides/powerpack_v2_migration.md"
 )
 

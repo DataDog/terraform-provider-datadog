@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -34,7 +35,6 @@ func skipIfNoCassette(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -66,8 +66,10 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 				// modified_at advances between create and import read (server-side clock skew).
 				// options.* appear after import because the API always returns default options
 				// even when the rule was created without configuring them explicitly.
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
 				ImportStateVerifyIgnore: []string{
 					"modified_at",
+					"rule_order",
 					"options.%",
 					"options.data.%",
 					"options.data.manage_preexisting_metrics",
@@ -80,7 +82,6 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -105,17 +106,17 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            "datadog_tag_indexing_rule.bar",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"modified_at"},
+				ResourceName:      "datadog_tag_indexing_rule.bar",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
+				ImportStateVerifyIgnore: []string{"modified_at", "rule_order"},
 			},
 		},
 	})
 }
 
 func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -148,7 +149,6 @@ func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -169,10 +169,11 @@ func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            "datadog_tag_indexing_rule.exclude",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"modified_at"},
+				ResourceName:      "datadog_tag_indexing_rule.exclude",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
+				ImportStateVerifyIgnore: []string{"modified_at", "rule_order"},
 			},
 		},
 	})
@@ -183,7 +184,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 // automatic post-apply plan check fails the test if the null-preserving flatten in updateState were
 // to normalize the unset window to a zero value ("inconsistent result after apply").
 func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -211,7 +211,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *test
 // unless exclude_tags_mode is explicit in the request body, so this step failing would signal a
 // regression to a conditional SetExcludeTagsMode call.
 func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -239,7 +238,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
 // block fires (with no API call) when an exclude_not_* usage field is set but exclude_tags_mode
 // is left at its false default.
 func TestAccDatadogTagIndexingRule_ExcludeMode_ValidateConfig(t *testing.T) {
-	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -272,14 +270,21 @@ func datadogTagIndexingRuleDestroyHelper(_ context.Context, auth context.Context
 		if r.Type != "datadog_tag_indexing_rule" {
 			continue
 		}
-		_, httpResp, err := api.GetTagIndexingRule(auth, r.Primary.ID)
-		if err != nil {
-			if httpResp != nil && httpResp.StatusCode == 404 {
-				continue
+		// DELETE is eventually consistent: GET can return the rule for some
+		// seconds after the delete succeeds.
+		err := utils.Retry(2*time.Second, 15, func() error {
+			_, httpResp, err := api.GetTagIndexingRule(auth, r.Primary.ID)
+			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving tag indexing rule: %s", err)}
 			}
-			return fmt.Errorf("received an error retrieving tag indexing rule: %s", err.Error())
+			return &utils.RetryableError{Prob: "tag indexing rule still exists"}
+		})
+		if err != nil {
+			return err
 		}
-		return fmt.Errorf("tag indexing rule still exists")
 	}
 	return nil
 }

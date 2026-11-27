@@ -34,20 +34,16 @@ func TestGenerateHandlesUUIDResponseAndOptionalFilter(t *testing.T) {
 	if err != nil {
 		t.Fatalf("reading incident notification template spec: %v", err)
 	}
-	annotation := `      operationId: ListIncidentNotificationTemplates
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: incident_notification_templates
+	annotation := `
+- name: Terraform Test
+  x-datadog-tf-generator:
+    incident_notification_template:
+      datasource_list:
         tf_description: Use this data source to retrieve incident notification templates.
         group:
           read: ListIncidentNotificationTemplates
-        cardinality: plural
 `
-	annotated := strings.Replace(string(spec),
-		"      operationId: ListIncidentNotificationTemplates\n", annotation, 1)
-	if annotated == string(spec) {
-		t.Fatal("failed to annotate ListIncidentNotificationTemplates")
-	}
+	annotated := strings.Replace(string(spec), "tags:\n", "tags:\n"+annotation, 1)
 
 	dir := t.TempDir()
 	specPath := filepath.Join(dir, "incident_notification_templates.yaml")

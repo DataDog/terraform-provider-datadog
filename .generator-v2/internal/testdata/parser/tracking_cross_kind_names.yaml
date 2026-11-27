@@ -9,12 +9,6 @@ paths:
   /teams:
     post:
       operationId: CreateTeam
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: team
-        group:
-          create: CreateTeam
-          read: GetTeam
       responses:
         '201':
           description: created
@@ -27,11 +21,20 @@ paths:
           required: true
           schema:
             type: string
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: team
-        group:
-          read: GetTeam
       responses:
         '200':
           description: ok
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    team:
+      resource:
+        artifact_name: team
+        group:
+          create: CreateTeam
+          read: GetTeam
+          delete: CreateTeam
+      datasource_singular:
+        artifact_name: team
+        group:
+          read: GetTeam

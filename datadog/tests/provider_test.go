@@ -74,6 +74,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_integration_aws_iam_permissions_test":                     "integration-aws",
 	"tests/data_source_datadog_integration_aws_iam_permissions_standard_test":            "integration-aws",
 	"tests/data_source_datadog_integration_aws_iam_permissions_resource_collection_test": "integration-aws",
+	"tests/data_source_datadog_integration_slack_channels_test":                          "integration-slack-channel",
 	"tests/data_source_datadog_ip_ranges_test":                                           "ip-ranges",
 	"tests/data_source_datadog_logs_archives_order_test":                                 "logs-archive",
 	"tests/data_source_datadog_logs_indexes_order_test":                                  "logs-index",
@@ -125,6 +126,13 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_monitor_test":                                                  "monitors",
 	"tests/import_datadog_user_test":                                                     "users",
 	"tests/provider_test":                                                                "terraform",
+	"tests/resource_datadog_ai_gateway_governance_test":                                  "ai-gateway",
+	"tests/resource_datadog_ai_gateway_rate_limit_test":                                  "ai-gateway",
+	"tests/resource_datadog_ai_gateway_data_capture_override_test":                       "ai-gateway",
+	"tests/resource_datadog_ai_gateway_model_group_test":                                 "ai-gateway",
+	"tests/resource_datadog_ai_gateway_policy_test":                                      "ai-gateway",
+	"tests/resource_datadog_ai_gateway_routing_rule_test":                                "ai-gateway",
+	"tests/resource_datadog_ai_gateway_budget_test":                                      "ai-gateway",
 	"tests/resource_datadog_api_key_test":                                                "api_keys",
 	"tests/resource_datadog_apm_retention_filter_test":                                   "apm_retention_filter",
 	"tests/resource_datadog_apm_retention_filter_order_test":                             "apm_retention_filter_order",
@@ -134,15 +142,18 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
 	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
+	"tests/resource_datadog_aws_wif_intake_mapping_test":                                 "cloud-authentication",
+	"tests/resource_datadog_github_oidc_intake_mapping_test":                             "cloud-authentication",
+	"tests/resource_datadog_github_oidc_identity_mapping_test":                           "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                               "security-monitoring",
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
-	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
 	"tests/resource_datadog_action_execution_policy_test":                                "execution_policy",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
+	"tests/resource_datadog_ai_gateway_provider_test":                                    "ai-gateway",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                                 "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                                     "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                                  "dashboards",
@@ -178,6 +189,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_tab_test":                                          "dashboards",
+	"tests/resource_datadog_dashboard_default_timeframe_test":                            "dashboards",
 	"tests/resource_datadog_dashboard_test":                                              "dashboards",
 	"tests/resource_datadog_dashboard_time_spans_test":                                   "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                                   "dashboards",
@@ -286,6 +298,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
+	"tests/resource_datadog_derived_metric_test":                                         "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
 	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
@@ -315,6 +328,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_role_test":                                                   "roles",
 	"tests/resource_datadog_rum_application_test":                                        "rum-application",
 	"tests/resource_datadog_rum_metric_test":                                             "rum-metric",
+	"tests/resource_datadog_rum_operation_journey_link_test":                             "rum-operation",
+	"tests/resource_datadog_rum_operation_test":                                          "rum-operation",
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
 	"tests/resource_datadog_saml_idp_metadata_test":                                      "organization",
@@ -367,6 +382,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
 	"tests/resource_datadog_user_test":                                                   "users",
+	"tests/resource_datadog_usage_quota_test":                                            "usage-quotas",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
 	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
@@ -399,6 +415,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_status_page_test":                                            "status-page",
 	"tests/resource_datadog_status_page_component_test":                                  "status-page",
 	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_email_access_policy_test":                        "status-page",
 	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
@@ -444,6 +461,14 @@ func isRecording() bool {
 
 func isReplaying() bool {
 	return os.Getenv("RECORD") == "false"
+}
+
+// skipUnlessReplaying skips tests whose live API calls need org state that the test org does not have.
+func skipUnlessReplaying(t *testing.T, reason string) {
+	t.Helper()
+	if !isReplaying() {
+		t.Skipf("replay-only test (RECORD=false): %s", reason)
+	}
 }
 
 func isDebug() bool {
@@ -647,6 +672,12 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+// uniqueGCPProjectID matches the GCP project ID format: lowercase, starts with a letter, 6-30 chars.
+func uniqueGCPProjectID(ctx context.Context, t *testing.T) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	return "tf-" + hash[:17]
+}
+
 // uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
 // rule name that changes in CI, but is stable locally.
 func uniqueAgentRuleName(ctx context.Context) string {
@@ -802,6 +833,7 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 // jsonEquivalent compares two JSON strings for semantic equality, ignoring:
 //   - key ordering (Go map vs struct serialization)
 //   - absent vs zero-value fields ("id":"" vs no "id" key)
+//   - widget IDs the cassette did not record (see dropUnrecordedWidgetIDs)
 //
 // This allows v1 (typed struct serialization) and v2 (map serialization) request
 // bodies to match against the same cassette.
@@ -813,7 +845,52 @@ func jsonEquivalent(a, b string) bool {
 	if err := json.Unmarshal([]byte(b), &vb); err != nil {
 		return false
 	}
+	dropUnrecordedWidgetIDs(va, vb)
 	return deepEquivalent(va, vb)
+}
+
+// dropUnrecordedWidgetIDs removes numeric widget "id" fields from the request
+// wherever the matching cassette widget has none. v1 never sent widget IDs on
+// update, while v2 sends back the IDs it read from state, so v1-era cassettes
+// would otherwise never match. Cassettes that do record widget IDs still
+// require an exact match.
+func dropUnrecordedWidgetIDs(req, cas interface{}) {
+	switch rv := req.(type) {
+	case map[string]interface{}:
+		cv, ok := cas.(map[string]interface{})
+		if !ok {
+			return
+		}
+		for k, v := range rv {
+			if k == "widgets" {
+				rw, rok := v.([]interface{})
+				cw, cok := cv[k].([]interface{})
+				if rok && cok && len(rw) == len(cw) {
+					for i := range rw {
+						rWidget, rok := rw[i].(map[string]interface{})
+						cWidget, cok := cw[i].(map[string]interface{})
+						if !rok || !cok {
+							continue
+						}
+						if _, isNum := rWidget["id"].(float64); isNum {
+							if _, recorded := cWidget["id"]; !recorded {
+								delete(rWidget, "id")
+							}
+						}
+					}
+				}
+			}
+			dropUnrecordedWidgetIDs(v, cv[k])
+		}
+	case []interface{}:
+		cv, ok := cas.([]interface{})
+		if !ok || len(rv) != len(cv) {
+			return
+		}
+		for i := range rv {
+			dropUnrecordedWidgetIDs(rv[i], cv[i])
+		}
+	}
 }
 
 // deepEquivalent recursively compares two JSON values, treating absent keys
@@ -969,8 +1046,9 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	// Datadog API config.HTTPClient
 	config := common.NewConfiguration()
-	if ctx.Value("http_retry_enable") == true {
-		config.RetryConfiguration.EnableRetry = true
+	// Invalid retry env vars fail test setup instead of silently changing retry behavior.
+	if err := utils.ApplyHTTPRetryConfigFromEnv(ctx.Value("http_retry_enable") == true, config); err != nil {
+		panic(err)
 	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient

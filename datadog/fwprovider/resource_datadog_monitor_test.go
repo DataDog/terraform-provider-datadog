@@ -5,7 +5,10 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -239,4 +242,172 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, original.Sensitivity, got.Sensitivity)
 	assert.Equal(t, original.SourceToTargetConfig, got.SourceToTargetConfig)
 	assert.Equal(t, original.ModelConfiguration, got.ModelConfiguration)
+}
+
+func TestUpdateVariablesStateMetricQuery(t *testing.T) {
+	r := &monitorResource{}
+	m := MetricQuery{
+		DataSource: types.StringValue("metrics"),
+		Query:      types.StringValue("avg:system.cpu.user{*}"),
+		Name:       types.StringValue("q1"),
+	}
+	// Legacy cost-monitor config: cloud_cost_query with a metrics source, sent as the metric type.
+	c := CloudCostQuery{DataSource: m.DataSource, Query: m.Query, Name: m.Name, Aggregator: types.StringValue("sum")}
+	read := func(monitorType string, vars []datadogV1.MonitorFormulaAndFunctionQueryDefinition) Variable {
+		state := &monitorResourceModel{}
+		state.Type.StringValue = types.StringValue(monitorType)
+		r.updateVariablesState(context.Background(), state, &datadogV1.MonitorOptions{Variables: vars})
+		return state.Variables[0]
+	}
+
+	v := read("query alert", r.buildMetricQueryStruct([]MetricQuery{m}))
+	assert.Equal(t, []MetricQuery{m}, v.MetricQuery)
+	assert.Empty(t, v.CloudCostQuery)
+
+	costVars := r.buildCloudCostQueryStruct([]CloudCostQuery{c})
+	assert.NotNil(t, costVars[0].MonitorFormulaAndFunctionMetricQueryDefinition)
+	v = read("cost alert", costVars)
+	assert.Equal(t, []CloudCostQuery{c}, v.CloudCostQuery)
+	assert.Empty(t, v.MetricQuery)
+}
+
+func TestMonitorValidateConfigVariables(t *testing.T) {
+	ctx := context.Background()
+	r := &monitorResource{}
+	schemaResp := &resource.SchemaResponse{}
+	r.Schema(ctx, resource.SchemaRequest{}, schemaResp)
+	objType := schemaResp.Schema.Type().TerraformType(ctx).(tftypes.Object)
+	varType := objType.AttributeTypes["variables"].(tftypes.List).ElementType.(tftypes.Object)
+
+	nulls := func(o tftypes.Object) map[string]tftypes.Value {
+		m := map[string]tftypes.Value{}
+		for k, t := range o.AttributeTypes {
+			m[k] = tftypes.NewValue(t, nil)
+		}
+		return m
+	}
+	query := func(block, dataSource string) tftypes.Value {
+		lt := varType.AttributeTypes[block].(tftypes.List)
+		q := nulls(lt.ElementType.(tftypes.Object))
+		q["name"] = tftypes.NewValue(tftypes.String, "q1")
+		q["query"] = tftypes.NewValue(tftypes.String, "avg:system.cpu.user{*}")
+		q["data_source"] = tftypes.NewValue(tftypes.String, dataSource)
+		return tftypes.NewValue(lt, []tftypes.Value{tftypes.NewValue(lt.ElementType, q)})
+	}
+
+	tests := []struct {
+		monitorType, block, dataSource string
+		wantErr                        bool
+	}{
+		{"cost alert", "metric_query", "metrics", true},
+		{"query alert", "metric_query", "metrics", false},
+		{"query alert", "cloud_cost_query", "metrics", true},
+	}
+	for _, tt := range tests {
+		v := nulls(varType)
+		v[tt.block] = query(tt.block, tt.dataSource)
+		root := nulls(objType)
+		root["type"] = tftypes.NewValue(tftypes.String, tt.monitorType)
+		root["variables"] = tftypes.NewValue(objType.AttributeTypes["variables"], []tftypes.Value{tftypes.NewValue(varType, v)})
+		resp := &resource.ValidateConfigResponse{}
+		r.ValidateConfig(ctx, resource.ValidateConfigRequest{Config: tfsdk.Config{Schema: schemaResp.Schema, Raw: tftypes.NewValue(objType, root)}}, resp)
+		assert.Equal(t, tt.wantErr, resp.Diagnostics.HasError(), "%s %s: %v", tt.monitorType, tt.block, resp.Diagnostics)
+	}
+}
+
+func TestDataJobsQueryRoundTrip(t *testing.T) {
+	r := &monitorResource{}
+
+	tests := []struct {
+		name  string
+		query DataJobsQuery
+	}{
+		{
+			name: "aastra with run_filter and alert_on_every_failure",
+			query: DataJobsQuery{
+				Name:           types.StringValue("run_query"),
+				JobsQuery:      types.StringValue("search for databricks_job"),
+				JobType:        types.StringValue("databricks.job"),
+				QueryDialect:   types.StringValue("aastra"),
+				RunFilter:      types.StringValue("env:prod"),
+				MonitorOptions: []DataJobsMonitorOptions{{AlertOnEveryFailure: types.BoolValue(true)}},
+			},
+		},
+		{
+			// An explicit false must be sent and read back, not dropped as unset.
+			name: "explicit false alert_on_every_failure",
+			query: DataJobsQuery{
+				Name:           types.StringValue("run_query"),
+				JobsQuery:      types.StringValue("search for databricks_job"),
+				JobType:        types.StringValue("databricks.job"),
+				QueryDialect:   types.StringValue("aastra"),
+				RunFilter:      types.StringNull(),
+				MonitorOptions: []DataJobsMonitorOptions{{AlertOnEveryFailure: types.BoolValue(false)}},
+			},
+		},
+		{
+			name: "metric dialect without optional fields",
+			query: DataJobsQuery{
+				Name:         types.StringValue("run_query"),
+				JobsQuery:    types.StringValue("job_name:*"),
+				JobType:      types.StringValue("databricks.job"),
+				QueryDialect: types.StringValue("metric"),
+				RunFilter:    types.StringNull(),
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defs := r.buildDataJobsQueryStruct([]DataJobsQuery{tt.query})
+			if !assert.Len(t, defs, 1) {
+				return
+			}
+			state := r.buildDataJobsQueryState(defs[0].MonitorFormulaAndFunctionDataJobsQueryDefinition)
+			assert.Equal(t, tt.query, *state)
+		})
+	}
+}
+
+func TestDataQualityQueryJobDurationRoundTrip(t *testing.T) {
+	ctx := context.Background()
+	r := &monitorResource{}
+
+	original := DataQualityQuery{
+		Name:          types.StringValue("run_query"),
+		DataSource:    types.StringValue("data_quality_metrics"),
+		SchemaVersion: types.StringValue("0.0.1"),
+		Measure:       types.StringValue("duration"),
+		Filter:        types.StringValue("search for databricks_job"),
+		Scope:         types.StringNull(),
+		RunFilter:     types.StringValue("env:prod"),
+		GroupBy:       stringList(ctx, "name", "workspace_name", "entity_id"),
+		MonitorOptions: []DataQualityMonitorOptions{{
+			CustomSql:         types.StringNull(),
+			CustomWhere:       types.StringNull(),
+			GroupByColumns:    types.ListNull(types.StringType),
+			CrontabOverride:   types.StringNull(),
+			ModelTypeOverride: types.StringNull(),
+			Sensitivity:       types.Float64Null(),
+			DetectionType:     types.StringValue("anomaly"),
+			ConsecutiveRuns:   types.Int64Value(2),
+		}},
+	}
+
+	defs := r.buildDataQualityQueryStruct(ctx, []DataQualityQuery{original})
+	if !assert.Len(t, defs, 1) {
+		return
+	}
+	def := defs[0].MonitorFormulaAndFunctionDataQualityQueryDefinition
+	assert.Equal(t, "env:prod", def.GetRunFilter())
+	opts := def.GetMonitorOptions()
+	assert.Equal(t, datadogV1.MONITORFORMULAANDFUNCTIONDATAQUALITYDETECTIONTYPE_ANOMALY, opts.GetDetectionType())
+	assert.Equal(t, int64(2), opts.GetConsecutiveRuns())
+
+	state := r.buildDataQualityQueryState(ctx, def)
+	assert.Equal(t, original.RunFilter, state.RunFilter)
+	if assert.Len(t, state.MonitorOptions, 1) {
+		assert.Equal(t, types.StringValue("anomaly"), state.MonitorOptions[0].DetectionType)
+		assert.Equal(t, types.Int64Value(2), state.MonitorOptions[0].ConsecutiveRuns)
+	}
 }

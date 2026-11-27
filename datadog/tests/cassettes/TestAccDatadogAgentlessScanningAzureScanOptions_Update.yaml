@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -27,13 +27,13 @@ interactions:
         trailer: {}
         content_length: 122
         uncompressed: false
-        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription 12345678-1234-1234-1234-123456789012"}]}'
+        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription a7f25b93-235b-5784-9989-a986dbec166f"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 438.482459ms
+        duration: 294.317507ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -46,7 +46,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options"}}
+            {"data":{"attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options"}}
         form: {}
         headers:
             Accept:
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 138.125042ms
+        duration: 119.188441ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.994ms
+        duration: 107.761078ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.03375ms
+        duration: 105.966605ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -162,13 +162,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.287792ms
+        duration: 110.957694ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -195,13 +195,13 @@ interactions:
         trailer: {}
         content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 153.329125ms
+        duration: 105.405624ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -214,14 +214,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false},"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options"}}
+            {"data":{"attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false},"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 186
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 149.959458ms
+        duration: 129.127549ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -264,13 +264,13 @@ interactions:
         trailer: {}
         content_length: 186
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.4755ms
+        duration: 102.310734ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -297,13 +297,13 @@ interactions:
         trailer: {}
         content_length: 186
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
+        body: '{"data":{"id":"a7f25b93-235b-5784-9989-a986dbec166f","type":"azure_scan_options","attributes":{"compliance_host":false,"function":false,"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 120.21725ms
+        duration: 107.999808ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -320,7 +320,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -336,7 +336,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 137.0695ms
+        duration: 121.256819ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -353,7 +353,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/12345678-1234-1234-1234-123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/azure/a7f25b93-235b-5784-9989-a986dbec166f
         method: GET
       response:
         proto: HTTP/1.1
@@ -363,10 +363,10 @@ interactions:
         trailer: {}
         content_length: 122
         uncompressed: false
-        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription 12345678-1234-1234-1234-123456789012"}]}'
+        body: '{"errors":[{"status":"404","detail":"no azure scan options found for subscription a7f25b93-235b-5784-9989-a986dbec166f"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 127.806583ms
+        duration: 103.199477ms

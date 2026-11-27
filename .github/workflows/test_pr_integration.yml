@@ -57,6 +57,14 @@ jobs:
             --jq .id)
           echo "check_run_id=${check_run_id}" >> "$GITHUB_OUTPUT"
 
+  report-api-spec-start:
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/report_api_spec_integration.yml
+    with:
+      conclusion: pending
+
   pr-tests-selection:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
@@ -119,14 +127,18 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      # No GHA cache: the Terraform binary is small (~30MB, a few seconds to
-      # download) and a shared cache would let untrusted fork PR code poison a
-      # binary that a later trusted, credentialed run could restore and execute.
+      # No GHA cache: this job runs PR code in trusted base context, so a shared cache would let PR code replace the binary that later trusted runs restore; the download costs seconds.
       - name: Install terraform
         run: |
+          set -euo pipefail
+          VERSION="${{ env.TERRAFORM_VERSION }}"
+          ZIP="terraform_${VERSION}_linux_amd64.zip"
           mkdir -p ~/.cache/terraform
-          wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
-          unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
+          cd ~/.cache/terraform
+          wget -q "https://releases.hashicorp.com/terraform/${VERSION}/${ZIP}" -O "${ZIP}"
+          wget -q "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_SHA256SUMS" -O SHA256SUMS
+          grep "  ${ZIP}\$" SHA256SUMS | sha256sum -c -
+          unzip -o "${ZIP}"
       - name: Sweep stale test resources
         run: make sweep
         env:
@@ -140,6 +152,7 @@ jobs:
           DD_TEST_CLIENT_API_KEY: ${{ steps.dd-sts.outputs.api_key }}
           DD_TEST_CLIENT_APP_KEY: ${{ steps.dd-sts.outputs.app_key }}
           DD_HTTP_CLIENT_RETRY_ENABLED: "true"
+          DD_HTTP_CLIENT_RETRY_JITTER: "2"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
           TESTACC_JSONFILE: "/tmp/testacc.json"
@@ -167,6 +180,8 @@ jobs:
       contents: read
       checks: write
       actions: read # Required to download the results artifact
+    outputs:
+      conclusion: ${{ steps.complete.outputs.conclusion }}
     steps:
       # No ref: for workflow_run this checks out the default branch, so both the
       # summarizer and the workflow driving it come from base-branch code.
@@ -200,6 +215,7 @@ jobs:
             echo "CHECK_SUMMARY_EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Complete check run
+        id: complete
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -212,11 +228,6 @@ jobs:
           TESTS_SUMMARY: ${{ steps.summary.outputs.summary }}
           SELECTION_RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
-          if [ -z "${CHECK_RUN_ID}" ]; then
-            echo "report-start did not create a check run; nothing to complete." >&2
-            exit 1
-          fi
-
           if [ "${SELECTION_CONCLUSION}" != "success" ] || [ "${SELECTION_RESULT}" != "success" ]; then
             # A cancelled selection run usually means a newer push superseded this
             # one, which will publish its own check against the newer commit.
@@ -241,8 +252,27 @@ jobs:
             summary="${TESTS_SUMMARY:-The integration test job ${TESTS_RESULT} before producing results.}"
           fi
 
+          # Preserve the test result even if updating the provider check fails.
+          echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
+
+          if [ -z "${CHECK_RUN_ID}" ]; then
+            echo "report-start did not create a check run; nothing to complete." >&2
+            exit 1
+          fi
+
           gh api --method PATCH "repos/${GITHUB_REPOSITORY}/check-runs/${CHECK_RUN_ID}" \
             -f status=completed \
             -f conclusion="${conclusion}" \
             -f "output[title]=${title}" \
             -f "output[summary]=${summary}"
+
+  report-api-spec-finish:
+    # Wait for pending reporting so it cannot overwrite the final status.
+    needs: [report-api-spec-start, report-finish]
+    if: always() && needs.report-finish.outputs.conclusion != ''
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/report_api_spec_integration.yml
+    with:
+      conclusion: ${{ needs.report-finish.outputs.conclusion }}

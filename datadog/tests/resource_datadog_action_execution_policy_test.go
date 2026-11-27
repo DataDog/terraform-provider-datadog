@@ -131,6 +131,37 @@ func TestAccDatadogActionExecutionPolicy_RemoteActionRshell(t *testing.T) {
 	})
 }
 
+func TestAccDatadogActionExecutionPolicy_Slack(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogActionExecutionPolicyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatadogActionExecutionPolicySlackConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogActionExecutionPolicyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "effect", "allow"),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "action_pattern.integration", "INTEGRATION_SLACK"),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "scope.slack.rule.0.channel_name_selectors.#", "2"),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "scope.slack.rule.0.channel_name_selectors.0", "incident-*"),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "scope.slack.rule.0.channel_name_selectors.1", "ops"),
+					testAccCheckDatadogActionExecutionPolicyTargetTags("test-workspace", "slack_workspace_id:T0123456789"),
+				),
+			},
+			{
+				ResourceName:      actionExecutionPolicyResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogActionExecutionPolicy_EmptyScope(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -186,6 +217,7 @@ func TestAccDatadogActionExecutionPolicy_EmptyScopeVariant(t *testing.T) {
 		{name: "kubernetes", integration: "INTEGRATION_KUBERNETES"},
 		{name: "scripts", integration: "INTEGRATION_SCRIPT"},
 		{name: "remote_action_rshell", integration: "INTEGRATION_REMOTE_ACTION"},
+		{name: "slack", integration: "INTEGRATION_SLACK"},
 	} {
 		t.Run(variant.name, func(t *testing.T) {
 			resource.Test(t, resource.TestCase{
@@ -290,6 +322,32 @@ resource "datadog_action_execution_policy" "test" {
         access       = "read_only"
       }
     }
+  }
+}`, name)
+}
+
+func testAccDatadogActionExecutionPolicySlackConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_action_execution_policy" "test" {
+  name   = %q
+  effect = "allow"
+
+  action_pattern {
+    integration = "INTEGRATION_SLACK"
+    action_fqns = ["com.datadoghq.slack.send_simple_message"]
+  }
+
+  scope {
+    slack {
+      rule {
+        channel_name_selectors = ["incident-*", "ops"]
+      }
+    }
+  }
+
+  target {
+    name       = "test-workspace"
+    agent_tags = ["slack_workspace_id:T0123456789"]
   }
 }`, name)
 }

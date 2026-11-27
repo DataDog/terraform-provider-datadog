@@ -1,0 +1,40 @@
+name: Send PR Approval Status
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: ["review_requested", "synchronize", "opened", "reopened"]
+  pull_request_review:
+    types:
+      - submitted
+      - dismissed
+
+jobs:
+  send_status:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.pull_request.draft == false &&
+      !contains(github.event.pull_request.labels.*.name, 'ci/skip') &&
+      !contains(github.event.pull_request.head.ref, 'datadog-api-spec/test/') &&
+      contains(github.event.pull_request.head.ref, 'datadog-api-spec/generated/')
+    permissions:
+      id-token: write
+    steps:
+      - name: Get datadog-api-spec token
+        id: get_token
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: ddoghq/datadog-api-spec
+          policy: terraform-provider-datadog.approved_status.post-review-status
+      - name: Post PR review status check
+        uses: DataDog/github-actions/post-review-status@65b4875f33ad773d7ba4b005a2cb5f35020295f3 # v2.3.0
+        with:
+          github-token: ${{ steps.get_token.outputs.token }}
+          owner: ddoghq
+          repo: datadog-api-spec
+          context: terraform-provider-datadog/master

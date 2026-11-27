@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -14,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
 	"net/http"
 
@@ -21,11 +23,27 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+// The API locks a policy (423) while a managed deployment of it is in progress.
+const csmThreatsLockedRetryTimeout = 1 * time.Minute
+
 var (
 	csmThreatsMutex sync.Mutex
 	_               resource.ResourceWithConfigure   = &csmThreatsAgentRuleResource{}
 	_               resource.ResourceWithImportState = &csmThreatsAgentRuleResource{}
 )
+
+func retryOnCSMThreatsLocked(ctx context.Context, timeout time.Duration, call func() (*http.Response, error)) error {
+	return retry.RetryContext(ctx, timeout, func() *retry.RetryError {
+		httpResp, err := call()
+		if err == nil {
+			return nil
+		}
+		if httpResp != nil && httpResp.StatusCode == http.StatusLocked {
+			return retry.RetryableError(err)
+		}
+		return retry.NonRetryableError(err)
+	})
+}
 
 type csmThreatsAgentRuleResource struct {
 	api  *datadogV2.CSMThreatsApi
@@ -330,7 +348,13 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 		return
 	}
 
-	res, _, err := r.api.CreateCSMThreatsAgentRule(r.auth, *agentRulePayload)
+	var res datadogV2.CloudWorkloadSecurityAgentRuleResponse
+	err = retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var callErr error
+		res, httpResp, callErr = r.api.CreateCSMThreatsAgentRule(r.auth, *agentRulePayload)
+		return httpResp, callErr
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
 		return
@@ -405,7 +429,13 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 		return
 	}
 
-	res, _, err := r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
+	var res datadogV2.CloudWorkloadSecurityAgentRuleResponse
+	err = retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var callErr error
+		res, httpResp, callErr = r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
+		return httpResp, callErr
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
 		return
@@ -432,16 +462,19 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 	id := state.Id.ValueString()
 
 	var httpResp *http.Response
-	var err error
-	if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
-		policyId := state.PolicyId.ValueString()
-		httpResp, err = r.api.DeleteCSMThreatsAgentRule(r.auth, id, *datadogV2.NewDeleteCSMThreatsAgentRuleOptionalParameters().WithPolicyId(policyId))
-	} else {
-		httpResp, err = r.api.DeleteCSMThreatsAgentRule(r.auth, id)
-	}
+	err := retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var callErr error
+		if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
+			policyId := state.PolicyId.ValueString()
+			httpResp, callErr = r.api.DeleteCSMThreatsAgentRule(r.auth, id, *datadogV2.NewDeleteCSMThreatsAgentRuleOptionalParameters().WithPolicyId(policyId))
+		} else {
+			httpResp, callErr = r.api.DeleteCSMThreatsAgentRule(r.auth, id)
+		}
+		return httpResp, callErr
+	})
 
 	if err != nil {
-		if httpResp.StatusCode == 404 {
+		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting agent rule"))

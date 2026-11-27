@@ -8,12 +8,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -38,6 +42,7 @@ type MonitorNotificationRuleModel struct {
 	MonitorNotificationRuleFilter                *MonitorNotificationRuleFilter                `tfsdk:"filter"`
 	MonitorNotificationRuleConditionalRecipients *MonitorNotificationRuleConditionalRecipients `tfsdk:"conditional_recipients"`
 	MonitorNotificationRuleBundleConfig          *MonitorNotificationRuleBundleConfig          `tfsdk:"bundle_config"`
+	RuleOptions                                  types.Object                                  `tfsdk:"rule_options"`
 }
 
 type MonitorNotificationRuleFilter struct {
@@ -57,6 +62,16 @@ type MonitorNotificationRuleConditionalRecipients struct {
 
 type MonitorNotificationRuleBundleConfig struct {
 	Duration types.Int32 `tfsdk:"duration"`
+}
+
+type MonitorNotificationRuleOptions struct {
+	IsThreaded types.Bool `tfsdk:"is_threaded"`
+}
+
+// rule_options is Optional + Computed, so its planned value can be unknown on create. A struct
+// pointer can't hold unknown, so the model uses types.Object with these attribute types.
+var monitorNotificationRuleOptionsAttrTypes = map[string]attr.Type{
+	"is_threaded": types.BoolType,
 }
 
 func NewMonitorNotificationRuleResource() resource.Resource {
@@ -105,6 +120,20 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 				Optional:    true,
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
+				},
+			},
+			"rule_options": schema.SingleNestedAttribute{
+				Description: "Additional options for the monitor notification rule. If omitted, the value stored in Datadog is kept.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.UseStateForUnknown(),
+				},
+				Attributes: map[string]schema.Attribute{
+					"is_threaded": schema.BoolAttribute{
+						Description: "Whether notifications from this rule are threaded. When `true`, follow-up notifications for the same monitor alert are posted in Slack as replies to the first notification. Cannot be `true` when `bundle_config` is set.",
+						Required:    true,
+					},
 				},
 			},
 		},
@@ -293,6 +322,7 @@ func (r *MonitorNotificationRuleResource) updateState(ctx context.Context, state
 	}
 	r.updateConditionalRecipientsState(ctx, state, attributes)
 	r.updateBundleConfigState(state, attributes)
+	r.updateRuleOptionsState(ctx, state, attributes)
 }
 
 func (r *MonitorNotificationRuleResource) updateConditionalRecipientsState(ctx context.Context, state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
@@ -334,6 +364,18 @@ func (r *MonitorNotificationRuleResource) updateBundleConfigState(state *Monitor
 	}
 }
 
+func (r *MonitorNotificationRuleResource) updateRuleOptionsState(ctx context.Context, state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
+	ruleOptions, ok := attributes.GetRuleOptionsOk()
+	if !ok || ruleOptions == nil {
+		// Always set a known value: on create without rule_options the planned value is unknown.
+		state.RuleOptions = types.ObjectNull(monitorNotificationRuleOptionsAttrTypes)
+		return
+	}
+	state.RuleOptions, _ = types.ObjectValueFrom(ctx, monitorNotificationRuleOptionsAttrTypes, MonitorNotificationRuleOptions{
+		IsThreaded: types.BoolValue(ruleOptions.GetIsThreaded()),
+	})
+}
+
 func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewMonitorNotificationRuleAttributesWithDefaults()
@@ -360,6 +402,10 @@ func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Con
 
 	if bundleConfig := r.buildBundleConfigRequest(state.MonitorNotificationRuleBundleConfig); bundleConfig != nil {
 		attributes.SetBundleConfig(*bundleConfig)
+	}
+
+	if ruleOptions := r.buildRuleOptionsRequest(ctx, state.RuleOptions); ruleOptions != nil {
+		attributes.SetRuleOptions(*ruleOptions)
 	}
 
 	return attributes, diags
@@ -414,4 +460,18 @@ func (r *MonitorNotificationRuleResource) buildBundleConfigRequest(bundleConfig 
 	bundleConfigReq := datadogV2.MonitorNotificationRuleBundleConfig{}
 	fwutils.SetOptInt32(bundleConfig.Duration, bundleConfigReq.SetDuration)
 	return &bundleConfigReq
+}
+
+// buildRuleOptionsRequest returns nil when rule_options is null or unknown, so the API leaves it unset.
+func (r *MonitorNotificationRuleResource) buildRuleOptionsRequest(ctx context.Context, obj types.Object) *datadogV2.MonitorNotificationRuleOptions {
+	if obj.IsNull() || obj.IsUnknown() {
+		return nil
+	}
+	var ruleOptions MonitorNotificationRuleOptions
+	// The object's shape is fixed by monitorNotificationRuleOptionsAttrTypes, so As can't fail here.
+	obj.As(ctx, &ruleOptions, basetypes.ObjectAsOptions{})
+	if ruleOptions.IsThreaded.IsNull() || ruleOptions.IsThreaded.IsUnknown() {
+		return nil
+	}
+	return datadogV2.NewMonitorNotificationRuleOptions(ruleOptions.IsThreaded.ValueBool())
 }

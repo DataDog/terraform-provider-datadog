@@ -64,8 +64,8 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 	bindings := &LifecycleBindings{
 		Create: bodyCall(g.Create, false),
 		Read:   sdkCall(g.Read, true),
-		// A delete takes the terminal path id and sends no body; a 204 response
-		// leaves GoResponseType empty.
+		// Delete takes the terminal path id and sends no request body. Its
+		// response may have a body, including an unnamed one.
 		Delete:     sdkCall(g.Delete, true),
 		IdStrategy: op.Tracking.IdStrategy,
 	}
@@ -96,7 +96,7 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 
 // bodyCall resolves the SDK binding for an operation that sends a request body,
 // which a read or a delete never does. aliasTerminalID is false for a create,
-// which has no id yet, and true for an update, whose path names the record. The
+// whose path does not name the new record, and true for an update. The
 // envelope facts it reads come off this operation's own RequestSchema, never the
 // merged tree: a resource's Create and Update components are routinely distinct
 // types declaring different fields, so per-role is the only correct source.
@@ -123,7 +123,17 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	// whether it can be sent verbatim or has to be parsed first.
 	if id := data.Properties["id"]; id != nil {
 		call.RequestDeclaresID = true
+		call.RequestIDRequired = slices.Contains(data.Required, "id")
+		call.RequestIDReadOnly = id.ReadOnly
 		call.RequestIDGoType, _ = SDKScalarGoType(id)
+		if len(id.Enum) > 0 {
+			scalarType := call.RequestIDGoType
+			call.RequestIDGoType = ""
+			if scalarType == "string" && IsBareSDKTypeName(id.RefName) {
+				call.RequestIDGoType = id.RefName
+				call.RequestIDEnum = true
+			}
+		}
 	}
 	// SDKDefaulted reproduces the SDK generator's own predicate rather than
 	// reading the generated source: model_simple.j2 assigns a property in

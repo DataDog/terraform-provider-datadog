@@ -25,6 +25,10 @@ type methodSignature struct {
 	// name: a tag that defeats model.SdkClassName yields a plausible name for a
 	// type the SDK never generated.
 	receiver string
+	// results are the method's return types, e.g. ["ThingResponse",
+	// "*_nethttp.Response", "error"]; a leading body type is present only when
+	// the SDK generator selected a response schema.
+	results []string
 }
 
 type argumentSignature struct {
@@ -90,6 +94,7 @@ func Load(dir string) (*Inventory, error) {
 				}
 				sig.arguments = args
 				sig.receiver = receiver
+				sig.results = resultTypes(fset, fn.Type.Results)
 				inv.methods[fn.Name.Name] = sig
 			}
 		}
@@ -295,6 +300,7 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 			}
 		}
 	}
+	differences = append(differences, responseDifferences(op, pinned.results)...)
 	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinnedArguments); got != want {
 		differences = append(differences, fmt.Sprintf("required arguments derived [%s], pinned [%s]", got, want))
 	}
@@ -336,6 +342,23 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 	}}
 }
 
+// responseDifferences checks the derived response body against the pinned
+// method's results: (body, *http.Response, error) or (*http.Response, error).
+// Any other shape is not an SDK API method and is left uncorroborated.
+func responseDifferences(op *model.Operation, results []string) []string {
+	if len(results) != 2 && len(results) != 3 {
+		return nil
+	}
+	derivedBody, pinnedBody := op.ResponseSchema != nil, len(results) == 3
+	if derivedBody != pinnedBody {
+		return []string{fmt.Sprintf("response body derived %t, pinned %t", derivedBody, pinnedBody)}
+	}
+	if pinnedBody && op.ResponseRefName != "" && op.ResponseRefName != results[0] {
+		return []string{fmt.Sprintf("response type derived %q, pinned %q", op.ResponseRefName, results[0])}
+	}
+	return nil
+}
+
 func renderArguments(arguments []model.SDKArgument) string {
 	parts := make([]string, 0, len(arguments))
 	for _, argument := range arguments {
@@ -365,6 +388,22 @@ func receiverType(fields *ast.FieldList) string {
 		return ""
 	}
 	return ident.Name
+}
+
+// resultTypes renders each result type once per value, named or not.
+func resultTypes(fset *token.FileSet, fields *ast.FieldList) []string {
+	if fields == nil {
+		return nil
+	}
+	var out []string
+	for _, field := range fields.List {
+		var rendered strings.Builder
+		_ = printer.Fprint(&rendered, fset, field.Type)
+		for range max(len(field.Names), 1) {
+			out = append(out, rendered.String())
+		}
+	}
+	return out
 }
 
 func functionArguments(fset *token.FileSet, fields *ast.FieldList) []argumentSignature {

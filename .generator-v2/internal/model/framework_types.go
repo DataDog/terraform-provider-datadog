@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // FrameworkType maps a schema node to its framework type strings: tfType is the
 // schema.* symbol (e.g. schema.StringAttribute), goType the types.* value (e.g.
@@ -64,6 +67,24 @@ func primitiveFrameworkType(s *Schema) (tfType, goType string, err error) {
 	}
 }
 
+// elementTypeError retains the path through a collection chain without changing
+// the underlying mapping error's message.
+type elementTypeError struct {
+	path string
+	err  error
+}
+
+func (e *elementTypeError) Error() string { return e.err.Error() }
+func (e *elementTypeError) Unwrap() error { return e.err }
+
+func prependElementPath(marker string, err error) error {
+	var nested *elementTypeError
+	if errors.As(err, &nested) {
+		marker += nested.path
+	}
+	return &elementTypeError{path: marker, err: err}
+}
+
 // ElementType recursively maps a collection element/value schema to its
 // framework attr.Type expression, e.g.
 // types.MapType{ElemType: types.ListType{ElemType: types.StringType}}. Objects
@@ -89,17 +110,17 @@ func ElementType(elem *Schema) (string, error) {
 	case SchemaKindArray:
 		child, err := ElementType(elem.Items)
 		if err != nil {
-			return "", err
+			return "", prependElementPath("[]", err)
 		}
 		return "types.ListType{ElemType: " + child + "}", nil
 	case SchemaKindMap:
 		child, err := ElementType(elem.Items)
 		if err != nil {
-			return "", err
+			return "", prependElementPath("{}", err)
 		}
 		return "types.MapType{ElemType: " + child + "}", nil
 	default:
-		return "", fmt.Errorf("model: collection element kind %q has no framework element type", elem.Kind)
+		return "", fmt.Errorf("model: collection element kind %q has no framework element type%s", elem.Kind, reasonText(elem.UnsupportedReason))
 	}
 }
 

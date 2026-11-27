@@ -157,6 +157,80 @@ func TestAccMonitorNotificationRuleWithBundleConfig_Create(t *testing.T) {
 	})
 }
 
+func TestAccMonitorNotificationRuleWithRuleOptions_Create(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "rule_options = { is_threaded = true }"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "name", "A notification rule name"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor_notification_rule.r", "filter.tags.*", fmt.Sprintf("env:%s", uniq)),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor_notification_rule.r", "filter.tags.*", "host:abc"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccMonitorNotificationRuleWithRuleOptions_Update(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Omitted on create: the API leaves rule_options unset.
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "rule_options = { is_threaded = true }"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+			{
+				// Removed from config: the value stored in Datadog is kept.
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "rule_options = { is_threaded = false }"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "false"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccMonitorNotificationRule_Update(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -270,6 +344,17 @@ func testAccCheckDatadogMonitorNotificationRule_bundleConfig(uniq string) string
 	  duration = 3600
 	}
 }`, uniq)
+}
+
+func testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq string, ruleOptions string) string {
+	return fmt.Sprintf(`resource "datadog_monitor_notification_rule" "r" {
+    name = "A notification rule name"
+    recipients = ["slack-foo"]
+	filter {
+	  tags = ["env:%s", "host:abc"]
+	}
+	%s
+}`, uniq, ruleOptions)
 }
 
 func testAccCheckDatadogMonitorNotificationRuleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

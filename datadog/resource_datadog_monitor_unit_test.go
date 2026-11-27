@@ -230,3 +230,124 @@ func TestBuildTerraformDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, int32(7), *modelConfiguration["auto_resolve_days"].(*int32))
 	assert.False(t, *modelConfiguration["enable_flatline_detection"].(*bool))
 }
+
+func TestMonitorMetricQueryVariableRead(t *testing.T) {
+	q1 := map[string]interface{}{"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}"}
+	q2 := map[string]interface{}{"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum"}
+	// Legacy cost-monitor config: cloud_cost_query with a metrics source is sent as the metric type.
+	q3 := map[string]interface{}{"data_source": "metrics", "name": "q3", "query": "sum:system.cpu.user{*}", "aggregator": "sum"}
+	assert.NotNil(t, buildMonitorFormulaAndFunctionCloudCostQuery(q3).MonitorFormulaAndFunctionMetricQueryDefinition)
+
+	out := buildTerraformMonitorVariables([]datadogV1.MonitorFormulaAndFunctionQueryDefinition{
+		*buildMonitorFormulaAndFunctionMetricQuery(q1), *buildMonitorFormulaAndFunctionCloudCostQuery(q2),
+	})
+	assert.Equal(t, []map[string]interface{}{q1}, out[0]["metric_query"])
+	assert.Equal(t, []map[string]interface{}{q2}, out[0]["cloud_cost_query"])
+
+	out = buildTerraformCostMonitorVariables([]datadogV1.MonitorFormulaAndFunctionQueryDefinition{
+		*buildMonitorFormulaAndFunctionCloudCostQuery(q2), *buildMonitorFormulaAndFunctionCloudCostQuery(q3),
+	})
+	assert.Equal(t, []map[string]interface{}{{"cloud_cost_query": []map[string]interface{}{q2, q3}}}, out)
+}
+
+// A job duration monitor's variable is a data quality query, so a data-jobs
+// monitor must read it back as data_quality_query rather than dropping it.
+func TestBuildTerraformDataJobsMonitorVariablesDurationQuery(t *testing.T) {
+	duration := buildMonitorFormulaAndFunctionDataQualityQuery(map[string]interface{}{
+		"name":        "run_query",
+		"data_source": "data_quality_metrics",
+		"measure":     "duration",
+		"filter":      "search for databricks_job",
+		"group_by":    []interface{}{"name", "workspace_name", "entity_id"},
+	})
+
+	terraformVariables := buildTerraformDataJobsMonitorVariables([]datadogV1.MonitorFormulaAndFunctionQueryDefinition{*duration})
+
+	assert.Len(t, terraformVariables, 1)
+	assert.NotContains(t, terraformVariables[0], "data_jobs_query")
+	queries := terraformVariables[0]["data_quality_query"].([]map[string]interface{})
+	if assert.Len(t, queries, 1) {
+		assert.Equal(t, "duration", *queries[0]["measure"].(*string))
+		assert.Equal(t, "search for databricks_job", *queries[0]["filter"].(*string))
+	}
+}
+
+func TestBuildMonitorFormulaAndFunctionDataJobsQuery(t *testing.T) {
+	base := func() map[string]interface{} {
+		return map[string]interface{}{
+			"name":          "run_query",
+			"jobs_query":    "search for databricks_job",
+			"job_type":      "databricks.job",
+			"query_dialect": "aastra",
+		}
+	}
+
+	t.Run("run_filter and alert_on_every_failure round trip", func(t *testing.T) {
+		data := base()
+		data["run_filter"] = "env:prod"
+		data["monitor_options"] = []interface{}{map[string]interface{}{"alert_on_every_failure": true}}
+
+		def := buildMonitorFormulaAndFunctionDataJobsQuery(data).MonitorFormulaAndFunctionDataJobsQueryDefinition
+		assert.Equal(t, "env:prod", def.GetRunFilter())
+		opts := def.GetMonitorOptions()
+		assert.True(t, opts.GetAlertOnEveryFailure())
+
+		state := buildTerraformDataJobsQuery(def)
+		assert.Equal(t, "env:prod", *state["run_filter"].(*string))
+		options := state["monitor_options"].([]map[string]interface{})[0]
+		assert.True(t, *options["alert_on_every_failure"].(*bool))
+	})
+
+	// SDKv2 reads an unset bool as false, so a declared block always sends its
+	// value; otherwise `alert_on_every_failure = false` would never reach state.
+	t.Run("explicit false is sent", func(t *testing.T) {
+		data := base()
+		data["monitor_options"] = []interface{}{map[string]interface{}{"alert_on_every_failure": false}}
+
+		def := buildMonitorFormulaAndFunctionDataJobsQuery(data).MonitorFormulaAndFunctionDataJobsQueryDefinition
+		opts := def.GetMonitorOptions()
+		assert.True(t, opts.HasAlertOnEveryFailure())
+		assert.False(t, opts.GetAlertOnEveryFailure())
+	})
+
+	t.Run("optional fields are omitted when unset", func(t *testing.T) {
+		data := base()
+		data["run_filter"] = ""
+
+		def := buildMonitorFormulaAndFunctionDataJobsQuery(data).MonitorFormulaAndFunctionDataJobsQueryDefinition
+		assert.False(t, def.HasRunFilter())
+		assert.False(t, def.HasMonitorOptions())
+
+		state := buildTerraformDataJobsQuery(def)
+		assert.NotContains(t, state, "run_filter")
+		assert.NotContains(t, state, "monitor_options")
+	})
+}
+
+func TestBuildTerraformDataQualityQueryJobDurationRoundTrip(t *testing.T) {
+	query := map[string]interface{}{
+		"name":           "run_query",
+		"data_source":    "data_quality_metrics",
+		"schema_version": "0.0.1",
+		"measure":        "duration",
+		"filter":         "search for databricks_job",
+		"run_filter":     "env:prod",
+		"group_by":       []interface{}{"name", "workspace_name", "entity_id"},
+		"monitor_options": []interface{}{map[string]interface{}{
+			"detection_type":   "anomaly",
+			"consecutive_runs": 2,
+		}},
+	}
+
+	def := buildMonitorFormulaAndFunctionDataQualityQuery(query).MonitorFormulaAndFunctionDataQualityQueryDefinition
+	assert.Equal(t, "env:prod", def.GetRunFilter())
+	opts := def.GetMonitorOptions()
+	assert.Equal(t, datadogV1.MONITORFORMULAANDFUNCTIONDATAQUALITYDETECTIONTYPE_ANOMALY, opts.GetDetectionType())
+	assert.Equal(t, int64(2), opts.GetConsecutiveRuns())
+
+	state := buildTerraformDataQualityQuery(def)
+	assert.Equal(t, "env:prod", *state["run_filter"].(*string))
+	options := state["monitor_options"].([]map[string]interface{})[0]
+	assert.Equal(t, datadogV1.MONITORFORMULAANDFUNCTIONDATAQUALITYDETECTIONTYPE_ANOMALY, *options["detection_type"].(*datadogV1.MonitorFormulaAndFunctionDataQualityDetectionType))
+	assert.Equal(t, int64(2), *options["consecutive_runs"].(*int64))
+}

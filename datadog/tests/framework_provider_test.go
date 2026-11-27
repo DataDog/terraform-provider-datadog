@@ -36,6 +36,17 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	config.SetUnstableOperationEnabled("v2.GetQuota", true)
+	config.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	config.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
@@ -51,6 +62,21 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway data capture overrides
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayDataCaptureConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayDataCaptureOverride", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayDataCaptureOverride", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayDataCaptureOverride", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -64,6 +90,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable AI Gateway governance
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
 
 	// Enable Custom Forecast
 	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
@@ -216,10 +246,48 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	// Enable AI Gateway rate limits
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
+
+	// Enable AI Gateway model groups
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
+
+	// Enable AI Gateway providers
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
+
+	// Enable AI Gateway policies
+	config.SetUnstableOperationEnabled("v2.UpsertAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayPolicies", true)
+
+	// Enable AI Gateway routing rules
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
+
+	// Enable AI Gateway budgets
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayBudget", true)
 	fwprovider.EnableGeneratedUnstableOperations(config)
 
-	if ctx.Value("http_retry_enable") == true {
-		config.RetryConfiguration.EnableRetry = true
+	// Invalid retry env vars fail test setup instead of silently changing retry behavior.
+	if err := utils.ApplyHTTPRetryConfigFromEnv(ctx.Value("http_retry_enable") == true, config); err != nil {
+		panic(err)
 	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient

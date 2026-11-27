@@ -1,0 +1,337 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 215
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}},"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 214
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 210.621417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 214
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 111.128875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 214
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 103.506416ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 214
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 104.8605ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"definition":{"formula":"a + b","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"},{"data_source":"metrics","name":"b","query":"avg:system.cpu.system{*}"}]}},"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 290
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a + b","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"},{"data_source":"metrics","name":"b","query":"avg:system.cpu.system{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 110.6345ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 290
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a + b","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"},{"data_source":"metrics","name":"b","query":"avg:system.cpu.system{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 107.166042ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 290
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a + b","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"},{"data_source":"metrics","name":"b","query":"avg:system.cpu.system{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.556125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 290
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDerivedMetricBasic_local_1793355820","type":"derived_metrics","attributes":{"definition":{"formula":"a + b","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"},{"data_source":"metrics","name":"b","query":"avg:system.cpu.system{*}"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.818708ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 111.937875ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/derived-metrics/tf_TestAccDerivedMetricBasic_local_1793355820
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 24
+        uncompressed: false
+        body: '{"errors":["Not Found"]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 104.069ms

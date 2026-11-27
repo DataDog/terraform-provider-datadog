@@ -7,14 +7,14 @@ ddoc:
 
 # What triggers generation
 
-**Who this is for:** you annotated an operation and no provider pull request
+**Who this is for:** you declared a Terraform family and no provider pull request
 appeared, or you are trying to find the run log.
 
 ## Ownership, in one table
 
 | Repository | Owns |
 |---|---|
-| `DataDog/datadog-api-spec` | The operations and their annotations; building the compiled Terraform spec; **triggering generation** |
+| `DataDog/datadog-api-spec` | The operations and tag-scoped family registries; building the compiled Terraform spec; **triggering generation** |
 | `DataDog/openapi-transformer` | Validating `x-datadog-tf-generator` and carrying it into the compiled spec |
 | `DataDog/terraform-provider-datadog` | tfgen itself, the generated code, tests, examples, and documentation |
 
@@ -24,7 +24,7 @@ appeared, or you are trying to find the run log.
    Terraform generator is selected by the changed-generator calculation.
 2. The API-spec workflow builds the compiled Terraform specification and runs
    `tfgen generate` against it, before the spec pull request merges.
-3. One invocation evaluates **every** annotated operation in the compiled spec, not
+3. One invocation evaluates **every** declared artifact in the compiled spec, not
    only the operation your pull request changed. This is why a single invalid
    annotation can abort the batch; see
    [reference/diagnostics.md](reference/diagnostics.md).
