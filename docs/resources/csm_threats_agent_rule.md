@@ -12,11 +12,13 @@ Provides a Datadog Workload Protection (CSM Threats) Agent Rule API resource.
 ## Example Usage
 
 ```terraform
+# Warning: the kill action terminates every process that matches the expression.
+# This example uses a dedicated test file and starts disabled. Review the expression before you enable it.
 resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
   name         = "my_agent_rule"
-  enabled      = true
+  enabled      = false
   description  = "This is a rule"
-  expression   = "open.file.name == \"etc/shadow/password\""
+  expression   = "open.file.path == \"/tmp/terraform-kill-test\""
   policy_id    = "jm4-lwh-8cs"
   product_tags = ["compliance_framework:PCI-DSS"]
   actions {
@@ -26,7 +28,24 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
       append = false
       scope  = "process"
     }
-    hash {}
+  }
+  actions {
+    hash {
+      field = "open.file"
+    }
+  }
+  actions {
+    kill {
+      signal = "SIGKILL"
+      scope  = "process"
+    }
+  }
+  actions {
+    network_filter {
+      filter = "tcp port 4444"
+      policy = "drop"
+      scope  = "cgroup"
+    }
   }
 }
 ```
@@ -41,7 +60,7 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 
 ### Optional
 
-- `actions` (Block List) The list of actions the rule can perform (see [below for nested schema](#nestedblock--actions))
+- `actions` (Block List) The list of actions the rule can perform. Each block holds one action type: set, hash, kill or network_filter. (see [below for nested schema](#nestedblock--actions))
 - `description` (String) A description for the Agent rule.
 - `enabled` (Boolean) Indicates whether the Agent rule is enabled. Must not be used without policy_id.
 - `policy_id` (String) The ID of the agent policy in which the rule is saved
@@ -58,6 +77,8 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 Optional:
 
 - `hash` (Block, Optional) Hash action configuration (see [below for nested schema](#nestedblock--actions--hash))
+- `kill` (Block, Optional) Kill action configuration. Kills the process that triggered the rule. The public API currently rejects this action. (see [below for nested schema](#nestedblock--actions--kill))
+- `network_filter` (Block, Optional) Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter. The public API currently rejects this action. (see [below for nested schema](#nestedblock--actions--network_filter))
 - `set` (Block, Optional) Set action configuration (see [below for nested schema](#nestedblock--actions--set))
 
 <a id="nestedblock--actions--hash"></a>
@@ -66,6 +87,27 @@ Optional:
 Optional:
 
 - `field` (String) The field to hash
+
+
+<a id="nestedblock--actions--kill"></a>
+### Nested Schema for `actions.kill`
+
+Optional:
+
+- `disable_container_disarmer` (Boolean) Whether to disable the container disarmer, which stops the kill action when too many distinct containers trigger it.
+- `disable_executable_disarmer` (Boolean) Whether to disable the executable disarmer, which stops the kill action when too many distinct executables trigger it.
+- `scope` (String) The scope of the kill action. Valid values are `process`, `cgroup`.
+- `signal` (String) The signal to send to the process, for example SIGKILL or SIGTERM. Required in a kill action.
+
+
+<a id="nestedblock--actions--network_filter"></a>
+### Nested Schema for `actions.network_filter`
+
+Optional:
+
+- `filter` (String) The BPF filter expression that selects the network traffic, for example `tcp port 4444`. Required in a network_filter action.
+- `policy` (String) The policy to apply to the matching network traffic. Valid values are `drop`, `allow`.
+- `scope` (String) The scope of the network filter action. Valid values are `process`, `cgroup`.
 
 
 <a id="nestedblock--actions--set"></a>

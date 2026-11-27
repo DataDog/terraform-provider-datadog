@@ -8,12 +8,14 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
@@ -63,8 +65,10 @@ type csmThreatsAgentRuleModel struct {
 }
 
 type ActionModel struct {
-	Set  *SetActionModel  `tfsdk:"set"`
-	Hash *HashActionModel `tfsdk:"hash"`
+	Set           *SetActionModel           `tfsdk:"set"`
+	Hash          *HashActionModel          `tfsdk:"hash"`
+	Kill          *KillActionModel          `tfsdk:"kill"`
+	NetworkFilter *NetworkFilterActionModel `tfsdk:"network_filter"`
 }
 
 type SetActionModel struct {
@@ -82,6 +86,19 @@ type SetActionModel struct {
 
 type HashActionModel struct {
 	Field types.String `tfsdk:"field"`
+}
+
+type KillActionModel struct {
+	Signal                    types.String `tfsdk:"signal"`
+	Scope                     types.String `tfsdk:"scope"`
+	DisableContainerDisarmer  types.Bool   `tfsdk:"disable_container_disarmer"`
+	DisableExecutableDisarmer types.Bool   `tfsdk:"disable_executable_disarmer"`
+}
+
+type NetworkFilterActionModel struct {
+	Filter types.String `tfsdk:"filter"`
+	Policy types.String `tfsdk:"policy"`
+	Scope  types.String `tfsdk:"scope"`
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -143,7 +160,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 		},
 		Blocks: map[string]schema.Block{
 			"actions": schema.ListNestedBlock{
-				Description: "The list of actions the rule can perform",
+				Description: "The list of actions the rule can perform. Each block holds one action type: set, hash, kill or network_filter.",
 				NestedObject: schema.NestedBlockObject{
 					Blocks: map[string]schema.Block{
 						"set": schema.SingleNestedBlock{
@@ -209,6 +226,58 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 								},
 							},
 						},
+						"kill": schema.SingleNestedBlock{
+							Description: "Kill action configuration. Kills the process that triggered the rule. The public API currently rejects this action.",
+							Attributes: map[string]schema.Attribute{
+								"signal": schema.StringAttribute{
+									Optional:    true,
+									Description: "The signal to send to the process, for example SIGKILL or SIGTERM. Required in a kill action.",
+								},
+								"scope": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The scope of the kill action.",
+									Validators: []validator.String{
+										stringvalidator.OneOf("process", "cgroup"),
+									},
+								},
+								"disable_container_disarmer": schema.BoolAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "Whether to disable the container disarmer, which stops the kill action when too many distinct containers trigger it.",
+								},
+								"disable_executable_disarmer": schema.BoolAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "Whether to disable the executable disarmer, which stops the kill action when too many distinct executables trigger it.",
+								},
+							},
+						},
+						"network_filter": schema.SingleNestedBlock{
+							Description: "Network filter (network isolation) action configuration. Drops or allows the network traffic that matches a BPF filter. The public API currently rejects this action.",
+							Attributes: map[string]schema.Attribute{
+								"filter": schema.StringAttribute{
+									Optional:    true,
+									Description: "The BPF filter expression that selects the network traffic, for example `tcp port 4444`. Required in a network_filter action.",
+								},
+								"policy": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The policy to apply to the matching network traffic.",
+									Validators: []validator.String{
+										stringvalidator.OneOf("drop", "allow"),
+									},
+								},
+								"scope": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The scope of the network filter action.",
+									Validators: []validator.String{
+										stringvalidator.OneOf("process", "cgroup"),
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -237,11 +306,13 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 		// Check that exactly one action type is set
 		hasSet := action.Set != nil
 		hasHash := action.Hash != nil
+		hasKill := action.Kill != nil
+		hasNetworkFilter := action.NetworkFilter != nil
 
-		if !hasSet && !hasHash {
+		if !hasSet && !hasHash && !hasKill && !hasNetworkFilter {
 			diags.AddError(
 				"Missing Action Type",
-				fmt.Sprintf("Action %d: At least one action type (set or hash) must be specified.", i),
+				fmt.Sprintf("Action %d: At least one action type (set, hash, kill or network_filter) must be specified.", i),
 			)
 			continue
 		}
@@ -320,6 +391,22 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 				)
 				continue
 			}
+		}
+
+		if hasKill && !isNonEmptyKnownString(action.Kill.Signal) {
+			diags.AddError(
+				"Missing Required Field",
+				fmt.Sprintf("Action %d: 'signal' is required in the kill action configuration.", i),
+			)
+			continue
+		}
+
+		if hasNetworkFilter && !isNonEmptyKnownString(action.NetworkFilter.Filter) {
+			diags.AddError(
+				"Missing Required Field",
+				fmt.Sprintf("Action %d: 'filter' is required in the network_filter action configuration.", i),
+			)
+			continue
 		}
 	}
 
@@ -562,6 +649,14 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 
 				outActions = append(outActions, action)
 			}
+
+			if a.Kill != nil {
+				outActions = append(outActions, datadogV2.CloudWorkloadSecurityAgentRuleAction{Kill: buildKillAction(a.Kill)})
+			}
+
+			if a.NetworkFilter != nil {
+				outActions = append(outActions, datadogV2.CloudWorkloadSecurityAgentRuleAction{NetworkFilter: buildNetworkFilterAction(a.NetworkFilter)})
+			}
 		}
 	}
 
@@ -649,6 +744,14 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 				action.Hash = ha
 
 				outActions = append(outActions, action)
+			}
+
+			if a.Kill != nil {
+				outActions = append(outActions, datadogV2.CloudWorkloadSecurityAgentRuleAction{Kill: buildKillAction(a.Kill)})
+			}
+
+			if a.NetworkFilter != nil {
+				outActions = append(outActions, datadogV2.CloudWorkloadSecurityAgentRuleAction{NetworkFilter: buildNetworkFilterAction(a.NetworkFilter)})
 			}
 		}
 	}
@@ -810,8 +913,77 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 			action.Hash = hashAction
 		}
 
+		if act.Kill != nil {
+			action.Kill = flattenKillAction(act.Kill)
+		}
+
+		if act.NetworkFilter != nil {
+			action.NetworkFilter = flattenNetworkFilterAction(act.NetworkFilter)
+		}
+
 		actions = append(actions, action)
 	}
 
 	state.Actions = actions
+}
+
+func isNonEmptyKnownString(v types.String) bool {
+	return !v.IsNull() && !v.IsUnknown() && v.ValueString() != ""
+}
+
+func knownStringPointer(v types.String) *string {
+	if v.IsNull() || v.IsUnknown() {
+		return nil
+	}
+	s := v.ValueString()
+	return &s
+}
+
+func knownBoolPointer(v types.Bool) *bool {
+	if v.IsNull() || v.IsUnknown() {
+		return nil
+	}
+	b := v.ValueBool()
+	return &b
+}
+
+func boolValueOrFalse(v *bool) types.Bool {
+	if v == nil {
+		return types.BoolValue(false)
+	}
+	return types.BoolValue(*v)
+}
+
+func buildKillAction(k *KillActionModel) *datadogV2.CloudWorkloadSecurityAgentRuleKill {
+	ka := datadogV2.NewCloudWorkloadSecurityAgentRuleKill()
+	ka.Signal = knownStringPointer(k.Signal)
+	ka.Scope = knownStringPointer(k.Scope)
+	ka.DisableContainerDisarmer = knownBoolPointer(k.DisableContainerDisarmer)
+	ka.DisableExecutableDisarmer = knownBoolPointer(k.DisableExecutableDisarmer)
+	return ka
+}
+
+func buildNetworkFilterAction(n *NetworkFilterActionModel) *datadogV2.CloudWorkloadSecurityAgentRuleActionNetworkFilter {
+	nf := datadogV2.NewCloudWorkloadSecurityAgentRuleActionNetworkFilter()
+	nf.Filter = knownStringPointer(n.Filter)
+	nf.Policy = knownStringPointer(n.Policy)
+	nf.Scope = knownStringPointer(n.Scope)
+	return nf
+}
+
+func flattenKillAction(k *datadogV2.CloudWorkloadSecurityAgentRuleKill) *KillActionModel {
+	return &KillActionModel{
+		Signal:                    types.StringPointerValue(k.Signal),
+		Scope:                     types.StringPointerValue(k.Scope),
+		DisableContainerDisarmer:  boolValueOrFalse(k.DisableContainerDisarmer),
+		DisableExecutableDisarmer: boolValueOrFalse(k.DisableExecutableDisarmer),
+	}
+}
+
+func flattenNetworkFilterAction(n *datadogV2.CloudWorkloadSecurityAgentRuleActionNetworkFilter) *NetworkFilterActionModel {
+	return &NetworkFilterActionModel{
+		Filter: types.StringPointerValue(n.Filter),
+		Policy: types.StringPointerValue(n.Policy),
+		Scope:  types.StringPointerValue(n.Scope),
+	}
 }
