@@ -46,8 +46,8 @@ Known limits:
     - New names in PRs are only labeled for trusted authors or branches in
       this repository, so fork PRs adding resources stay unlabeled.
 
-This script only reads text and file names. It is run by a pull_request_target
-workflow, so it must never execute anything taken from the pull request.
+This script only reads text and file names. It runs in a workflow that has a
+write token, so it must never execute anything taken from the pull request.
 
 Exit behavior:
     - Empty output means no changes
