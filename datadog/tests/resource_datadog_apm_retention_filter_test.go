@@ -70,7 +70,7 @@ func TestAccApmRetentionFilterWithTraceRate(t *testing.T) {
 	traceRate := "0.5"
 	updatedQuery := "error_code:456"
 	updatedRate := "1"
-	updatedTraceRate := "0.8"
+	updatedTraceRate := "0.80"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
