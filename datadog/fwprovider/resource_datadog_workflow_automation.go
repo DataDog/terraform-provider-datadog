@@ -65,8 +65,6 @@ func NewWorkflowAutomationResource() resource.Resource {
 func (r *workflowAutomationResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetWorkflowAutomationApiV2()
-	// Used to identify requests made from Terraform
-	r.Api.Client.Cfg.AddDefaultHeader("X-Datadog-Workflow-Automation-Source", "terraform")
 	r.Auth = providerData.Auth
 }
 
