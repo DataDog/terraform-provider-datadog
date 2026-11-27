@@ -515,6 +515,12 @@ var ManageStatusWidgetSpec = WidgetSpec{
 			OmitEmpty:   false,
 			Description: "Whether to show the priorities column.",
 		},
+		{
+			HCLKey:      "show_sub_groups",
+			Type:        TypeBool,
+			OmitEmpty:   false,
+			Description: "Whether to count and list each monitor's subgroups instead of its notification groups. Only changes monitors that use `notify_by`, and only for the `groups` and `combined` summary types.",
+		},
 	},
 }
 
