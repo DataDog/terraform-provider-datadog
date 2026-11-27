@@ -321,8 +321,8 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	definition.SetType("group")
 
 	// User configurable properties defined in the group widget
-	if v, ok := d.GetOk("show_title"); ok {
-		definition.SetShowTitle(v.(bool))
+	if v, ok := powerpackShowTitleFromConfig(d); ok {
+		definition.SetShowTitle(v)
 	}
 
 	// Note: The Powerpack name is the group title.
@@ -496,4 +496,24 @@ func resourceDatadogPowerpackDelete(ctx context.Context, d *schema.ResourceData,
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting powerpack")
 	}
 	return nil
+}
+
+// powerpackShowTitleFromConfig returns the show_title value written in the
+// configuration. GetOk can't be used here: it reports an explicit
+// `show_title = false` as unset, so false was never sent, and the API renders
+// a group widget without show_title as showing the title.
+func powerpackShowTitleFromConfig(d *schema.ResourceData) (bool, bool) {
+	raw := d.GetRawConfig()
+	if raw.IsNull() || !raw.IsKnown() {
+		v, ok := d.GetOk("show_title")
+		if !ok {
+			return false, false
+		}
+		return v.(bool), true
+	}
+	v := raw.GetAttr("show_title")
+	if v.IsNull() || !v.IsKnown() {
+		return false, false
+	}
+	return v.True(), true
 }
