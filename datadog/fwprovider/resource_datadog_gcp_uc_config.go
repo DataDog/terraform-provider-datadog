@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -215,11 +216,19 @@ func (r *gcpUcConfigResource) Delete(ctx context.Context, request resource.Delet
 	}
 }
 
+func billingAccountIDForState(prior types.String, remote string) types.String {
+	// The API returns hyphenated billing account IDs with underscores.
+	if !prior.IsNull() && !prior.IsUnknown() && strings.ReplaceAll(prior.ValueString(), "-", "_") == remote {
+		return prior
+	}
+	return types.StringValue(remote)
+}
+
 func (r *gcpUcConfigResource) updateStateFromResponseData(ctx context.Context, state *gcpUcConfigModel, responseData *datadogV2.GCPUsageCostConfig) {
 	state.ID = types.StringValue(responseData.GetId())
 
 	if attributes, ok := responseData.GetAttributesOk(); ok {
-		state.BillingAccountId = types.StringValue(attributes.GetAccountId())
+		state.BillingAccountId = billingAccountIDForState(state.BillingAccountId, attributes.GetAccountId())
 		state.BucketName = types.StringValue(attributes.GetBucketName())
 		state.ExportDatasetName = types.StringValue(attributes.GetDataset())
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
@@ -245,7 +254,7 @@ func (r *gcpUcConfigResource) updateStateFromGcpUcConfigResponseData(ctx context
 	state.ID = types.StringValue(responseData.GetId())
 
 	if attributes, ok := responseData.GetAttributesOk(); ok {
-		state.BillingAccountId = types.StringValue(attributes.GetAccountId())
+		state.BillingAccountId = billingAccountIDForState(state.BillingAccountId, attributes.GetAccountId())
 		state.BucketName = types.StringValue(attributes.GetBucketName())
 		state.ExportDatasetName = types.StringValue(attributes.GetDataset())
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
