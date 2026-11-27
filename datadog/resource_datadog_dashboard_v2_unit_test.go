@@ -11,8 +11,10 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	ctyjson "github.com/hashicorp/go-cty/cty/json"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -145,7 +147,7 @@ func TestFlattenDashboardWidgets(t *testing.T) {
 		},
 	}
 
-	validationWidgets := flattenDashboardWidgets(widgets)
+	validationWidgets := flattenDashboardWidgets(widgets, nil)
 	if len(validationWidgets) != 2 {
 		t.Fatalf("expected group and child widgets, got %d", len(validationWidgets))
 	}
@@ -266,6 +268,89 @@ func TestDashboardV2PlanValidationCallsEndpointByDefault(t *testing.T) {
 	}
 	if !called {
 		t.Fatal("expected plan-time validation endpoint to be called")
+	}
+}
+
+func TestDashboardV2PlanValidationPreservesInlineDDSQL(t *testing.T) {
+	const config = `{"title":"Inline DDSQL","layout_type":"ordered","widget":[{"query_table_definition":[{"request":[{
+		"request_type":"advanced_query","dataset_to_query":"rows","response_format":"tabular",
+		"dataset":[{"data_source":"analysis_dataset","name":"rows","query":[{"type":"sql_analysis","sql_query":"SELECT 1 AS n, 2 AS m"}]}],
+		"projection":[{"type":"query_table","dimension":[{"column":"n","dimension":"column","is_hidden":false},{"column":"m","dimension":"column"}]}]
+	}]}]}]}`
+	var hcl map[string]interface{}
+	var raw ctyjson.SimpleJSONValue
+	require.NoError(t, json.Unmarshal([]byte(config), &hcl))
+	require.NoError(t, json.Unmarshal([]byte(config), &raw))
+	var widgets []map[string]interface{}
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		widgets = assertDashboardValidationRequest(t, r, 1, "ordered", "")
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{map[string]interface{}{"is_valid": true, "widget_type": "query_table"}},
+		})
+	})
+	providerConfig := &ProviderConfiguration{Auth: context.Background(), DatadogApiInstances: &utils.ApiInstances{HttpClient: client}}
+	_, err := resourceDatadogDashboardV2().Diff(context.Background(), &terraform.InstanceState{RawConfig: raw.Value}, terraform.NewResourceConfigRaw(hcl), providerConfig)
+	require.NoError(t, err)
+	require.Len(t, widgets, 1)
+	request := widgets[0]["definition"].(map[string]interface{})["requests"].([]interface{})[0].(map[string]interface{})
+	dataset := request["datasets"].([]interface{})[0].(map[string]interface{})
+	require.Equal(t, "SELECT 1 AS n, 2 AS m", dataset["query"].(map[string]interface{})["sql_query"])
+	dimensions := request["projection"].(map[string]interface{})["dimensions"].([]interface{})
+	require.Equal(t, false, dimensions[0].(map[string]interface{})["is_hidden"])
+	require.NotContains(t, dimensions[1], "is_hidden")
+}
+
+func TestDashboardV2PlanInlineDDSQLRequestConflicts(t *testing.T) {
+	type obj = map[string]interface{}
+	block := func(m obj) []interface{} { return []interface{}{m} }
+	dataset := block(obj{"data_source": "analysis_dataset", "name": "rows", "query": block(obj{"type": "sql_analysis", "sql_query": "SELECT 1 AS n"})})
+	query := block(obj{"metric_query": block(obj{"name": "query1", "data_source": "metrics", "query": "avg:system.cpu.user{*}"})})
+	formula := block(obj{"formula_expression": "query1"})
+	for _, tc := range []struct{ name, viz, field, wantPath string }{
+		{"query value with metric query", "query_value", "query", "widget[0].query_value_definition.request[0]"},
+		{"query table with formula", "query_table", "formula", "widget[0].query_table_definition.request[0]"},
+		{"scatterplot table with query", "scatterplot", "query", "widget[0].scatterplot_definition.request[0].scatterplot_table[0]"},
+		{"split graph source with query", "split_graph", "query", "widget[0].split_graph_definition.source_widget_definition[0].query_value_definition.request[0]"},
+		{"timeseries with separate overlay", "timeseries", "", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			req := obj{"request_type": "advanced_query", "response_format": "tabular", "dataset_to_query": "rows", "dataset": dataset}
+			requests := block(req)
+			switch tc.field {
+			case "query":
+				req["query"] = query
+			case "formula":
+				req["formula"] = formula
+			}
+			switch tc.viz {
+			case "timeseries":
+				req["response_format"] = "timeseries"
+				requests = append(requests, obj{"display_type": "overlay", "query": query, "formula": formula})
+			case "scatterplot":
+				requests = block(obj{"scatterplot_table": requests})
+			}
+			definition := block(obj{"request": requests})
+			widget := obj{tc.viz + "_definition": definition}
+			if tc.viz == "split_graph" {
+				widget = obj{"split_graph_definition": block(obj{
+					"size":                     "sm",
+					"source_widget_definition": block(obj{"query_value_definition": definition}),
+					"split_config": block(obj{
+						"split_dimensions": block(obj{"one_graph_per": "service"}),
+						"sort":             block(obj{"order": "asc"}),
+					}),
+				})}
+			}
+			// Disable the remote validator: a lossy request must fail locally,
+			// while the nested dataset.query alone must never trigger the conflict.
+			cfg := terraform.NewResourceConfigRaw(obj{"title": "Query styles", "layout_type": "ordered", "validate": false, "widget": block(widget)})
+			_, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, cfg, nil)
+			if tc.wantPath == "" {
+				require.NoError(t, err)
+			} else {
+				require.ErrorContains(t, err, tc.wantPath+`: "dataset" conflicts with "`+tc.field+`"`)
+			}
+		})
 	}
 }
 
@@ -529,7 +614,7 @@ func TestDashboardV2LegacyNoOpDescriptionFields(t *testing.T) {
 		}
 	}
 
-	for _, widget := range flattenDashboardWidgets(widgets) {
+	for _, widget := range flattenDashboardWidgets(widgets, nil) {
 		payload, _ := json.Marshal(widget.widget)
 		if strings.Contains(string(payload), "legacy") {
 			t.Errorf("no-op description must not be sent to the API, got %s", payload)

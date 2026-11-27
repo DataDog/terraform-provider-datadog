@@ -34,6 +34,9 @@ const (
 	TypeBlockList                   // list of blocks
 	TypeOneOf                       // polymorphic block — exactly one child variant should be set
 	TypeJSON                        // arbitrary JSON — HCL string ↔ JSON object/array
+
+	// TypeIntOrString represents JSON integers and string keywords as one HCL string.
+	TypeIntOrString
 )
 
 // OneOfDiscriminator configures how a TypeOneOf field determines which variant is active.
@@ -98,6 +101,10 @@ type FieldSpec struct {
 	// omitting an unset optional field. SDKv2 drops zero values from some nested
 	// decoded maps, so the build engine consults raw configuration when available.
 	PreserveZero bool
+
+	// FlattenRequestType limits an optional field on a shared request schema to
+	// JSON objects with this request_type. It does not constrain HCL input.
+	FlattenRequestType string
 
 	// Children: for TypeBlock and TypeBlockList, the nested field specs.
 	Children []FieldSpec
@@ -164,6 +171,10 @@ type FieldSpec struct {
 	// that distinguishes absent from null receives the explicit clear signal.
 	// Only meaningful on TypeBlock fields.
 	NullOnClear bool
+
+	// EmptyBlockAsNull maps an explicitly empty TypeBlock to JSON null in both
+	// directions, keeping it distinct from an omitted block.
+	EmptyBlockAsNull bool
 
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
@@ -352,11 +363,14 @@ func findPopulatedVariant(f FieldSpec, item map[string]interface{}) (*FieldSpec,
 func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
-		if f.SchemaOnly {
+		if f.SchemaOnly || (f.FlattenRequestType != "" && data["request_type"] != f.FlattenRequestType) {
 			continue
 		}
-		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
+		jsonVal, present := getAtJSONPath(data, f.effectiveJSONPath())
 		if jsonVal == nil {
+			if present && f.EmptyBlockAsNull {
+				result[f.HCLKey] = []interface{}{map[string]interface{}{}}
+			}
 			// The API omits optional fields that were never set. SDKv2 would
 			// read them back as false, but the UI renders a missing field
 			// using its default (e.g. has_padding = true), so match that.
@@ -367,7 +381,7 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 		}
 
 		switch f.Type {
-		case TypeString:
+		case TypeString, TypeIntOrString:
 			result[f.HCLKey] = fmt.Sprintf("%v", jsonVal)
 
 		case TypeBool:
@@ -478,19 +492,16 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 	return result
 }
 
-// getAtJSONPath retrieves a value from a nested map following a dotted path.
-func getAtJSONPath(m map[string]interface{}, path string) interface{} {
+// getAtJSONPath distinguishes an explicit JSON null from a missing dotted path.
+func getAtJSONPath(m map[string]interface{}, path string) (interface{}, bool) {
 	parts := strings.SplitN(path, ".", 2)
 	val, ok := m[parts[0]]
-	if !ok || val == nil {
-		return nil
-	}
 	if len(parts) == 1 {
-		return val
+		return val, ok
 	}
 	sub, ok := val.(map[string]interface{})
 	if !ok {
-		return nil
+		return nil, false
 	}
 	return getAtJSONPath(sub, parts[1])
 }
@@ -911,7 +922,7 @@ func flattenScatterplotTableState(def map[string]interface{}, defState map[strin
 		return
 	}
 
-	tableState := map[string]interface{}{}
+	tableState := FlattenEngineJSON(scatterplotInlineDDSQLFields, tableObj)
 
 	// formulas
 	if formulas, ok := tableObj["formulas"].([]interface{}); ok {
@@ -1192,7 +1203,7 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 					// New-style formula/query request (unified via FormulaRequestConfig)
 					flatRequests[ri] = flattenFormulaRequest(reqMap, formulaRequestConfigForWidget(spec.JSONType))
 				} else {
-					// Old-style request — already flattened by FieldSpec engine
+					// Legacy or inline DDSQL request, already flattened by the FieldSpec engine.
 					if existingRequests, ok := defState["request"].([]interface{}); ok && ri < len(existingRequests) {
 						flatRequests[ri] = existingRequests[ri]
 					} else {
@@ -1357,8 +1368,8 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 		}
 		return result
 	}
-	// Old-style request
-	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	// Legacy or inline DDSQL request.
+	result := FlattenEngineJSON(queryTableRequestFields, req)
 	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
 		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
 			result["sort"] = []interface{}{s}
@@ -1863,15 +1874,25 @@ type RawConfigAtReader interface {
 }
 
 type mapBuildContext struct {
-	rawConfig RawConfigAtReader
-	path      cty.Path
+	rawConfig   RawConfigAtReader
+	path        cty.Path
+	inlineDDSQL bool
 }
 
 func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
-	return mapBuildContext{
-		rawConfig: ctx.rawConfig,
-		path:      ctx.path.GetAttr(key).IndexInt(index),
+	ctx.path = ctx.path.GetAttr(key).IndexInt(index)
+	return ctx
+}
+
+// SDKv2 fills omitted nested booleans with false. In an inline SQL request,
+// consult the raw config before emitting false for an optional display setting.
+// Formula and legacy requests keep their existing serialized defaults.
+func (ctx mapBuildContext) explicitlyConfiguredFalse(key string) bool {
+	if ctx.rawConfig == nil {
+		return false
 	}
+	v, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(key))
+	return !diags.HasError() && v.IsKnown() && !v.IsNull() && v.Type() == cty.Bool && !v.True()
 }
 
 func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
@@ -1893,6 +1914,9 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 }
 
 func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
+	if data["request_type"] == "advanced_query" && getBlockFromMap(data, "dataset") != nil {
+		ctx.inlineDDSQL = true
+	}
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		if f.SchemaOnly {
@@ -1900,17 +1924,29 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 		}
 
 		switch f.Type {
-		case TypeString:
+		case TypeString, TypeIntOrString:
 			strVal := getStringFromMap(data, f.HCLKey)
 			if f.OmitEmpty && strVal == "" {
 				continue
+			}
+			if f.Type == TypeIntOrString {
+				if n, err := strconv.Atoi(strVal); err == nil {
+					setAtJSONPath(result, f.effectiveJSONPath(), n)
+					continue
+				}
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), strVal)
 
 		case TypeBool:
 			boolVal := getBoolFromMap(data, f.HCLKey)
-			if f.OmitEmpty && !boolVal {
-				continue
+			if !boolVal {
+				if ctx.inlineDDSQL && !f.Required {
+					if !ctx.explicitlyConfiguredFalse(f.HCLKey) {
+						continue
+					}
+				} else if f.OmitEmpty {
+					continue
+				}
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), boolVal)
 
@@ -1959,6 +1995,10 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 				continue
 			}
 			nested := buildEngineJSONFromMap(child, f.Children, ctx.block(f.HCLKey, 0))
+			if len(nested) == 0 && f.EmptyBlockAsNull {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
@@ -2496,13 +2536,13 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 
 // buildQueryTableRequestsJSONFromMap builds the "requests" array for query_table from a SDKv2 map.
 // Parallel to buildQueryTableRequestsJSON in engine.go.
-func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
+func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) []interface{} {
 	requestList := getBlockListFromMap(defMap, "request")
 	if len(requestList) == 0 {
 		return []interface{}{}
 	}
 	requests := make([]interface{}, 0, len(requestList))
-	for _, reqMap := range requestList {
+	for i, reqMap := range requestList {
 		formulaCount := len(getBlockListFromMap(reqMap, "formula"))
 		queryCount := len(getBlockListFromMap(reqMap, "query"))
 		if formulaCount > 0 || queryCount > 0 {
@@ -2510,7 +2550,7 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		} else {
-			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			req := buildEngineJSONFromMap(reqMap, queryTableRequestFields, ctx.block("request", i))
 			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
 				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
 					req["sort"] = sortJSON
@@ -2577,7 +2617,7 @@ func buildQueryTableTextFormatsJSONFromMap(reqMap map[string]interface{}, req ma
 
 // buildScatterplotTableJSONFromMap builds the scatterplot "requests.table" from a SDKv2 map.
 // Parallel to buildScatterplotTableJSON in engine.go.
-func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map[string]interface{}) {
+func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map[string]interface{}, ctx mapBuildContext) {
 	reqMap := getBlockFromMap(defMap, "request")
 	if reqMap == nil {
 		return
@@ -2587,7 +2627,7 @@ func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map
 		return
 	}
 
-	tableObj := map[string]interface{}{}
+	tableObj := buildEngineJSONFromMap(tableMap, scatterplotInlineDDSQLFields, ctx.block("request", 0).block("scatterplot_table", 0))
 
 	formulaList := getBlockListFromMap(tableMap, "formula")
 	if len(formulaList) > 0 {
@@ -2754,7 +2794,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 				if formulaCount > 0 || queryCount > 0 {
 					requests = append(requests, buildFormulaRequestFromMap(reqMap, formulaRequestConfigForWidget(spec.JSONType)))
 				} else {
-					// Old-style request — already built by FieldSpec engine
+					// Legacy or inline DDSQL request, already built by the FieldSpec engine.
 					if existingReqs, ok := defJSON["requests"].([]interface{}); ok && ri < len(existingReqs) {
 						requests = append(requests, existingReqs[ri])
 					}
@@ -2766,7 +2806,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Scatterplot table ----
 	if spec.JSONType == "scatterplot" {
-		buildScatterplotTableJSONFromMap(defMap, defJSON)
+		buildScatterplotTableJSONFromMap(defMap, defJSON, ctx)
 	}
 
 	// ---- Treemap color_by ----
@@ -2776,7 +2816,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Query table requests override ----
 	if spec.JSONType == "query_table" {
-		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
+		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap, ctx)
 	}
 
 	// ---- Host map infrastructure request ----
@@ -2982,7 +3022,7 @@ func BuildDashboardEngineJSONFromMap(data map[string]interface{}, id string) map
 }
 
 // BuildDashboardEngineJSONFromMapWithRawConfig preserves explicitly configured
-// zero values that SDKv2 omits from decoded nested maps.
+// zero values and distinguishes omitted from explicitly false DDSQL settings.
 func BuildDashboardEngineJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) map[string]interface{} {
 	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{rawConfig: rawConfig})
 }
@@ -3225,7 +3265,11 @@ func normalizeNumericID(v interface{}) string {
 // This is driven by the ConflictsWith annotations on FieldSpec declarations
 // (e.g., the "q" field conflicts with "query" and "formula").
 func ValidateWidgetConflicts(data map[string]interface{}) []string {
-	widgetList, ok := data["widget"].([]interface{})
+	return validateWidgetListConflicts(data, "widget")
+}
+
+func validateWidgetListConflicts(data map[string]interface{}, key string) []string {
+	widgetList, ok := data[key].([]interface{})
 	if !ok {
 		return nil
 	}
@@ -3245,6 +3289,7 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 				continue
 			}
 
+			path := fmt.Sprintf("%s[%d].%s", key, wi, spec.HCLKey)
 			for _, group := range spec.ExactlyOneOf {
 				setFields := make([]string, 0, len(group))
 				for _, fieldName := range group {
@@ -3261,51 +3306,51 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 						quotedFields[i] = fmt.Sprintf("%q", fieldName)
 					}
 					errs = append(errs, fmt.Sprintf(
-						"widget[%d].%s: exactly one of %s must be configured",
-						wi, spec.HCLKey, strings.Join(quotedFields, " or "),
+						"%s: exactly one of %s must be configured", path, strings.Join(quotedFields, " or "),
 					))
 				}
 			}
 
-			// Check ConflictsWith constraints on request fields
-			var requestFields []FieldSpec
 			for _, f := range spec.Fields {
 				if f.HCLKey == "request" {
-					requestFields = f.Children
+					errs = append(errs, validateRequestBlockConflicts(defMap, f, path)...)
 					break
 				}
 			}
-			if requestFields != nil {
-				reqList := getBlockListFromMap(defMap, "request")
-				for ri, reqMap := range reqList {
-					for _, f := range requestFields {
-						if len(f.ConflictsWith) == 0 {
-							continue
-						}
-						if !fieldIsSetInMap(reqMap, f) {
-							continue
-						}
-						for _, conflicting := range f.ConflictsWith {
-							for _, cf := range requestFields {
-								if cf.HCLKey == conflicting && fieldIsSetInMap(reqMap, cf) {
-									errs = append(errs, fmt.Sprintf(
-										"widget[%d].%s.request[%d]: %q conflicts with %q — use one query style per request, not both",
-										wi, spec.HCLKey, ri, f.HCLKey, cf.HCLKey,
-									))
-								}
-							}
+
+			var nested []string
+			switch spec.HCLKey {
+			case "group_definition":
+				nested = validateWidgetListConflicts(defMap, "widget")
+			case "split_graph_definition":
+				nested = validateWidgetListConflicts(defMap, "source_widget_definition")
+			}
+			for _, e := range nested {
+				errs = append(errs, path+"."+e)
+			}
+		}
+	}
+	return errs
+}
+
+// Check siblings in each configured block independently: a nested dataset.query
+// is not a request-level query, and a Formula overlay is a separate request.
+func validateRequestBlockConflicts(parent map[string]interface{}, block FieldSpec, parentPath string) []string {
+	var errs []string
+	for i, item := range getBlockListFromMap(parent, block.HCLKey) {
+		path := fmt.Sprintf("%s.%s[%d]", parentPath, block.HCLKey, i)
+		for _, f := range block.Children {
+			if len(f.ConflictsWith) > 0 && fieldIsSetInMap(item, f) {
+				for _, conflicting := range f.ConflictsWith {
+					for _, sibling := range block.Children {
+						if sibling.HCLKey == conflicting && fieldIsSetInMap(item, sibling) {
+							errs = append(errs, fmt.Sprintf("%s: %q conflicts with %q — use one query style per request, not both", path, f.HCLKey, conflicting))
 						}
 					}
 				}
 			}
-
-			// Recurse into group/split_graph nested widgets
-			if spec.HCLKey == "group_definition" || spec.HCLKey == "split_graph_definition" {
-				if nestedErrs := ValidateWidgetConflicts(defMap); len(nestedErrs) > 0 {
-					for _, e := range nestedErrs {
-						errs = append(errs, fmt.Sprintf("widget[%d].%s.%s", wi, spec.HCLKey, e))
-					}
-				}
+			if f.Type == TypeBlock || f.Type == TypeBlockList {
+				errs = append(errs, validateRequestBlockConflicts(item, f, path)...)
 			}
 		}
 	}
@@ -3319,7 +3364,7 @@ func fieldIsSetInMap(data map[string]interface{}, f FieldSpec) bool {
 		return false
 	}
 	switch f.Type {
-	case TypeString:
+	case TypeString, TypeIntOrString:
 		return v.(string) != ""
 	case TypeBlockList:
 		if list, ok := v.([]interface{}); ok {

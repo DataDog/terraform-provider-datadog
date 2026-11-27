@@ -84,7 +84,7 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 	// API level and is validated by the framework version of this resource.
 
 	switch f.Type {
-	case TypeString:
+	case TypeString, TypeIntOrString:
 		s.Type = schema.TypeString
 		if len(f.ValidValues) > 0 {
 			s.ValidateDiagFunc = validation.ToDiagFunc(
