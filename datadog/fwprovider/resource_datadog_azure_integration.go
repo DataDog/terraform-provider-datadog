@@ -184,13 +184,20 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 }
 
 func (r *integrationAzureResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	var config integrationAzureModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	// Read only the attributes this check needs: the full model cannot hold an
+	// unknown resource_provider_configs list (e.g. a module input variable).
+	var clientSecret types.String
+	var secretlessAuthEnabled types.Bool
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("client_secret"), &clientSecret)...)
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("secretless_auth_enabled"), &secretlessAuthEnabled)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-	secretless := !config.SecretlessAuthEnabled.IsNull() && config.SecretlessAuthEnabled.ValueBool()
-	if config.ClientSecret.IsNull() && !secretless {
+	if clientSecret.IsUnknown() || secretlessAuthEnabled.IsUnknown() {
+		return
+	}
+	secretless := !secretlessAuthEnabled.IsNull() && secretlessAuthEnabled.ValueBool()
+	if clientSecret.IsNull() && !secretless {
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("client_secret"),
 			"Missing client_secret",
