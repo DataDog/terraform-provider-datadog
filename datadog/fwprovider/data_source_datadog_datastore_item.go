@@ -107,9 +107,10 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 	datastoreID := state.DatastoreID.ValueString()
 	itemKey := state.ItemKey.ValueString()
 
-	// Use ListDatastoreItems with item_key query parameter to get specific item
-	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-	optionalParams.ItemKey = &itemKey
+	// Filter with `filter`, not `ItemKey`: the client sends the latter as
+	// `item_key` while the API reads `itemKey`, so it is ignored and the
+	// response is the whole datastore.
+	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 	resp, _, err := d.Api.ListDatastoreItems(d.Auth, datastoreID, *optionalParams)
 	if err != nil {
@@ -122,8 +123,8 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 	}
 
 	// Check if item was found
-	items := resp.GetData()
-	if len(items) == 0 {
+	item := datastoreItemByKey(resp.GetData(), itemKey)
+	if item == nil {
 		response.Diagnostics.AddError(
 			"Item not found",
 			fmt.Sprintf("No item found with key '%s' in datastore '%s'", itemKey, datastoreID),
@@ -131,7 +132,7 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 
-	d.updateState(ctx, &state, &items[0])
+	d.updateState(ctx, &state, item)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)

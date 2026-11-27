@@ -84,9 +84,9 @@ func datastoreItemDestroyHelper(auth context.Context, s *terraform.State, apiIns
 		datastoreID := parts[0]
 		itemKey := parts[1]
 
-		// Try to read the item
-		optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-		optionalParams.ItemKey = &itemKey
+		// Try to read the item. `filter` is the parameter the API reads; ItemKey
+		// is sent as `item_key` and silently ignored, which returns every item.
+		optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 		resp, httpResp, err := apiInstances.GetActionsDatastoresApiV2().ListDatastoreItems(auth, datastoreID, *optionalParams)
 		if err != nil {
@@ -133,9 +133,9 @@ func datastoreItemExistsHelper(auth context.Context, s *terraform.State, apiInst
 		datastoreID := parts[0]
 		itemKey := parts[1]
 
-		// Try to read the item
-		optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-		optionalParams.ItemKey = &itemKey
+		// Try to read the item. `filter` is the parameter the API reads; ItemKey
+		// is sent as `item_key` and silently ignored, which returns every item.
+		optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 		resp, httpResp, err := apiInstances.GetActionsDatastoresApiV2().ListDatastoreItems(auth, datastoreID, *optionalParams)
 		if err != nil {

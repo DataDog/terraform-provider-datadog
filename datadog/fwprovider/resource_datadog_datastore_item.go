@@ -95,9 +95,11 @@ func (r *datastoreItemResource) Read(ctx context.Context, request resource.ReadR
 	datastoreID := state.DatastoreID.ValueString()
 	itemKey := state.ItemKey.ValueString()
 
-	// Use ListDatastoreItems with item_key query parameter to get specific item
-	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-	optionalParams.ItemKey = &itemKey
+	// Filter with `filter`, not `ItemKey`: the client sends the latter as
+	// `item_key` while the API reads `itemKey`, so it is ignored and the
+	// response is the whole datastore. Without this, a deleted item is still
+	// found — as some other item — and the deletion is never detected.
+	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 	resp, httpResp, err := r.Api.ListDatastoreItems(r.Auth, datastoreID, *optionalParams)
 	if err != nil {
@@ -114,13 +116,13 @@ func (r *datastoreItemResource) Read(ctx context.Context, request resource.ReadR
 	}
 
 	// Check if item was found
-	items := resp.GetData()
-	if len(items) == 0 {
+	item := datastoreItemByKey(resp.GetData(), itemKey)
+	if item == nil {
 		response.State.RemoveResource(ctx)
 		return
 	}
 
-	r.updateState(ctx, &state, &items[0])
+	r.updateState(ctx, &state, item)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
