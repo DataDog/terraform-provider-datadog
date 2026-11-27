@@ -32,7 +32,7 @@ var (
 )
 
 type rumRetentionFilterResource struct {
-	Api  *datadogV2.RumRetentionFiltersApi
+	Api  *datadogV2.RUMRetentionFiltersApi
 	Auth context.Context
 }
 
@@ -150,7 +150,7 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 	appId := state.ApplicationID.ValueString()
 
-	var resp datadogV2.RumRetentionFilterResponse
+	var resp datadogV2.RUMRetentionFilterResponse
 	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
 		var httpResp *http.Response
 		var err error
@@ -209,7 +209,7 @@ func (r *rumRetentionFilterResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	var resp datadogV2.RumRetentionFilterResponse
+	var resp datadogV2.RUMRetentionFilterResponse
 	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
 		var httpResp *http.Response
 		var err error
@@ -252,7 +252,7 @@ func (r *rumRetentionFilterResource) Delete(ctx context.Context, request resourc
 	}
 }
 
-func (r *rumRetentionFilterResource) updateState(state *rumRetentionFilterModel, resp *datadogV2.RumRetentionFilterResponse) {
+func (r *rumRetentionFilterResource) updateState(state *rumRetentionFilterModel, resp *datadogV2.RUMRetentionFilterResponse) {
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
@@ -264,12 +264,12 @@ func (r *rumRetentionFilterResource) updateState(state *rumRetentionFilterModel,
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 }
 
-func (r *rumRetentionFilterResource) buildRumRetentionFilterCreateRequestBody(state *rumRetentionFilterModel) (*datadogV2.RumRetentionFilterCreateRequest, diag.Diagnostics) {
+func (r *rumRetentionFilterResource) buildRumRetentionFilterCreateRequestBody(state *rumRetentionFilterModel) (*datadogV2.RUMRetentionFilterCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	attributes := datadogV2.NewRumRetentionFilterCreateAttributesWithDefaults()
+	attributes := datadogV2.NewRUMRetentionFilterCreateAttributesWithDefaults()
 	attributes.SetName(state.Name.ValueString())
-	attributes.SetEventType(datadogV2.RumRetentionFilterEventType(state.EventType.ValueString()))
+	attributes.SetEventType(datadogV2.RUMRetentionFilterEventType(state.EventType.ValueString()))
 	attributes.SetSampleRate(state.SampleRate.ValueFloat64())
 
 	if !state.Query.IsNull() {
@@ -280,8 +280,8 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterCreateRequestBody(st
 		attributes.SetEnabled(state.Enabled.ValueBool())
 	}
 
-	req := datadogV2.NewRumRetentionFilterCreateRequestWithDefaults()
-	req.Data = *datadogV2.NewRumRetentionFilterCreateDataWithDefaults()
+	req := datadogV2.NewRUMRetentionFilterCreateRequestWithDefaults()
+	req.Data = *datadogV2.NewRUMRetentionFilterCreateDataWithDefaults()
 
 	req.Data.SetType(datadogV2.RUMRETENTIONFILTERTYPE_RETENTION_FILTERS)
 	req.Data.SetAttributes(*attributes)
@@ -292,12 +292,12 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterCreateRequestBody(st
 	return req, diags
 }
 
-func (r *rumRetentionFilterResource) buildRumRetentionFilterUpdateRequestBody(state *rumRetentionFilterModel) (*datadogV2.RumRetentionFilterUpdateRequest, diag.Diagnostics) {
+func (r *rumRetentionFilterResource) buildRumRetentionFilterUpdateRequestBody(state *rumRetentionFilterModel) (*datadogV2.RUMRetentionFilterUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewRumRetentionFilterUpdateAttributesWithDefaults()
+	attributes := datadogV2.NewRUMRetentionFilterUpdateAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
-	attributes.SetEventType(datadogV2.RumRetentionFilterEventType(state.EventType.ValueString()))
+	attributes.SetEventType(datadogV2.RUMRetentionFilterEventType(state.EventType.ValueString()))
 	attributes.SetSampleRate(state.SampleRate.ValueFloat64())
 
 	if !state.Query.IsNull() {
@@ -308,8 +308,8 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterUpdateRequestBody(st
 		attributes.SetEnabled(state.Enabled.ValueBool())
 	}
 
-	req := datadogV2.NewRumRetentionFilterUpdateRequestWithDefaults()
-	req.Data = *datadogV2.NewRumRetentionFilterUpdateDataWithDefaults()
+	req := datadogV2.NewRUMRetentionFilterUpdateRequestWithDefaults()
+	req.Data = *datadogV2.NewRUMRetentionFilterUpdateDataWithDefaults()
 
 	req.Data.SetId(state.ID.ValueString())
 	req.Data.SetType(datadogV2.RUMRETENTIONFILTERTYPE_RETENTION_FILTERS)

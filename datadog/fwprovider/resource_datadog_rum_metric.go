@@ -23,7 +23,7 @@ var (
 )
 
 type rumMetricResource struct {
-	Api  *datadogV2.RumMetricsApi
+	Api  *datadogV2.RUMMetricsApi
 	Auth context.Context
 }
 
@@ -172,7 +172,7 @@ func (r *rumMetricResource) Read(ctx context.Context, request resource.ReadReque
 	}
 
 	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetRumMetric(r.Auth, id)
+	resp, httpResp, err := r.Api.GetRUMMetric(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -205,7 +205,7 @@ func (r *rumMetricResource) Create(ctx context.Context, request resource.CreateR
 		return
 	}
 
-	resp, _, err := r.Api.CreateRumMetric(r.Auth, *body)
+	resp, _, err := r.Api.CreateRUMMetric(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumMetric"))
 		return
@@ -235,7 +235,7 @@ func (r *rumMetricResource) Update(ctx context.Context, request resource.UpdateR
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRumMetric(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateRUMMetric(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumMetric"))
 		return
@@ -259,7 +259,7 @@ func (r *rumMetricResource) Delete(ctx context.Context, request resource.DeleteR
 
 	id := state.ID.ValueString()
 
-	httpResp, err := r.Api.DeleteRumMetric(r.Auth, id)
+	httpResp, err := r.Api.DeleteRUMMetric(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -269,7 +269,7 @@ func (r *rumMetricResource) Delete(ctx context.Context, request resource.DeleteR
 	}
 }
 
-func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricModel, resp *datadogV2.RumMetricResponse) {
+func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricModel, resp *datadogV2.RUMMetricResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	state.Name = types.StringValue(resp.Data.GetId())
 
@@ -387,16 +387,16 @@ func (r *rumMetricResource) manageGroupByTagName(ctx context.Context, plan rumMe
 	resp.Plan.SetAttribute(ctx, frameworkPath.Root("group_by"), updatedGroupBy)
 }
 
-func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state *rumMetricModel) (*datadogV2.RumMetricCreateRequest, diag.Diagnostics) {
+func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state *rumMetricModel) (*datadogV2.RUMMetricCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewRumMetricCreateAttributesWithDefaults()
+	attributes := datadogV2.NewRUMMetricCreateAttributesWithDefaults()
 
-	attributes.SetEventType(datadogV2.RumMetricEventType(state.EventType.ValueString()))
+	attributes.SetEventType(datadogV2.RUMMetricEventType(state.EventType.ValueString()))
 
 	if state.GroupBy != nil {
-		var groupBy []datadogV2.RumMetricGroupBy
+		var groupBy []datadogV2.RUMMetricGroupBy
 		for _, groupByTFItem := range state.GroupBy {
-			groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
+			groupByDDItem := datadogV2.NewRUMMetricGroupBy(groupByTFItem.Path.ValueString())
 
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
@@ -406,9 +406,9 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 		attributes.SetGroupBy(groupBy)
 	}
 
-	var compute datadogV2.RumMetricCompute
+	var compute datadogV2.RUMMetricCompute
 
-	compute.SetAggregationType(datadogV2.RumMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
+	compute.SetAggregationType(datadogV2.RUMMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
 	if !state.Compute.IncludePercentiles.IsNull() {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
@@ -419,7 +419,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 	attributes.Compute = compute
 
 	if state.Filter != nil {
-		var filter datadogV2.RumMetricFilter
+		var filter datadogV2.RUMMetricFilter
 
 		filter.SetQuery(state.Filter.Query.ValueString())
 
@@ -427,28 +427,28 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 	}
 
 	if state.Uniqueness != nil {
-		var uniqueness datadogV2.RumMetricUniqueness
+		var uniqueness datadogV2.RUMMetricUniqueness
 
-		uniqueness.SetWhen(datadogV2.RumMetricUniquenessWhen(state.Uniqueness.When.ValueString()))
+		uniqueness.SetWhen(datadogV2.RUMMetricUniquenessWhen(state.Uniqueness.When.ValueString()))
 
 		attributes.Uniqueness = &uniqueness
 	}
 
-	req := datadogV2.NewRumMetricCreateRequestWithDefaults()
-	req.Data = *datadogV2.NewRumMetricCreateDataWithDefaults()
+	req := datadogV2.NewRUMMetricCreateRequestWithDefaults()
+	req.Data = *datadogV2.NewRUMMetricCreateDataWithDefaults()
 	req.Data.SetId(state.Name.ValueString())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
 }
 
-func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context, state *rumMetricModel) (*datadogV2.RumMetricUpdateRequest, diag.Diagnostics) {
+func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context, state *rumMetricModel) (*datadogV2.RUMMetricUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewRumMetricUpdateAttributesWithDefaults()
+	attributes := datadogV2.NewRUMMetricUpdateAttributesWithDefaults()
 
-	groupBy := []datadogV2.RumMetricGroupBy{}
+	groupBy := []datadogV2.RUMMetricGroupBy{}
 	for _, groupByTFItem := range state.GroupBy {
-		groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
+		groupByDDItem := datadogV2.NewRUMMetricGroupBy(groupByTFItem.Path.ValueString())
 
 		if !groupByTFItem.TagName.IsNull() {
 			groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
@@ -459,7 +459,7 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 	attributes.SetGroupBy(groupBy)
 
 	if state.Compute != nil {
-		var compute datadogV2.RumMetricUpdateCompute
+		var compute datadogV2.RUMMetricUpdateCompute
 
 		if !state.Compute.IncludePercentiles.IsNull() {
 			compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
@@ -469,15 +469,15 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 	}
 
 	if state.Filter != nil {
-		var filter datadogV2.RumMetricFilter
+		var filter datadogV2.RUMMetricFilter
 
 		filter.SetQuery(state.Filter.Query.ValueString())
 
 		attributes.Filter = &filter
 	}
 
-	req := datadogV2.NewRumMetricUpdateRequestWithDefaults()
-	req.Data = *datadogV2.NewRumMetricUpdateDataWithDefaults()
+	req := datadogV2.NewRUMMetricUpdateRequestWithDefaults()
+	req.Data = *datadogV2.NewRUMMetricUpdateDataWithDefaults()
 	req.Data.SetId(state.Name.ValueString())
 	req.Data.SetAttributes(*attributes)
 

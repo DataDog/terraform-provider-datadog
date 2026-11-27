@@ -94,9 +94,9 @@ type ApiInstances struct {
 	restrictionPolicyApiV2         *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                     *datadogV2.RolesApi
 	rumApiV2                       *datadogV2.RUMApi
-	rumMetricsApiV2                *datadogV2.RumMetricsApi
+	rumMetricsApiV2                *datadogV2.RUMMetricsApi
 	rumOperationsApiV2             *datadogV2.RUMOperationsApi
-	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
+	rumRetentionFiltersApiV2       *datadogV2.RUMRetentionFiltersApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
@@ -633,9 +633,9 @@ func (i *ApiInstances) GetRumApiV2() *datadogV2.RUMApi {
 }
 
 // GetRumMetricsApiV2 get instance of RumMetricsApi
-func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RumMetricsApi {
+func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RUMMetricsApi {
 	if i.rumMetricsApiV2 == nil {
-		i.rumMetricsApiV2 = datadogV2.NewRumMetricsApi(i.HttpClient)
+		i.rumMetricsApiV2 = datadogV2.NewRUMMetricsApi(i.HttpClient)
 	}
 	return i.rumMetricsApiV2
 }
@@ -649,9 +649,9 @@ func (i *ApiInstances) GetRUMOperationsApiV2() *datadogV2.RUMOperationsApi {
 }
 
 // GetRumRetentionFiltersApiV2 get instance of RumRetentionFiltersApi
-func (i *ApiInstances) GetRumRetentionFiltersApiV2() *datadogV2.RumRetentionFiltersApi {
+func (i *ApiInstances) GetRumRetentionFiltersApiV2() *datadogV2.RUMRetentionFiltersApi {
 	if i.rumRetentionFiltersApiV2 == nil {
-		i.rumRetentionFiltersApiV2 = datadogV2.NewRumRetentionFiltersApi(i.HttpClient)
+		i.rumRetentionFiltersApiV2 = datadogV2.NewRUMRetentionFiltersApi(i.HttpClient)
 	}
 	return i.rumRetentionFiltersApiV2
 }
