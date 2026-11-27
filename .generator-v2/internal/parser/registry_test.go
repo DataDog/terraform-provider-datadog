@@ -153,6 +153,9 @@ func TestDecodeRegistryFullFamily(t *testing.T) {
 		if m.IdStrategy != model.IdStrategyDataID {
 			t.Errorf("artifact %d: id_strategy = %q, want the %q default", i, m.IdStrategy, model.IdStrategyDataID)
 		}
+		if m.IdParameter != "" {
+			t.Errorf("artifact %d: omitted id_parameter = %q, want no explicit binding", i, m.IdParameter)
+		}
 	}
 
 	// The resource and the singular data source share a name deliberately:
@@ -163,6 +166,64 @@ func TestDecodeRegistryFullFamily(t *testing.T) {
 	}
 	if metas[2].Group == nil || metas[2].Group.Read != "ListDatabricksIntegrationAccounts" {
 		t.Errorf("list group.read = %+v, want the list operationId", metas[2].Group)
+	}
+}
+
+func TestDecodeRegistryIDParameter(t *testing.T) {
+	const body = `
+feature_flag:
+  resource:
+    id_parameter: feature_flag_id
+    group: {create: CreateFeatureFlag, read: GetFeatureFlag, update: UpdateFeatureFlag, delete: ArchiveFeatureFlag}
+  datasource_singular:
+    group: {read: GetFeatureFlag}
+`
+	metas := decodeRegistry(t, body)
+	if len(metas) != 2 {
+		t.Fatalf("got %d artifacts, want 2", len(metas))
+	}
+	if got := metas[0].IdParameter; got != "feature_flag_id" {
+		t.Errorf("resource id_parameter = %q, want feature_flag_id", got)
+	}
+	if metas[0].IdStrategy != model.IdStrategyDataID {
+		t.Errorf("binding changed extraction strategy: %q", metas[0].IdStrategy)
+	}
+	if metas[1].IdParameter != "" {
+		t.Errorf("resource binding leaked into data source: %+v", metas[1])
+	}
+	// Names are exact OpenAPI names, not restricted to Terraform snake_case.
+	exact := strings.Replace(body, "id_parameter: feature_flag_id", "id_parameter: featureFlag-ID", 1)
+	if got := decodeRegistry(t, exact)[0].IdParameter; got != "featureFlag-ID" {
+		t.Errorf("exact OpenAPI name was changed: %q", got)
+	}
+	// Selection does not silently rewrite a separately configured strategy.
+	other := strings.Replace(body, "id_parameter: feature_flag_id", "id_parameter: feature_flag_id\n    id_strategy: data.attributes.uuid", 1)
+	if got := decodeRegistry(t, other)[0].IdStrategy; got != model.IdStrategy("data.attributes.uuid") {
+		t.Errorf("explicit extraction strategy was changed: %q", got)
+	}
+}
+
+func TestDecodeRegistryRejectsInvalidIDParameter(t *testing.T) {
+	for _, value := range []string{`""`, "null", "true", "42", "[]", "{}"} {
+		t.Run(value, func(t *testing.T) {
+			err := decodeRegistryErr(t, "feature_flag:\n  resource:\n    id_parameter: "+value+"\n    group: {create: Create, read: Get, delete: Archive}\n")
+			if !strings.Contains(err.Error(), "id_parameter") {
+				t.Errorf("diagnostic does not identify id_parameter: %v", err)
+			}
+		})
+	}
+	for _, body := range []string{
+		"feature_flag:\n  id_parameter: feature_flag_id\n  resource:\n    group: {create: Create, read: Get, delete: Archive}\n",
+		"feature_flag:\n  datasource_singular:\n    id_parameter: feature_flag_id\n    group: {read: Get}\n",
+		"feature_flag:\n  datasource_list:\n    id_parameter: feature_flag_id\n    group: {read: List}\n",
+		"feature_flag:\n  resource:\n    group: {create: Create, read: Get, delete: Archive, id_parameter: feature_flag_id}\n",
+	} {
+		t.Run(body, func(t *testing.T) {
+			err := decodeRegistryErr(t, body)
+			if !strings.Contains(err.Error(), "id_parameter") {
+				t.Errorf("diagnostic does not identify misplaced id_parameter: %v", err)
+			}
+		})
 	}
 }
 

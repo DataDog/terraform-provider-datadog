@@ -57,6 +57,54 @@ types. Existing string, named string-enum, and UUID response mappings are retain
 Request-body ID conversion is separate from this response restriction; it does
 not relax the existing schema-merge checks between lifecycle operations.
 
+### Explicit resource ID path binding
+
+Resource blocks may set `id_parameter` to an exact, nonempty OpenAPI path
+parameter name. `id_strategy` selects where the Terraform ID comes from
+(emission currently supports response `data.id`); `id_parameter` selects which
+path argument receives that computed ID. It does not change extraction. For
+example:
+
+```yaml
+x-datadog-tf-generator:
+  feature_flag:
+    resource:
+      id_parameter: feature_flag_id
+      group:
+        create: CreateFeatureFlag
+        read: GetFeatureFlag
+        update: UpdateFeatureFlag
+        delete: ArchiveFeatureFlag
+```
+
+Every declared Read, Update, and Delete must accept that same named path
+parameter. Its URL position does not matter: both
+`/feature-flags/{feature_flag_id}/archive` and
+`/feature-flags/{feature_flag_id}/environments/{environment_id}` bind
+`feature_flag_id` to computed `id`. Other parameters remain required inputs;
+they retain their SDK order and conversions, and import retains those parent
+components followed by the API ID. A resource without other path inputs imports
+with the API ID alone. The selected parameter contributes no separate input or
+extra import component. Omitting the annotation preserves existing positional
+inference, including for sibling artifacts sharing the same operations.
+
+Supported path conversions are Go strings, UUIDs, integers (`int`, `int32`,
+`int64`), floating-point values (`float32`, `float64`), booleans, and named SDK
+string enums with a validating constructor. UUIDs and numeric/boolean values
+are parsed from Terraform's string ID. Collections, objects, date-time values,
+and other unsupported conversions fail the artifact. Invalid selection never
+falls back to inference: a missing parameter, a competing argument named `id`,
+or a Create operation requiring the selected parameter fails with the artifact,
+lifecycle role, operation ID, and parameter name.
+
+The annotation is resource-only. Different names per lifecycle, new extraction
+strategies, and a response-derived ID required during Create are unsupported.
+The author asserts that response `data.id` is semantically valid for this path
+parameter; the generator cannot verify that relationship. Local mock-API tests
+verify routing and conversion, and do not establish live-API behavior. Release
+both the generator and OpenAPI transformer with annotation support before adding
+it to a source spec; see the [rollout record](../decisions/0006-explicit-resource-id-parameter.md).
+
 ## Schema shapes
 
 Resource fields writable in Create but absent or `readOnly: true` in the Update

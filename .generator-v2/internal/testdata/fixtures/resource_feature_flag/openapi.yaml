@@ -1,0 +1,419 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Feature flag assessment",
+    "version": "1"
+  },
+  "tags": [
+    {
+      "name": "Feature Flags",
+      "x-datadog-tf-generator": {
+        "tfgen_feature_flag_fixture": {
+          "resource": {
+            "id_parameter": "feature_flag_id",
+            "group": {
+              "create": "CreateFeatureFlag",
+              "read": "GetFeatureFlag",
+              "update": "UpdateFeatureFlag",
+              "delete": "ArchiveFeatureFlag"
+            },
+            "tf_description": "Manages a feature flag with an explicitly bound response-derived ID."
+          }
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/v2/feature-flags": {
+      "post": {
+        "description": "Creates a new feature flag with variants.",
+        "operationId": "CreateFeatureFlag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeatureFlagRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagResponse"
+                }
+              }
+            },
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "Feature Flags"
+        ]
+      }
+    },
+    "/api/v2/feature-flags/{feature_flag_id}": {
+      "get": {
+        "description": "Returns the details of a specific feature flag\nincluding variants and environment status.",
+        "operationId": "GetFeatureFlag",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/feature_flag_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "Feature Flags"
+        ]
+      },
+      "put": {
+        "description": "Updates an existing feature flag's metadata such as\n name and description. Does not modify targeting rules or allocations.\n\nTo change the owning team, update `tags` and include a tag of the form\n`team:<team-handle>` in the array. `tags` is a full replacement of the\nexisting tag set (including any `team:` tag), so include every tag you\nwant to keep, not just the ones you're adding.",
+        "operationId": "UpdateFeatureFlag",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/feature_flag_id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFeatureFlagRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "Feature Flags"
+        ]
+      }
+    },
+    "/api/v2/feature-flags/{feature_flag_id}/archive": {
+      "post": {
+        "description": "Archives a feature flag. Archived flags are\nhidden from the main list but remain accessible and can be unarchived.",
+        "operationId": "ArchiveFeatureFlag",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/feature_flag_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "Feature Flags"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FeatureFlagResponse": {
+        "description": "Response containing a feature flag.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/FeatureFlag"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "FeatureFlag": {
+        "description": "A feature flag resource.",
+        "properties": {
+          "attributes": {
+            "$ref": "#/components/schemas/FeatureFlagAttributes"
+          },
+          "id": {
+            "description": "The unique identifier of the feature flag.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CreateFeatureFlagDataType"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "attributes"
+        ],
+        "type": "object"
+      },
+      "CreateFeatureFlagDataType": {
+        "description": "The resource type.",
+        "enum": [
+          "feature-flags"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "FEATURE_FLAGS"
+        ]
+      },
+      "FeatureFlagAttributes": {
+        "description": "Attributes of a feature flag.",
+        "properties": {
+          "description": {
+            "description": "The description of the feature flag.",
+            "type": "string"
+          },
+          "key": {
+            "description": "The unique key of the feature flag.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the feature flag.",
+            "type": "string"
+          },
+          "value_type": {
+            "$ref": "#/components/schemas/ValueType"
+          },
+          "variants": {
+            "description": "The variants of the feature flag.",
+            "items": {
+              "$ref": "#/components/schemas/Variant"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "description",
+          "value_type",
+          "variants"
+        ],
+        "type": "object"
+      },
+      "Variant": {
+        "description": "A variant of a feature flag.",
+        "properties": {
+          "key": {
+            "description": "The unique key of the variant.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the variant.",
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the variant as a string.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "ValueType": {
+        "description": "The type of values for the feature flag variants.",
+        "enum": [
+          "BOOLEAN",
+          "INTEGER",
+          "NUMERIC",
+          "STRING",
+          "JSON"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "BOOLEAN",
+          "INTEGER",
+          "NUMERIC",
+          "STRING",
+          "JSON"
+        ]
+      },
+      "UpdateFeatureFlagRequest": {
+        "description": "Request to update a feature flag.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UpdateFeatureFlagData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "UpdateFeatureFlagData": {
+        "description": "Data for updating a feature flag.",
+        "properties": {
+          "attributes": {
+            "$ref": "#/components/schemas/UpdateFeatureFlagAttributes"
+          },
+          "type": {
+            "$ref": "#/components/schemas/UpdateFeatureFlagDataType"
+          }
+        },
+        "required": [
+          "type",
+          "attributes"
+        ],
+        "type": "object"
+      },
+      "UpdateFeatureFlagDataType": {
+        "description": "The resource type.",
+        "enum": [
+          "feature-flags"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "FEATURE_FLAGS"
+        ]
+      },
+      "UpdateFeatureFlagAttributes": {
+        "description": "Attributes for updating a feature flag.",
+        "properties": {
+          "description": {
+            "description": "The description of the feature flag.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the feature flag.",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "required": []
+      },
+      "CreateFeatureFlagRequest": {
+        "description": "Request to create a new feature flag.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreateFeatureFlagData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "type": "object"
+      },
+      "CreateFeatureFlagData": {
+        "description": "Data for creating a new feature flag.",
+        "properties": {
+          "attributes": {
+            "$ref": "#/components/schemas/CreateFeatureFlagAttributes"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CreateFeatureFlagDataType"
+          }
+        },
+        "required": [
+          "type",
+          "attributes"
+        ],
+        "type": "object"
+      },
+      "CreateFeatureFlagAttributes": {
+        "description": "Attributes for creating a new feature flag.",
+        "properties": {
+          "description": {
+            "description": "The description of the feature flag.",
+            "type": "string"
+          },
+          "key": {
+            "description": "The unique key of the feature flag.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the feature flag.",
+            "type": "string"
+          },
+          "value_type": {
+            "$ref": "#/components/schemas/ValueType"
+          },
+          "variants": {
+            "description": "The variants of the feature flag.",
+            "items": {
+              "$ref": "#/components/schemas/CreateVariant"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "value_type",
+          "variants"
+        ],
+        "type": "object"
+      },
+      "CreateVariant": {
+        "description": "Attributes for creating a variant.",
+        "properties": {
+          "key": {
+            "description": "The unique key of the variant.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the variant.",
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the variant as a string.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "value"
+        ],
+        "type": "object"
+      }
+    },
+    "parameters": {
+      "feature_flag_id": {
+        "description": "The ID of the feature flag.",
+        "in": "path",
+        "name": "feature_flag_id",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

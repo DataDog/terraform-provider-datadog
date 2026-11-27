@@ -47,6 +47,11 @@
           "artifact_name": { "$ref": "#/$defs/artifact_name" },
           "tf_description": { "$ref": "#/$defs/tf_description" },
           "id_strategy": { "$ref": "#/$defs/id_strategy" },
+          "id_parameter": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact OpenAPI path parameter name receiving Terraform's computed id in every declared Read, Update, and Delete operation. Resource-only. Overrides positional ID inference without changing id_strategy or response ID extraction. The selected parameter must not be required during Create; other path inputs remain configurable. The author asserts that the response ID is valid for this parameter. Omit to preserve existing inference."
+          },
           "overwrites": { "$ref": "#/$defs/overwrites" },
           "skip": { "$ref": "#/$defs/block_skip" },
           "group": {

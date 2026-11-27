@@ -604,12 +604,16 @@ func idArgumentExpression(sdkPackage, source, name, goType string, hasEnum bool)
 		return name, name, "uuid.Parse(" + value + ")", ""
 	case "int64":
 		return name, name, "strconv.ParseInt(" + value + ", 10, 64)", ""
-	case "int", "int32":
-		return goType + "(" + name + ")", name, "strconv.ParseInt(" + value + ", 10, 64)", ""
+	// Narrower types parse at their own bit size, so an out-of-range id fails
+	// with a range error instead of wrapping onto a different resource.
+	case "int":
+		return goType + "(" + name + ")", name, "strconv.ParseInt(" + value + ", 10, 0)", ""
+	case "int32":
+		return goType + "(" + name + ")", name, "strconv.ParseInt(" + value + ", 10, 32)", ""
 	case "float64":
 		return name, name, "strconv.ParseFloat(" + value + ", 64)", ""
 	case "float32":
-		return goType + "(" + name + ")", name, "strconv.ParseFloat(" + value + ", 64)", ""
+		return goType + "(" + name + ")", name, "strconv.ParseFloat(" + value + ", 32)", ""
 	case "bool":
 		return name, name, "strconv.ParseBool(" + value + ")", ""
 	}
