@@ -173,6 +173,7 @@ var Resources = []func() resource.Resource{
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
+	NewIncidentHandleResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
 	NewIncidentPostmortemTemplateResource,
@@ -941,6 +942,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentType", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentType", true)
+
+	// Enable IncidentHandle
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGlobalIncidentHandle", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListGlobalIncidentHandles", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGlobalIncidentHandle", true)
 
 	// Enable IncidentNotificationTemplate
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentNotificationTemplate", true)
