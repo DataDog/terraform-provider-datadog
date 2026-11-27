@@ -219,13 +219,10 @@ func (r *webhookResource) updateState(ctx context.Context, state *webhookModel, 
 		state.URL = types.StringValue(*url)
 	}
 
-	if payload, ok := resp.GetPayloadOk(); ok && payload != nil {
-		state.Payload = types.StringValue(*payload)
-	}
-
-	if customHeaders, ok := resp.GetCustomHeadersOk(); ok && customHeaders != nil {
-		state.CustomHeaders = types.StringValue(*customHeaders)
-	}
+	// payload and custom_headers are nullable in the API. Clear them when the
+	// response has no value so a field removed outside Terraform shows up as drift.
+	state.Payload = types.StringPointerValue(resp.Payload.Get())
+	state.CustomHeaders = types.StringPointerValue(resp.CustomHeaders.Get())
 
 	if encode_as, ok := resp.GetEncodeAsOk(); ok && encode_as != nil {
 		state.EncodeAs = types.StringValue(string(*encode_as))
