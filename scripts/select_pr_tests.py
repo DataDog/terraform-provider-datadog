@@ -8,7 +8,7 @@ Usage:
     echo "datadog/resource_datadog_monitor.go" | python3 scripts/select_pr_tests.py
 
     # Read test-file contents from a git ref instead of the working tree. Used
-    # by the pull_request_target workflow, which checks out the trusted base but
+    # by the PR Test Selection workflow, which checks out the trusted base but
     # needs the PR head's version of the tests to discover newly added ones:
     git diff ... | python3 scripts/select_pr_tests.py --git-ref <pr-head-sha>
 
